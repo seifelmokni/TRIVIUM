@@ -1,0 +1,105 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav [searchEnabled]="false" [reloadEnabled]="false"></app-nav>
+
+    <div class="dash-content">
+      <div class="block-inner">
+        <div class="blocks-grid">
+          <div class="block-item">
+            <div class="item-inner">
+              <div class="item-title">Admisiones</div>
+              <div class="item-action">
+                <ul>
+                  <li>
+                    <a href="#">
+                      <span class="icon">
+                        <svg>
+                          <use xlink:href="#pencil" width="24" height="24" x="0" y="0"></use>
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                  <li class="dropdown-block">
+                    <a href="#" class="dropdown-toggler">
+                      <span class="icon icon">
+                        <svg>
+                          <use href="#settings" width="24" height="24" x="0" y="0"></use>
+                        </svg>
+                      </span>
+                    </a>
+                    <div class="dropdown-content">
+                      <ul>
+                        <li>
+                          <a href="#">Editar nombre</a>
+                        </li>
+                        <li>
+                          <a href="#">Duplicar</a>
+                        </li>
+                        <li>
+                          <a href="#">Eliminar</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="block-item">
+            <div class="item-inner">
+              <div class="item-title">Entrevista</div>
+              <div class="item-action">
+                <ul>
+                  <li>
+                    <a href="#">
+                      <span class="icon">
+                        <svg>
+                          <use xlink:href="#pencil" width="24" height="24" x="0" y="0"></use>
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                  <li class="dropdown-block">
+                    <a href="#" class="dropdown-toggler">
+                      <span class="icon icon">
+                        <svg>
+                          <use href="#settings" width="24" height="24" x="0" y="0"></use>
+                        </svg>
+                      </span>
+                    </a>
+                    <div class="dropdown-content">
+                      <ul>
+                        <li>
+                          <a href="#">Editar nombre</a>
+                        </li>
+                        <li>
+                          <a href="#">Duplicar</a>
+                        </li>
+                        <li>
+                          <a href="#">Eliminar</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="block-item new-item">
+            <div class="item-inner">
+              <a href="javascript:void(0)" routerLink="/createForm">
+                <span class="icon icon-plus"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <app-footer></app-footer>
+  </div>
+</section>

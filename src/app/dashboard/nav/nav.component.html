@@ -1,0 +1,111 @@
+<div class="dash-navi">
+  <div class="block-inner">
+    <div class="dash-menu">
+      <ul>
+        <li class="dropdown-block">
+          <a data-toggle="dropdown"  class="dropdown-toggler">
+            <span class="icon icon-dash"></span>
+          </a>
+          <div class="dropdown-content">
+            <ul>
+              <li>
+                <a >
+                  <span class="icon">
+                    <svg>
+                      <use href="#crm" width="24" height="24" />
+                    </svg>
+                  </span>
+                  CRM
+                </a>
+              </li>
+              <li>
+                <a  routerLink="/developper">
+                  <span class="icon">
+                    <svg>
+                      <use href="#developer" width="24" height="24" />
+                    </svg>
+                  </span>
+                  Desarrollador
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="active">
+          <a >Inicio</a>
+        </li>
+        <li>
+          <a >Admisiones</a>
+        </li>
+        <li>
+          <a >Residentes</a>
+        </li>
+        <li>
+          <a >Usuarios</a>
+        </li>
+        <li>
+          <a >Comunicaciones</a>
+        </li>
+        <li class="dropdown-block">
+          <a  data-toggle="dropdown" class="dropdown-toggler">
+            <span class="icon icon-more"></span>
+          </a>
+          <div class="dropdown-content">
+            <ul>
+              <li>
+                <a >Campo 6</a>
+              </li>
+              <li>
+                <a >Campo 7</a>
+              </li>
+              <li>
+                <a >Campo 8</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="dash-action">
+      <div class="search-block" *ngIf="searchEnabled">
+        <a  data-toggle="search" class="search-toggler">
+          <span class="icon">
+            <svg>
+              <use href="#search" width="19" height="19"></use>
+            </svg>
+          </span>
+        </a>
+        <div class="search-form">
+          <form action="#">
+            <div class="form-field">
+              <div class="search-icon">
+                <span class="icon">
+                  <svg>
+                    <use href="#search" width="19" height="19"></use>
+                  </svg>
+                </span>
+              </div>
+              <input type="text">
+              <a  class="search-reset">
+                <span class="icon">
+                  <svg>
+                    <use href="#cross" width="19" height="19"></use>
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="reload-block" *ngIf="reloadEnabled">
+        <a >
+          <span class="icon">
+            <svg>
+              <use href="#reload" width="19" height="19"></use>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

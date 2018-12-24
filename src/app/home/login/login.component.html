@@ -1,0 +1,41 @@
+<section class="site-middle">
+			<div class="block block-login">
+				<div class="block-inner">
+					<form class="login-item" action="#" [formGroup]="loginForm"  (ngSubmit)="login()">
+						<div class="item-title">Iniciar sesión</div>
+						<div class="item-content">
+							<div class="form-content">
+								<div class="form-line">
+									<input type="text" id="user_email" name="user_email" formControlName="user_email" >
+									<label class="form-label" for="user_email">Correo electrónico</label>
+								</div>
+								<div class="form-line">
+									<input type="password" id="user_password" name="user_password" formControlName="user_password">
+									<label class="form-label" for="user_password">Contraseña</label>
+									<div class="form-recovery"><a href="#">¿Te olvidaste?</a></div>
+								</div>
+								<div class="form-line centered">
+									<div class="form-checkbox">
+										<input type="checkbox" id="checkbox_remember">
+										<label for="checkbox_remember">Recordarme</label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="item-action">
+							<button class="btn btn-pr">Entrar</button>
+						</div>
+					</form>
+					<div class="login-item">
+						<div class="item-title">Solicitud online</div>
+						<div class="item-content">
+							<p>Aquí podrás empezar el proceso de solicitud online para el Colegio Mayor Belagua.</p>
+							<p>Si ya has empezado el proceso o eres <br> residente tendrás que ir a iniciar sesión.</p>
+						</div>
+						<div class="item-action">
+							<a href="#" class="btn btn-pr">Empezar</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
