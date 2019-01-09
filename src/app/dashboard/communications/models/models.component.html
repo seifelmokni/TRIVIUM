@@ -1,0 +1,112 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+    <div class="dash-content">
+      <div class="block-inner">
+        <div class="task-wrapper">
+          <section class="panel-menu">
+            <ul>
+              <li>
+                <a class="active" routerLink="/models">Plantillas</a>
+              </li>
+              <li>
+                <a class="" routerLink="/documents">Documentos</a>
+              </li>
+            </ul>
+          </section>
+          <section class="communication-view">
+            <svg class="svg-sprite" style="display: none;">
+              <defs>
+                <symbol id="pencil" viewBox="0 0 1792 1792">
+                  <path d="M491 1536l91-91-235-235-91 91v107h128v128h107zm523-928q0-22-22-22-10 0-17 7l-542 542q-7 7-7 17 0 22 22 22 10 0 17-7l542-542q7-7 7-17zm-54-192l416 416-832 832h-416v-416zm683 96q0 53-37 90l-166 166-416-416 166-165q36-38 90-38 53 0 91 38l235 234q37 39 37 91z"></path>
+                </symbol>
+              </defs>
+            </svg>
+            <div class="communication-header">
+              <span class="communication-title">Plantillas</span>
+              <div class="btn-group">
+                <a class="btn btn-confirm" routerLink="/addModel">+ Plantilla</a>
+              </div>
+              <div class="dropdown-block">
+                <svg class="svg-sprite" style="display: none;">
+                  <defs>
+                    <symbol id="arrow_d" viewBox="0 0 1792 1792">
+                      <path d="M1395 736q0 13-10 23l-466 466q-10 10-23 10t-23-10l-466-466q-10-10-10-23t10-23l50-50q10-10 23-10t23 10l393 393 393-393q10-10 23-10t23 10l50 50q10 10 10 23z"></path>
+                    </symbol>
+                  </defs>
+                </svg>
+                <a class="dropdown-toggler">Plantilla asiciada a Todos
+                  <span class="icon">
+                    <svg>
+                      <use href="#arrow_d" width="13" height="13" x="0" y="0"></use>
+                    </svg>
+                  </span>
+                </a>
+                <div class="dropdown-content">
+                  <ul>
+                    <li>
+                      <a>Todos</a>
+                    </li>
+                    <li>
+                      <a>Admisiones</a>
+                    </li>
+                    <li>
+                      <a>Residentes</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="communication-panel">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <input type="checkbox">
+                      <label>
+                        <strong>Nombre de la plantilla</strong>
+                      </label>
+                    </td>
+                    <td>
+                      <strong>Descripción</strong>
+                    </td>
+                    <td>
+                      <strong>Asunto</strong>
+                    </td>
+                    <td>
+                      <strong>Asociada a</strong>
+                    </td>
+                  </tr>
+                  <tr class="template-row" *ngFor="let item of models">
+                    <td>
+                      <input type="checkbox">
+                      <label>{{item.name}}</label>
+                    </td>
+                    <td>{{item.description}}</td>
+                    <td>{{item.subject}}</td>
+                    <td>
+                      <a></a>
+                    </td>
+                    <td class="edit">
+                      <a (click)="editModel(item)">
+                        <span class="icon">
+                          <svg>
+                            <use href="#pencil" width="19" height="19"></use>
+                          </svg>
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</section>

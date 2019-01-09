@@ -1,0 +1,99 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+    <div class="dash-content">
+      <div class="block-inner">
+        <div class="task-wrapper">
+          <section class="panel-menu">
+            <ul>
+              <li>
+                <a class="" routerLink="/models">Plantillas</a>
+              </li>
+              <li>
+                <a class="active" routerLink="/documents">Documentos</a>
+              </li>
+            </ul>
+          </section>
+          <section class="communication-view">
+            <svg class="svg-sprite" style="display: none;">
+              <defs>
+                <symbol id="pencil" viewBox="0 0 1792 1792">
+                  <path d="M491 1536l91-91-235-235-91 91v107h128v128h107zm523-928q0-22-22-22-10 0-17 7l-542 542q-7 7-7 17 0 22 22 22 10 0 17-7l542-542q7-7 7-17zm-54-192l416 416-832 832h-416v-416zm683 96q0 53-37 90l-166 166-416-416 166-165q36-38 90-38 53 0 91 38l235 234q37 39 37 91z"></path>
+                </symbol>
+              </defs>
+            </svg>
+            <div class="communication-header">
+              <span class="communication-title">Documentos</span>
+              <div class="btn-group">
+                <a class="btn btn-confirm" href="/app/crm/comunicaciones/documentos/crear-documento">+ Documento</a>
+              </div>
+            </div>
+            <div class="communication-panel">
+              <table>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <strong>Descripción</strong>
+                    </td>
+                    <td>
+                      <strong>Asunto</strong>
+                    </td>
+                    <td>
+                      <strong>Asociada a</strong>
+                    </td>
+                  </tr>
+                  <tr class="template-row">
+                    <td>
+                      <input type="checkbox">
+                      <label>Horario del semestre 1</label>
+                    </td>
+                    <td>Este documento tiene un horario para el semestre 1</td>
+                    <td>Horario del semestre 1</td>
+                    <td>
+                      <a></a>
+                    </td>
+                    <td class="edit">
+                      <a href="/app/crm/comunicaciones/documentos/editar-documento/1532545162651">
+                        <span class="icon">
+                          <svg>
+                            <use href="#pencil" width="19" height="19"></use>
+                          </svg>
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr class="template-row">
+                    <td>
+                      <input type="checkbox">
+                      <label>ejemplo</label>
+                    </td>
+                    <td>ejemplo</td>
+                    <td>ejemplo</td>
+                    <td>
+                      <a>N/A</a>
+                    </td>
+                    <td class="edit">
+                      <a href="/app/crm/comunicaciones/documentos/editar-documento/1537264010396">
+                        <span class="icon">
+                          <svg>
+                            <use href="#pencil" width="19" height="19"></use>
+                          </svg>
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <app-footer></app-footer>
+  </div>
+</section>

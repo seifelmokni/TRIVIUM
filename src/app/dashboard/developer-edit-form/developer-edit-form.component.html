@@ -1,0 +1,365 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav [searchEnabled]="false" [reloadEnabled]="false"></app-nav>
+
+    <div class="dash-content">
+      <div class="block-inner">
+        <div class="blocks-grid">
+          <div class="form-left">
+            <div class="form-title">
+              <span>Campos</span>
+            </div>
+            <ul>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event , 'single_line')">
+                <div class="btn-plug">
+                  <span class="far fa-1x fa-file-alt"></span> Single Line
+                </div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event , 'phone')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-phone"></span> Phone
+                </div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event , 'multi_line')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-align-left"></span> Multi line
+                </div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event, 'url')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-globe"></span> URL
+                </div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event ,'date')">
+                <div class="btn-plug">
+                  <span class="far fa-1x fa-calendar-alt"></span> Date</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event, 'file_upload')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-upload"></span> File Upload</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event, 'radio')">
+                <div class="btn-plug">
+                  <span class="far fa-1x fa-dot-circle"></span> Radio</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event, 'image')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-image"></span> Image</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event, 'checkbox')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-check-square"></span> Checkbox</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event , 'text')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-font"></span> Text</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'email')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-envelope"></span> Email</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'number')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x">123</span> Number</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'description')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-font"></span> Description</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'decimal')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x">.00</span> Decimal</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'multi_select')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-server"></span> Multi Select</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'dropdown')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-chevron-down"></span> Dropdown</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'note')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-sticky-note"></span> Notes</div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'percent')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-percent"></span> Percent</div>
+              </li>
+            </ul>
+          </div>
+          <div class="form-center">
+            <div class="form-title">
+              <div class="wrapper">
+                <span [ngStyle]="{'display': !editFormTitleEnabled ? 'inline-block' : 'none'}" #formTitleContainer>Entrevista</span>
+                <input type="text" class="stepname" [ngStyle]="{'display': editFormTitleEnabled ? 'inline-block' : 'none'}" #formNameInput
+                  (blur)="editFormName()" />
+                <a href="javascript:void(0)">
+                  <span class="icon icon-pencil" (click)="editFormName()"></span>
+                </a>
+              </div>
+              <div class="btn-group">
+                <a href="" class="btn">
+                  <span class="icon icon-eye"></span>
+                </a>
+                <a href="javascript:void(0)" class="btn">
+                  <span class="icon icon-add" (click)="addPage()"></span>
+                </a>
+                <a class="btn" title="Eliminar formulario" style="display: none;">
+                  <span class="icon icon-delete"></span>
+                </a>
+                <ul class="step-dropdown">
+                  <li class="dropdown-block dropdown-open">
+                    <a class="dropdown-toggler" title="Ver listado de todas las páginas del formulario">
+                      <span class="icon icon-menu"></span>
+                    </a>
+                    <div class="dropdown-content">
+                      <ul >
+                          <li *ngFor="let item of pages" (click)="loadPage(item)">{{item.pageTitle}}</li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <form action="">
+              <div class="message" *ngIf="elementCounter === 0">
+                <em>Este es un nuevo paso. Comience a agregar elementos de formulario</em>
+              </div>
+              <div class="wrapper">
+                <div class="left-col col" #left_container (drop)="drop($event , 1 )" (dragover)="allowDrag($event)">
+
+                </div>
+                <div class="right-col col" #right_container (drop)="drop($event , 2 )" (dragover)="allowDrag($event)">
+
+                </div>
+              </div>
+
+            </form>
+            <div class="btn-group btn__mod">
+              <a (click)="saveForm()" style="cursor: pointer" class="btn btn-confirm">Guardar</a>
+            </div>
+          </div>
+
+
+          <div class="form-right">
+            <div class="form-title">
+              <span [ngClass]="{'active': !propertyTabShown , 'inactive': propertyTabShown}" [ngStyle]="{'cursor': propertyTabShown ? 'pointer' : 'auto'}">
+                <a (click)="propertyTabShown = false;">Propiedades del Formulario</a>
+              </span>
+              <span [ngClass]="{'active': propertyTabShown , 'inactive': !propertyTabShown}" [ngStyle]="{'cursor': !propertyTabShown ? 'pointer' : 'auto'}">
+                <a (click)="propertyTabShown = true;">Propiedades del Campo</a>
+              </span>
+            </div>
+            <form *ngIf="!propertyTabShown">
+              <div>
+                <div class="valid-right">
+                  <label class="label-gray">Opciones de correo electrónico</label>
+                  <div>
+                    <small>
+                      <em>Seleccione el correo electrónico que se enviará al enviar el formulario. Para editar, haga clic aqui</em>
+                    </small>
+                    <select class="email-list">
+                      <option value="-1">--por favor, elija--</option>
+                      <option value="5b674e7ca777ba76847be60b">Registro de usuario</option>
+                      <option value="5bf2672aac48f4480c2cc0fc">demo</option>
+                      <option value="5bf2673eac48f4480c2cc0fd">demo 02</option>
+                    </select>
+                  </div>
+                  <div>
+                    <div>
+                      <p>
+                        <input type="checkbox" id="registration-form">
+                        <label for="registration-form">Mostrar en la página de registro</label>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="btn-group btn__mod">
+                  <button class="btn btn-confirm">Actualizar</button>
+                </div>
+              </div>
+            </form>
+            <form novalidate="" *ngIf="propertyTabShown">
+                <div *ngIf="elementSelected && elementCounter !== 0">
+              <div>
+                <label for="form-title">Nombre del campo</label>
+                <input type="text" id="form-title" autocomplete="off" value="" #labelTitleInput (blur)="editLabelTitle()">
+                <div>
+                  <span>
+                    <input type="checkbox" id="required-field">
+                    <label for="required-field">Campo obligatorio</label>
+                  </span>
+                  <span>
+                    <input type="checkbox" id="conditoned-field">
+                    <label for="conditoned-field">Campo condicionado</label>
+                  </span>
+                  <label for="info">Información</label>
+                  <textarea id="info"></textarea>
+                  <div class="valid-right conditions">
+                    <label class="label-gray">Condiciones</label>
+                    <span>
+                      <em>
+                        <strong>IGUALDAD*</strong>
+                      </em>
+                    </span>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="condition">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                    </div>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="condition">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                      <input type="text" placeholder="Texto">
+                    </div>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="condition">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                      <p>
+                        <strong>Enabled</strong>
+                      </p>
+                    </div>
+                    <span>
+                      <em>
+                        <strong>DESIGUALDAD*</strong>
+                      </em>
+                    </span>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="condition">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                    </div>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="condition">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                      <input type="text" placeholder="Texto">
+                    </div>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="condition">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                      <p>
+                        <strong>Enabled</strong>
+                      </p>
+                    </div>
+                    <span>
+                      <em>
+                        <strong>ACCIONES*</strong>
+                      </em>
+                    </span>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="action">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                      <p>
+                        <strong>Esconder</strong>
+                      </p>
+                    </div>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="action">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                      <p>
+                        <strong>Obligatorio</strong>
+                      </p>
+                    </div>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="action">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                      <p>
+                        <strong>No es obligatorio</strong>
+                      </p>
+                    </div>
+                    <small style="margin-bottom: 10px;">
+                      <strong>Valor de copia</strong>
+                    </small>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="action">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                    </div>
+                    <small style="margin-bottom: 10px;">
+                      <strong>Copia texto</strong>
+                    </small>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="action">
+                      <input type="text" placeholder="Texto">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                    </div>
+                    <small style="margin-bottom: 10px;">
+                      <strong>Botón a la sección</strong>
+                    </small>
+                    <div class="conditioned-fields">
+                      <input type="radio" name="action">
+                      <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
+                        <option>Campo 1</option>
+                        <option>Campo 2</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="btn-group btn__mod">
+                  <button class="btn btn-confirm">Actualizar</button>
+                </div>
+              </div>
+              </div>
+              <div *ngIf="!elementSelected || elementCounter == 0">
+                  Sin Campo seleccionado
+              </div>
+            </form>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+
+
+
+    <app-footer></app-footer>
+  </div>
+</section>
+

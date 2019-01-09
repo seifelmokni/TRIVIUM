@@ -1,0 +1,145 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+
+    <div class="admissions">
+      <svg class="svg-sprite" style="display: none;">
+        <defs>
+          <symbol id="pencil" viewBox="0 0 1792 1792">
+            <path d="M491 1536l91-91-235-235-91 91v107h128v128h107zm523-928q0-22-22-22-10 0-17 7l-542 542q-7 7-7 17 0 22 22 22 10 0 17-7l542-542q7-7 7-17zm-54-192l416 416-832 832h-416v-416zm683 96q0 53-37 90l-166 166-416-416 166-165q36-38 90-38 53 0 91 38l235 234q37 39 37 91z"></path>
+          </symbol>
+          <symbol id="arrow_u" viewBox="0 0 1792 1792">
+            <path d="M1395 1184q0 13-10 23l-50 50q-10 10-23 10t-23-10l-393-393-393 393q-10 10-23 10t-23-10l-50-50q-10-10-10-23t10-23l466-466q10-10 23-10t23 10l466 466q10 10 10 23z"></path>
+          </symbol>
+        </defs>
+      </svg>
+      <div class="dash-header">
+        <div class="block-inner"></div>
+      </div>
+      <div class="dash-content">
+        <div class="block-inner">
+          <table>
+            <tbody>
+              <tr>
+                <th class="newdoc">
+                  <div class="dropdown-block">
+                    <a class="dropdown-toggler">
+                      <span class="icon icon-newdoc"></span>
+                    </a>
+                    <div class="dropdown-content dropdown-admisiones">
+                      <ul>
+                        <li>
+                          <p>
+                            <input type="checkbox">
+                            <label>Nombre</label>
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <input type="checkbox">
+                            <label>Apellido</label>
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <input type="checkbox">
+                            <label>Colegio</label>
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <input type="checkbox">
+                            <label>Solicitud</label>
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <input type="checkbox">
+                            <label>Teléfono móvil</label>
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <input type="checkbox">
+                            <label>Entrevista</label>
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <input type="checkbox">
+                            <label>Ficha admisión</label>
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <input type="checkbox">
+                            <label>Email</label>
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <input type="checkbox">
+                            <label>Estado</label>
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <input type="checkbox">
+                            <label>Responsable</label>
+                          </p>
+                        </li>
+                      </ul>
+                      <div class="btn-group">
+                        <a class="btn btn-confirm">Actualizar</a>
+                        <a class="btn btn-sc">Cancelar</a>
+                      </div>
+                    </div>
+                  </div>
+                </th>
+                <th class="">Nombre</th>
+                <th class="">Apellido</th>
+                <th class="">Colegio</th>
+                <th class="">Solicitud</th>
+                <th class="">Teléfono móvil</th>
+                <th class="">Entrevista</th>
+                <th class="">Ficha admisión</th>
+                <th class="">Email</th>
+                <th class="">Estado</th>
+                <th class="">Responsable</th>
+              </tr>
+              <tr *ngFor="let item of candidates">
+                <td class="edit">
+                  <a (click)="showDetails(item)">
+                    <span class="icon">
+                      <svg>
+                        <use href="#pencil" width="19" height="19"></use>
+                      </svg>
+                    </span>
+                  </a>
+                </td>
+                <td class="">{{ item.firstName }}</td>
+                <td class="">{{ item.lastName }}</td>
+                <td class="">{{ item.college }}</td>
+                <td class="">{{ item.applicationDate }}</td>
+                <td class="">{{ item.phone }}</td>
+                <td class="">Invalid date</td>
+                <td class="">
+                  <span class="textcol-red text-underline">Incompleta</span>
+                </td>
+                <td class="">{{ item.email }}</td>
+                <td class="">{{ item.status }}</td>
+                <td class="">{{ item.userInChage !== '' ? '' : 'Pendiente asignar' }}</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <app-footer></app-footer>
+  </div>
+</section>

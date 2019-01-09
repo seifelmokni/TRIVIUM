@@ -1,0 +1,145 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+    <div class="edit-admission">
+      <div class="dash-header">
+        <div class="block-inner">
+          <ul class="block-size">
+            <a class="icon icon-back" (click)="goBack()"></a>
+            <li class="dropdown-block">
+              <a>Admisiones</a>
+            </li>
+          </ul>
+          <div class="page-title">
+            <span>
+              <span class="icon red-circle"></span>{{candidate.firstName}} {{candidate.lastName}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="dash-content">
+        <div class="block-inner">
+          <div class="task-wrapper">
+            <section class="task-list">
+              <div class="task" *ngFor="let item of candidateList">
+                <p class="task-title">
+                  <a (click)="loadCandidateDetails(item)">
+                    <span class="icon red-circle"></span>{{item.firstName}} {{item.lastName}}</a>
+                </p>
+              </div>
+              
+            </section>
+            <section class="task-view">
+              <form action="">
+                <ul>
+                  <li>
+                    <input type="checkbox" id="1528671791487" checked="">
+                    <label for="1528671791487">Nombre del padre </label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="1528671797667" checked="">
+                    <label for="1528671797667">Primer apellido padre </label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="1528675874076" checked="">
+                    <label for="1528675874076">Nacionalidad padre</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="1528671811019" checked="">
+                    <label for="1528671811019">Nombre del madre </label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="1528671812539" checked="">
+                    <label for="1528671812539">Primer apellido madre </label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="1528675875564" checked="">
+                    <label for="1528675875564">Nacionalidad madre</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="1528695854883" checked="">
+                    <label for="1528695854883">Tipo de dirección</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="1528695891885" checked="">
+                    <label for="1528695891885">Tipo de vía</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="1528695967994" checked="">
+                    <label for="1528695967994">Número</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="1528696135049" checked="">
+                    <label for="1528696135049">País </label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="1528696162927" checked="">
+                    <label for="1528696162927">Provincia</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="1528696186917" checked="">
+                    <label for="1528696186917">Población</label>
+                  </li>
+                </ul>
+                <select class="email-list">
+                  <option value="-1">--por favor, elija--</option>
+                </select>
+                <textarea name="email-text" id="email" rows="10"></textarea>
+                <div class="change-status">
+                  <p>
+                    <strong>Cambiar estado</strong>
+                  </p>
+                  <select class="email-list" #statusSelector>
+                    <option value="-1">--por favor, elija--</option>
+                    <option value="Residente">Residente</option>
+                    <option value="Plaza rechazado">Plaza rechazado</option>
+                    <option value="Lista de espera">Lista de espera</option>
+                    <option value="Reserva">Reserva</option>
+                  </select>
+                </div>
+                <div class="change-status">
+                  <p>
+                    <strong>Cambiar prioridad</strong>
+                  </p>
+                  <select class="email-list" #prioritySelector>
+                    <option value="Normal">Normal</option>
+                    <option value="Urgente">Urgente</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Baja">Baja</option>
+                  </select>
+                </div>
+                <div class="btn-group">
+                  <a class="btn btn-confirm" (click)="sendMessage()">Enviar</a>
+                  <a class="btn btn-sc" routerLink="/intreview">Hacer entrevista</a>
+                </div>
+              </form>
+            </section>
+            <section class="teacher-contacts">
+              <div class="teacher-title">
+                <div class="user-avatar">
+                  <img src="/static/media/avatar.9e789c47.png" alt="avatar">
+                </div>
+                <span>{{candidate.firstName}} {{candidate.lastName}}</span>
+              </div>
+              <div class="contacts-phone">
+                <p class="phone-number1">
+                  <span class="icon icon-tel"></span>+34</p>
+                <p class="phone-number2">
+                  <span class="icon icon-smartphone"></span>{{candidate.phone}}</p>
+                <p class="email">
+                  <span class="icon icon-mail"></span>{{candidate.email}}</p>
+                <p>Sede: Villa Belagua</p>
+                <a href="mailto:utsavkumar.official@gmail.com" class="btn btn-sc">Enviar correo electrónico</a>
+                <a class="btn btn-sc" href="/app/crm/admisiones/user/1541999026298">Información de usuario</a>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <app-footer></app-footer>
+  </div>
+</section>

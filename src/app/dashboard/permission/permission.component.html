@@ -1,0 +1,56 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+    <div class="dash-content">
+      <div class="block-inner">
+        <div class="task-wrapper">
+          <section class="panel-menu">
+            <ul>
+              <li>
+                <a class="active" href="javascript:void(0)" routerLink="/user">Usuarios</a>
+              </li>
+              <li>
+                <a  href="">Permisos</a>
+              </li>
+            </ul>
+          </section>
+          <section class="permissions-view">
+            <div class="permissions-header">
+              <span class="permissions-title">Permisos</span>
+              <div class="btn-group">
+                <a href="javascript:void(0)" routerLink="/newPermission" class="btn btn-confirm">+ Nuevo perfil</a>
+              </div>
+            </div>
+            <div class="permissions-panel">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Nombre del perfil</td>
+                    <td>Descrioción</td>
+                    <td>Usuarios</td>
+                  </tr>
+                  <tr *ngFor="let item of permissions">
+                    <td>
+                      <a href="">{{item.profileName}}</a>
+                    </td>
+                    <td>
+                    {{item.description}}    
+                    <td>
+                      <a href="">Ver</a>
+                    </td>
+                  </tr>
+                  
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <app-footer></app-footer>
+  </div>
+</section>

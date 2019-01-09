@@ -1,0 +1,40 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-middle">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav [searchEnabled]="false" [reloadEnabled]="false" [navigationEnabled]="true"></app-nav>
+
+    <div class="dash-content footer-line">
+					<div class="block-inner">
+						<div class="blocks-grid blocks-grid__mod">
+						<div class="step-block">
+                            <div class="step active step-1">step 1</div>
+							<div class="step step-2">step 2</div>
+							<div class="step step-3">step 3</div>
+						</div>
+						<section class="main-content">
+							<form action="">
+								<div class="wrapper">
+									<div class="left-col col" #left_container >
+										
+									</div>
+									<div class="right-col col" #right_container >
+										
+									</div>
+								</div>
+								<div class="btn-group">
+									<a href="javascript:void(0)"  class="btn btn-sc">Atrás</a>
+									<a href="javascript:void(0)" (click)="nextPage()" class="btn btn-confirm">Siguiente</a>
+								</div>
+							</form>
+						</section>
+						</div>
+					</div>
+				</div>
+
+
+
+    <app-footer></app-footer>
+  </div>
+</section>
+

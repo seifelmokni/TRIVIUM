@@ -31,22 +31,22 @@
             </ul>
           </div>
         </li>
-        <li class="active">
-          <a >Inicio</a>
+        <li routerLinkActive="active">
+          <a routerLink="/dashboard" *ngIf="navigationEnabled">Inicio</a>
         </li>
-        <li>
-          <a >Admisiones</a>
+        <li routerLinkActive="active">
+          <a routerLink="/admissions" *ngIf="navigationEnabled">Admisiones</a>
         </li>
-        <li>
-          <a >Residentes</a>
+        <li routerLinkActive="active">
+          <a routerLink="/residents" *ngIf="navigationEnabled">Residentes</a>
         </li>
-        <li>
-          <a >Usuarios</a>
+        <li routerLinkActive="active">
+          <a *ngIf="navigationEnabled" routerLink="/user">Usuarios</a>
         </li>
-        <li>
-          <a >Comunicaciones</a>
+        <li routerLinkActive="active">
+          <a *ngIf="navigationEnabled" routerLink="/models">Comunicaciones</a>
         </li>
-        <li class="dropdown-block">
+        <li class="dropdown-block" *ngIf="navigationEnabled">
           <a  data-toggle="dropdown" class="dropdown-toggler">
             <span class="icon icon-more"></span>
           </a>

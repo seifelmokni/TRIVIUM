@@ -7,6 +7,9 @@ jQuery(document).ready(function($) {
     	$('.dropdown-block').removeClass('dropdown-open');
     	$(parent).toggleClass('dropdown-open');
     });
+    $('.dropdown-content input').on('click',function(e){
+       e.stopPropagation();
+    });
 
     $('table').on('click', 'td', function(){
     	$(this).parents('tr').toggleClass('active');

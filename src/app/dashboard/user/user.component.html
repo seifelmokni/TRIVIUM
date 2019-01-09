@@ -1,0 +1,100 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+    <div class="dash-content users-page">
+      <div class="block-inner">
+        <div class="task-wrapper">
+          <section class="panel-menu">
+            <ul>
+              <li>
+                <a class="" href="javascript:void(0)">Usuarios</a>
+              </li>
+              <li>
+                <a class="active" routerLink="/permission" href="javascript:void(0)">Permisos</a>
+              </li>
+            </ul>
+          </section>
+          <section class="users-view">
+            <div class="users-header">
+              <span class="users-title">Usuarios</span>
+              <div class="btn-group">
+                <a href="javascript:void(0)" title="Usuario nuevo" class="btn btn-confirm" (click)="openDialog()">+ Usuario nuevo</a>
+              </div>
+            </div>
+            <div class="search-block">
+              <input type="search" placeholder="Buscar" value="" #searchUserInput (keyup)="filter()" (search)="cancelFilter()">
+            </div>
+            <div class="users-panel">
+              <div class="users-list">
+                <div class="user" [ngClass]="{'active': selectedUserID == item.selectedUserID && selectedUserID !== ''}" *ngFor="let item of users" (click)="selectUser(item)">
+                  <div class="user-avatar">
+                    <img src="{{item.image}}" alt="Avatar">
+                  </div>
+                  <div class="user-information">
+                    <p class="title">{{item.firstName + ' ' + item.lastName}}</p>
+                    <p class="status">{{item.role}}</p>
+                    <p class="email">{{item.login}}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="user-full" *ngIf="selectedUserID !== ''">
+                <svg class="svg-sprite" style="display: none;">
+                  <defs>
+                    <symbol id="pencil" viewBox="0 0 1792 1792">
+                      <path d="M491 1536l91-91-235-235-91 91v107h128v128h107zm523-928q0-22-22-22-10 0-17 7l-542 542q-7 7-7 17 0 22 22 22 10 0 17-7l542-542q7-7 7-17zm-54-192l416 416-832 832h-416v-416zm683 96q0 53-37 90l-166 166-416-416 166-165q36-38 90-38 53 0 91 38l235 234q37 39 37 91z"></path>
+                    </symbol>
+                    <symbol id="arrow_d" viewBox="0 0 1792 1792">
+                      <path d="M1395 736q0 13-10 23l-466 466q-10 10-23 10t-23-10l-466-466q-10-10-10-23t10-23l50-50q10-10 23-10t23 10l393 393 393-393q10-10 23-10t23 10l50 50q10 10 10 23z"></path>
+                    </symbol>
+                  </defs>
+                </svg>
+                <div class="wrapper">
+                  <div class="wrap">
+                    <div class="user-avatar">
+                      <img src="{{selectedUser.image}}" alt="Avatar">
+                    </div>
+                    <a title="Cambiar">Cambiar</a>
+                  </div>
+                  <div class="contacts">
+                    <p class="title">
+                      <a title="Editar" class="edit-open">{{selectedUser.firstName + ' ' + selectedUser.lastName}}
+                        <span (click)="editUser()" class="icon icon__mod">
+                          <svg>
+                            <use href="#pencil" width="19" height="19"></use>
+                          </svg>
+                        </span>
+                      </a>
+                    </p>
+                    <p class="status">{{selectedUser.role}}</p>
+                    <p class="phone-number1">
+                      <span class="icon icon-tel">{{selectedUser.fix}}</span>
+                    </p>
+                    <p class="phone-number2">
+                      <span class="icon icon-smartphone"></span>{{selectedUser.portable}}</p>
+                    <p class="email">
+                      <span class="icon icon-mail"></span>{{selectedUser.login}}</p>
+                  </div>
+                </div>
+                <a (click)="editUser()" title="Mostras detalles" class="details">Mostras detalles
+                  <span class="icon">
+                    <svg>
+                      <use href="#arrow_d" width="13" height="13" x="0" y="0"></use>
+                    </svg>
+                  </span>
+                </a>
+                <p class="delete-user">
+                  <a  (click)="deleteUser()" title="Eliminar este usuario" class="colored textcol-red">Eliminar este usuario</a>
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <app-footer></app-footer>
+  </div>
+</section>

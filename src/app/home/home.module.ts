@@ -7,13 +7,23 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
+import { CandidatComponent } from './candidat/candidat.component';
+import { RouterModule } from '@angular/router';
+import { FormSubmittedComponent } from './form-submitted/form-submitted.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  declarations: [LoginComponent, HomeComponent, RegisterComponent, HeaderComponent, FooterComponent]
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        RouterModule
+    ],
+    declarations: [LoginComponent,
+        HomeComponent,
+        RegisterComponent,
+        HeaderComponent,
+        FooterComponent,
+        CandidatComponent,
+        FormSubmittedComponent]
 })
 export class HomeModule { }

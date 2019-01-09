@@ -1,0 +1,59 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+    <div class="dash-content">
+      <div class="block-inner">
+        <div class="task-wrapper">
+          <section class="panel-menu">
+            <ul>
+              <li>
+                <a class="active" routerLink="/models">Plantillas</a>
+              </li>
+              <li>
+                <a class="" routerLink="/documents">Documentos</a>
+              </li>
+            </ul>
+          </section>
+          <form class="build-template-form">
+            <div class="mail-wrapper">
+              <div class="mail-header">
+                <input type="file" name="file" id="file" class="inputfile" multiple=""  (change)="detectFiles($event)" [(ngModel)]="modelFiles">
+                <label for="file">Adjuntar archivos</label>
+                <div class="btn-group">
+                  <a class="btn btn-sc__blue" href="/app/crm/comunicaciones/plantillas" (click)="cancel()">Cancelar</a>
+                  <a title="Vista previa" class="btn btn-sc__blue" (click)="preview()">Vista previa</a>
+                  <button type="submit" title="Guardar" class="btn btn-confirm__small" (click)="save()" >Guardar</button>
+                </div>
+              </div>
+              <div class="mail-content">
+                <div class="top-content">
+                  <div class="left-column">
+                    <input type="text" name="modelName" autocomplete="off" placeholder="Nombre de la plantilla" value="" [(ngModel)]="modelName"   >
+                    <input type="text" name="modelSubject" autocomplete="off" placeholder="Asunto" value="" [(ngModel)]="modelSubject">
+                  </div>
+                  <div class="right-column">
+                    <input type="text" name="modelDescription" autocomplete="off" placeholder="Descripción" value="" [(ngModel)]="modelDescription">
+                    <select #metaDataSelector>
+                      <option value="0">- Elija metadatos--</option>
+                      <option value="email">Email</option>
+                      <option value="name">Nombre</option>
+                      <option value="passwordLink">Enlace de contraseña</option>
+                      <option value="securityToken">Token de seguridad</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="bottom-content">
+                  <ckeditor [editor]="editor" (change)="editorChange($event)" data=""></ckeditor>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</section>

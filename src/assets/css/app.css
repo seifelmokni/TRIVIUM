@@ -8,6 +8,9 @@
   max-width:1165px;
   width:100%
 }
+a {
+    cursor: pointer;
+}
 .block .block-inner h1.unauthorized-view{
   text-align: center;
 }
@@ -2804,7 +2807,7 @@ div.admissions .block-inner{
   margin-left: 0;
 }
 .form-center form .two-col span a{
-  margin-right: 6px;
+  margin-right: 8px;
   cursor: pointer;
 }
 .form-center form .two-col select{
@@ -3036,7 +3039,7 @@ div.admissions .block-inner{
     text-align:center;
     color:#00577f;
     text-transform:uppercase;
-    font-size:10px;
+    font-size:26px;
     font-weight:700;
     padding:11px 0;
     border-right:none
@@ -3350,3 +3353,7 @@ div.admissions .block-inner{
   width: 97px;
 }
 
+
+.bottom-content .ck-editor__editable {
+    min-height: 300px;
+}

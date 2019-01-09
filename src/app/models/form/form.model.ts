@@ -1,12 +1,21 @@
-export class Form {
-    public creatorId: string;
-    public formComposition: Array<{id: number , type: string}> = [];
-    public creationTimestamp: string;
+import { Page } from '../page/page.model';
 
-    constructor(creator: string, composition: Array<{id: number , type: string}>, timestamp) {
+export class Form extends Object {
+    formId: string;
+    public creatorId: string;
+    public pages: Array<Page> = [];
+    public creationTimestamp: string;
+    public title: string;
+    public modelToSendId: string;
+    public isRegisterFormPriority: string;
+
+    constructor(creator: string, composition: Array<Page>, timestamp: string, title: string) {
+        super();
+
         this.creatorId = creator;
-        this.formComposition = composition;
+        this.pages = composition;
         this.creationTimestamp = timestamp;
+        this.title = title;
     }
 
 }

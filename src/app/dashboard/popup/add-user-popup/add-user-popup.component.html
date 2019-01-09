@@ -1,0 +1,65 @@
+<div mat-dialog-content class="ReactModal__Content ReactModal__Content--after-open" tabindex="-1" role="dialog" style="position: absolute; top: 10%; left: 32%; right: auto; bottom: auto; border: 1px solid rgb(204, 204, 204); background: rgb(255, 255, 255); overflow: auto; border-radius: 4px; outline: none; padding: 20px; margin-right: -50%; width: 36%; height: 80%;">
+  <div class="search-block">
+    <input type="search" autocomplete="off" placeholder="Buscar usuario por correo electrónico o DNI / NIF / Pasaporte" value="">
+  </div>
+  <form class="user-details" >
+    <span class="users-title">
+      <strong>Información</strong>
+    </span>
+    <div class="info-block">
+      <label for="1528439029837">Nombre</label>
+      <input type="text" id="1528439029837" name="nombre" autocomplete="off" [(ngModel)]="user.firstName">
+    </div>
+    <div class="info-block">
+      <label for="1528439042443">Apellido</label>
+      <input type="text" id="1528439042443" name="primerApellido" autocomplete="off" [(ngModel)]="user.lastName">
+    </div>
+    <div class="info-block">
+      <label for="name">Permisos</label>
+      <select>
+        <option value="-1">Sin autorización</option>
+        <option value="5b661a35564dd748249962fa">Super Administrador</option>
+        <option value="5bc6eb42eb6a1239b43f091e">Entrevistador</option>
+      </select>
+    </div>
+    <div class="info-block">
+      <label for="1528505103639">Fecha de nacimiento</label>
+      <input type="date" id="1528505103639" name="fechaNacimiento" autocomplete="off" [(ngModel)]="user.birthDate">
+    </div>
+    <span class="users-title">
+      <strong>Contacto</strong>
+    </span>
+    <div class="info-block">
+      <label for="1528505182616">Teléfono móvil</label>
+      <input type="tel" id="1528505182616" name="telefonoMovil" autocomplete="off" [(ngModel)]="user.portable">
+    </div>
+    <div class="info-block">
+      <label for="1528504983394">Teléfono ﬁjo</label>
+      <input type="tel" id="1528504983394" name="telefonoFijo" autocomplete="off" [(ngModel)]="user.fix">
+    </div>
+    <div class="info-block">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" autocomplete="off" required="" [(ngModel)]="user.login">
+    </div>
+    <div class="info-block">
+      <label for="1528695926670">Calle</label>
+      <input type="text" id="1528695926670" name="nombreDeLaVia" autocomplete="off" [(ngModel)]="user.street">
+    </div>
+    <div class="info-block">
+      <label for="1528696186917">Población</label>
+      <input type="text" id="1528696186917" name="poblacion" autocomplete="off" [(ngModel)]="user.city">
+    </div>
+    <div class="info-block">
+      <label for="1528696079932">Código postal</label>
+      <input type="text" id="1528696079932" name="codigoPostal" autocomplete="off" [(ngModel)]="user.zipcode">
+    </div>
+    <div class="info-block">
+      <label for="1528696135049">País</label>
+      <input type="text" id="1528696135049" name="pais" autocomplete="off" [(ngModel)]="user.country">
+    </div>
+    <div class="action-btns">
+      <button type="button" class="close" mat-button (click)="onNoClick()" >Cerrar</button>
+      <button type="submit" class="save" mat-button [mat-dialog-close]="user" >Guardar</button>
+    </div>
+  </form>
+</div>

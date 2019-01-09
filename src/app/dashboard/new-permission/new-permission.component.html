@@ -1,0 +1,450 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+    <div class="dash-content users-page">
+      <div class="block-inner">
+        <div class="task-wrapper">
+          <section class="panel-menu">
+            <ul>
+              <li>
+                <a class="" href="/app/crm/usuarios">Usuarios</a>
+              </li>
+              <li>
+                <a class="active" href="/app/crm/permisos">Permisos</a>
+              </li>
+            </ul>
+          </section>
+          <section class="permissions-view">
+            <svg class="svg-sprite" style="display: none;">
+              <defs>
+                <symbol id="arrow_d" viewBox="0 0 1792 1792">
+                  <path d="M1395 736q0 13-10 23l-466 466q-10 10-23 10t-23-10l-466-466q-10-10-10-23t10-23l50-50q10-10 23-10t23 10l393 393 393-393q10-10 23-10t23 10l50 50q10 10 10 23z"></path>
+                </symbol>
+              </defs>
+            </svg>
+            <div class="permissions-set-header">
+              <a href="/app/crm/permisos">
+                <span class="icon icon-back"></span>
+              </a>
+              <span class="permissions-title">Agregar permiso</span>
+              <div class="btn-group">
+                <button class="btn btn-confirm" (click)="savePermission()">Guardar</button>
+              </div>
+            </div>
+            <div class="permissions-set-panel">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Permiso Nombre</td>
+                    <td>
+                      <input #profileName type="text" name="permission-name" autocomplete="off" value="">
+                    </td>
+                    <td width="332px"></td>
+                  </tr>
+                  <tr>
+                    <td>Descripción del permiso</td>
+                    <td>
+                      <textarea #description type="text" autocomplete="off"></textarea>
+                    </td>
+                    <td width="332px"></td>
+                  </tr>
+                  <tr>
+                    <td>Desarrollador</td>
+                    <td (click)="activateAccess('dev')">
+
+                      <div *ngIf="dev" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(1, 124, 66);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;">ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;">OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 33px;"></div>
+                        </div>
+                        <input type="checkbox" value="true" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+                      <div *ngIf="!dev" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(65, 66, 68);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                            >ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                            >OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 1px;"></div>
+                        </div>
+                        <input type="checkbox" value="false" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+
+
+                    </td>
+                    <td width="332px">
+                      <div class="dropdown-block" [ngStyle]="{'display': dev ? 'block' : 'none'}">
+                        <a class="dropdown-toggler">Vista, Crear, Editar, Eliminar
+                          <span class="icon">
+                            <svg>
+                              <use href="#arrow_d" width="13" height="13" x="0" y="0"></use>
+                            </svg>
+                          </span>
+                        </a>
+                        <div class="dropdown-content">
+                          <ul>
+                            <li>
+                              <input type="checkbox" disabled="" id="vista" value="vista" checked="">
+                              <label for="vista">Vista</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="crear" value="crear" checked="">
+                              <label for="crear">Crear</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="editar" value="editar" checked="">
+                              <label for="editar">Editar</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="eliminar" value="eliminar" checked="">
+                              <label for="eliminar">Eliminar</label>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Inicio</td>
+                    <td (click)="activateAccess('welcome')">
+
+                      <div *ngIf="welcome" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(1, 124, 66);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;">ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;">OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 33px;"></div>
+                        </div>
+                        <input type="checkbox" value="true" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+                      <div *ngIf="!welcome" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(65, 66, 68);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                            >ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                            >OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 1px;"></div>
+                        </div>
+                        <input type="checkbox" value="false" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+                    </td>
+                    <td width="332px">
+                      <div class="dropdown-block" [ngStyle]="{'display': welcome ? 'block' : 'none'}">
+                        <a class="dropdown-toggler">Vista, Crear, Editar, Eliminar
+                          <span class="icon">
+                            <svg>
+                              <use href="#arrow_d" width="13" height="13" x="0" y="0"></use>
+                            </svg>
+                          </span>
+                        </a>
+                        <div class="dropdown-content">
+                          <ul>
+                            <li>
+                              <input type="checkbox" disabled="" id="vista" value="vista" checked="">
+                              <label for="vista">Vista</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="crear" value="crear" checked="">
+                              <label for="crear">Crear</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="editar" value="editar" checked="">
+                              <label for="editar">Editar</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="eliminar" value="eliminar" checked="">
+                              <label for="eliminar">Eliminar</label>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Admisiones</td>
+                    <td (click)="activateAccess('admission')">
+
+                      <div *ngIf="addmission" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(1, 124, 66);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;">ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;">OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 33px;"></div>
+                        </div>
+                        <input type="checkbox" value="true" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+                      <div *ngIf="!addmission" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(65, 66, 68);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                            >ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                            >OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 1px;"></div>
+                        </div>
+                        <input type="checkbox" value="false" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+
+                    </td>
+                    <td width="332px">
+                      <div class="dropdown-block" [ngStyle]="{'display': addmission ? 'block' : 'none'}">
+                        <a class="dropdown-toggler">Vista, Crear, Editar, Eliminar
+                          <span class="icon">
+                            <svg>
+                              <use href="#arrow_d" width="13" height="13" x="0" y="0"></use>
+                            </svg>
+                          </span>
+                        </a>
+                        <div class="dropdown-content">
+                          <ul>
+                            <li>
+                              <input type="checkbox" disabled="" id="vista" value="vista" checked="">
+                              <label for="vista">Vista</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="crear" value="crear" checked="">
+                              <label for="crear">Crear</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="editar" value="editar" checked="">
+                              <label for="editar">Editar</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="eliminar" value="eliminar" checked="">
+                              <label for="eliminar">Eliminar</label>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Residentes</td>
+                    <td (click)="activateAccess('resident')">
+
+                      <div *ngIf="resident" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(1, 124, 66);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;">ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;">OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 33px;"></div>
+                        </div>
+                        <input type="checkbox" value="true" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+                      <div *ngIf="!resident" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(65, 66, 68);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                           >ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                            >OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 1px;"></div>
+                        </div>
+                        <input type="checkbox" value="false" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+                    </td>
+                    <td width="332px">
+                      <div class="dropdown-block" [ngStyle]="{'display': resident ? 'block' : 'none'}">
+                        <a class="dropdown-toggler">Vista, Crear, Editar, Eliminar
+                          <span class="icon">
+                            <svg>
+                              <use href="#arrow_d" width="13" height="13" x="0" y="0"></use>
+                            </svg>
+                          </span>
+                        </a>
+                        <div class="dropdown-content">
+                          <ul>
+                            <li>
+                              <input type="checkbox" disabled="" id="vista" value="vista" checked="">
+                              <label for="vista">Vista</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="crear" value="crear" checked="">
+                              <label for="crear">Crear</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="editar" value="editar" checked="">
+                              <label for="editar">Editar</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="eliminar" value="eliminar" checked="">
+                              <label for="eliminar">Eliminar</label>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Usuarios</td>
+                    <td (click)="activateAccess('user')">
+
+                      <div *ngIf="user" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(1, 124, 66);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;">ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;">OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 33px;"></div>
+                        </div>
+                        <input type="checkbox" value="true" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+                      <div *ngIf="!user" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(65, 66, 68);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                            >ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                           >OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 1px;"></div>
+                        </div>
+                        <input type="checkbox" value="false" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+
+                    </td>
+                    <td width="332px">
+                      <div class="dropdown-block" [ngStyle]="{'display': user ? 'block' : 'none'}">
+                        <a class="dropdown-toggler">Vista, Crear, Editar, Eliminar
+                          <span class="icon">
+                            <svg>
+                              <use href="#arrow_d" width="13" height="13" x="0" y="0"></use>
+                            </svg>
+                          </span>
+                        </a>
+                        <div class="dropdown-content">
+                          <ul>
+                            <li>
+                              <input type="checkbox" disabled="" id="vista" value="vista" checked="">
+                              <label for="vista">Vista</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="crear" value="crear" checked="">
+                              <label for="crear">Crear</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="editar" value="editar" checked="">
+                              <label for="editar">Editar</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="eliminar" value="eliminar" checked="">
+                              <label for="eliminar">Eliminar</label>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Comunicaciones</td>
+                    <td (click)="activateAccess('communication')"> 
+
+                      <div *ngIf="communication" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(1, 124, 66);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'tica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;">ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;">OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 33px;"></div>
+                        </div>
+                        <input type="checkbox" value="true" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+                      <div *ngIf="!communication" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                        <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(65, 66, 68);">
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                            >ON</div>
+                          <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                           >OFF</div>
+                        </div>
+                        <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                          <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 1px;"></div>
+                        </div>
+                        <input type="checkbox" value="false" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                      </div>
+
+
+                    </td>
+                    <td width="332px">
+                      <div class="dropdown-block" [ngStyle]="{'display': communication ? 'block' : 'none'}">
+                        <a class="dropdown-toggler">Vista, Crear, Editar, Eliminar
+                          <span class="icon">
+                            <svg>
+                              <use href="#arrow_d" width="13" height="13" x="0" y="0"></use>
+                            </svg>
+                          </span>
+                        </a>
+                        <div class="dropdown-content">
+                          <ul>
+                            <li>
+                              <input type="checkbox" disabled="" id="vista" value="vista" checked="">
+                              <label for="vista">Vista</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="crear" value="crear" checked="">
+                              <label for="crear">Crear</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="editar" value="editar" checked="">
+                              <label for="editar">Editar</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="eliminar" value="eliminar" checked="">
+                              <label for="eliminar">Eliminar</label>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Mostrar en la lista de usuarios</td>
+                    <td>
+                      <input type="checkbox" #showInUserList>
+                    </td>
+                    <td width="332px"></td>
+                  </tr>
+                  <tr>
+                    <td>Superadministrador ?</td>
+                    <td>
+                      <input type="checkbox" #isSuperAdmin>
+                    </td>
+                    <td width="332px"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+
+    <app-footer></app-footer>
+  </div>
+</section>
