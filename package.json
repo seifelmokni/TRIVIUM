@@ -7,8 +7,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "heroku-postbuild": "ng build --aot --target=production"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -39,7 +38,7 @@
     "zone.js": "~0.8.26"
   },
   "engines": {
-    "node": "6.11.0",
+    "node": "8.11.3",
     "npm": "3.10.10"
   },
   "devDependencies": {
