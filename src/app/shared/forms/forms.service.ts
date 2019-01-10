@@ -37,6 +37,10 @@ export class FormsService {
         return this.db.collection('forms').add(form);
     }
 
+    update(form: Form) {
+        return this.db.doc('forms/' + form.formId).update(form);
+    }
+
     getSelectedForm(): Form {
         return this.selectedForm;
     }

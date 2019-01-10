@@ -51,7 +51,7 @@ export class CandidatComponent implements OnInit {
                         console.log('form');
                         console.log(this.forms[i]);
                         if (this.forms[i].isRegisterFormPriority !== undefined) {
-                            if (priority < new Date(this.forms[i].isRegisterFormPriority)) {
+                            if (priority < new Date(this.forms[i].isRegisterFormPriority) || priority === undefined) {
                                 priority = new Date(this.forms[i].isRegisterFormPriority);
                                 selectedForm = this.forms[i];
                             }
@@ -152,7 +152,7 @@ export class CandidatComponent implements OnInit {
                     '<div>';
                 for (let i = 0; i < values.length; i++) {
                     div += '<p>' +
-                        '<input type="radio" name="checkbox" id="fc' + this.elementCounter + '-1" ' +
+                        '<input type="radio" name="checkbox" id="fc' + this.elementCounter + '-' + i + '" ' +
                         ' value="checkbox 1"><label for="radio1">' + values[i] + '</label>' +
                         '</p>';
                 }
@@ -175,7 +175,7 @@ export class CandidatComponent implements OnInit {
                     '<div>';
                 for (let i = 0; i < values.length; i++) {
                     div += '<p>' +
-                        '<input type="checkbox" name="checkbox" id="fc' + this.elementCounter + '-1" ' +
+                        '<input type="checkbox" name="checkbox" id="fc' + this.elementCounter + '-' + i + '" ' +
                         ' value="checkbox 1"><label for="radio1">' + values[i] + '</label>' +
                         '</p>';
                 }
@@ -362,6 +362,8 @@ export class CandidatComponent implements OnInit {
                     }
                     case 'radio': {
 
+                        
+
                         break;
                     }
                     case 'image': {
@@ -458,14 +460,14 @@ export class CandidatComponent implements OnInit {
             //     }
             // );
             this.candidateService.saveCandidate(this.candidate).then(docRef => {
-                console.log((docRef) ? (<DocumentReference>docRef).id : 'void') // docRef of type void | DocumentReference
+                console.log((docRef) ? (<DocumentReference>docRef).id : 'void'); // docRef of type void | DocumentReference
                 this.candidateResponse.candidateId = docRef.id;
                 this.responseService.saveResponse(this.candidateResponse).then(
                     () => {
                         console.log('response saved');
                         this.router.navigate(['/candutureSubmitted']);
                     }
-                )
+                );
             });
         }
     }
