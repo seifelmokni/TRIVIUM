@@ -1,0 +1,21 @@
+h3 {
+  margin: 0 0 10px;
+}
+
+pre {
+  background-color: #f5f5f5;
+  padding: 15px;
+}
+
+.cal-day-selected, .cal-day-selected:hover {
+  background-color: blue !important;
+}
+.cal-day-disabled, .cal-day-disabled:hover {
+      background-color: #e8e8e8 !important;
+}
+.cal-day-full-booked, .cal-day-full-booked:hover {
+      background-color: #C01111 !important;
+}
+.cal-day-part-booked, .cal-day-part-booked:hover {
+      background-color: yellow !important;
+}

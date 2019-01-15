@@ -40,6 +40,9 @@ export class FormsService {
     update(form: Form) {
         return this.db.doc('forms/' + form.formId).update(form);
     }
+    delete(form: Form) {
+        return this.db.doc('forms/' + form.formId).delete();
+    }
 
     getSelectedForm(): Form {
         return this.selectedForm;

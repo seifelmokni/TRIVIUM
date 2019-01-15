@@ -20,6 +20,8 @@ import { AdmissionsComponent } from '../dashboard/admissions/admissions.componen
 import { ResidentsComponent } from '../dashboard/residents/residents.component';
 import { CandidateDetailsComponent } from '../dashboard/candidate-details/candidate-details.component';
 import { CandidateEntreviewComponent } from '../dashboard/candidate-entreview/candidate-entreview.component';
+import { ConfigurationComponent } from '../dashboard/configuration/configuration.component';
+import { CalendarComponent } from '../dashboard/calendar/calendar.component';
 
 
 
@@ -43,7 +45,9 @@ const appRoutes: Routes = [
     { path: 'admissions', component: AdmissionsComponent },
     { path: 'residents', component: ResidentsComponent },
     { path: 'candidateDetails' , component: CandidateDetailsComponent},
-    { path: 'intreview' , component: CandidateEntreviewComponent}
+    { path: 'intreview' , component: CandidateEntreviewComponent},
+    { path: 'configuation' , component: ConfigurationComponent},
+    { path: 'calendar' , component: CalendarComponent}
 ];
 
 

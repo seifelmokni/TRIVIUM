@@ -51,7 +51,7 @@ export class CandidateDetailsComponent implements OnInit {
                     console.log('update done');
                     this.goBack();
                 }
-            )
+            );
     }
     goBack() {
         this.router.navigate(['admissions']);

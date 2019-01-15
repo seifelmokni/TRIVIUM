@@ -2,7 +2,7 @@
 <section class="site-wrapper">
   <div class="block block-dash">
     <app-header></app-header>
-    <app-nav [searchEnabled]="false" [reloadEnabled]="false"></app-nav>
+    <app-nav [navigationEnabled]="true" [searchEnabled]="false" [reloadEnabled]="false"></app-nav>
 
     <div class="dash-content">
       <div class="block-inner">
@@ -15,6 +15,11 @@
               <li draggable="true" style="opacity: 1" (dragstart)="drag($event , 'single_line')">
                 <div class="btn-plug">
                   <span class="far fa-1x fa-file-alt"></span> Single Line
+                </div>
+              </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event , 'password')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-key"></span> Password
                 </div>
               </li>
               <li draggable="true" style="opacity: 1" (dragstart)="drag($event , 'phone')">
@@ -88,20 +93,32 @@
                 <div class="btn-plug">
                   <span class="fas fa-1x fa-percent"></span> Percent</div>
               </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'white_space')">
+                <div class="btn-plug">
+                  <span class="fas fa-1x fa-text-height"></span> White Space</div>
+              </li>
             </ul>
           </div>
           <div class="form-center">
             <div class="form-title">
-              <div class="wrapper">
-                <span [ngStyle]="{'display': !editFormTitleEnabled ? 'inline-block' : 'none'}" #formTitleContainer>Entrevista</span>
-                <input type="text" class="stepname" [ngStyle]="{'display': editFormTitleEnabled ? 'inline-block' : 'none'}" #formNameInput
-                  (blur)="editFormName()" />
-                <a href="javascript:void(0)">
-                  <span class="icon icon-pencil" (click)="editFormName()"></span>
-                </a>
-              </div>
+                <div class="wrapper">
+                    <span [ngStyle]="{'display': !editFormTitleEnabled ? 'inline-block' : 'none'}" #formTitleContainer>
+                      {{pages[pageIndex] !== undefined ? pages[pageIndex].pageTitle : 'step '+ (pageIndex +1)}}
+                    </span>
+                    <input type="text" 
+                    class="stepname" 
+                    [ngStyle]="{'display': editFormTitleEnabled ? 'inline-block' : 'none'}" 
+                    #formNameInput
+                      (blur)="editFormName()" 
+                      (keyup)="editFormNameChanged($event.keyUp)"
+                      [value]="pages[pageIndex] !== undefined ? pages[pageIndex].pageTitle : 'step '+ (pageIndex +1)"
+                      />
+                    <a href="javascript:void(0)">
+                      <span class="icon icon-pencil" (click)="editFormName()"></span>
+                    </a>
+                  </div>
               <div class="btn-group">
-                <a href="" class="btn">
+                <a (click)="previewForm()" class="btn">
                   <span class="icon icon-eye"></span>
                 </a>
                 <a href="javascript:void(0)" class="btn">
@@ -111,7 +128,7 @@
                   <span class="icon icon-delete"></span>
                 </a>
                 <ul class="step-dropdown">
-                  <li class="dropdown-block dropdown-open">
+                  <li class="dropdown-block">
                     <a class="dropdown-toggler" title="Ver listado de todas las páginas del formulario">
                       <span class="icon icon-menu"></span>
                     </a>
@@ -129,15 +146,21 @@
                 <em>Este es un nuevo paso. Comience a agregar elementos de formulario</em>
               </div>
               <div class="wrapper">
-                <div class="left-col col" #left_container (drop)="drop($event , 1 )" (dragover)="allowDrag($event)">
+                <div class="left-col col" #left_container (drop)="drop($event , 1 )" (dragover)="allowDrag($event)" dragula="elemnts" (dragulaModelChange)="orderChanged($event)">
 
                 </div>
-                <div class="right-col col" #right_container (drop)="drop($event , 2 )" (dragover)="allowDrag($event)">
+                <div class="right-col col" #right_container (drop)="drop($event , 2 )" (dragover)="allowDrag($event)" dragula="elemnts" (dragulaModelChange)="orderChanged($event)">
 
                 </div>
+
               </div>
 
+
             </form>
+            <div class="btn-group " style="display: flex; float: right; margin-right: 95px; margin-top: 5px; margin-bottom: 5px;">
+              <a (click)="selectButton('back')" class="btn btn-sc" href="javascript:void(0)" style="width: 165px; margin-right: 5px;">Atrás</a>
+              <a (click)="selectButton('next')" class="btn btn-confirm" href="javascript:void(0)" style="width: 165px">Siguiente</a>
+            </div>
             <div class="btn-group btn__mod">
               <a (click)="saveForm()" style="cursor: pointer" class="btn btn-confirm">Guardar</a>
             </div>
@@ -145,216 +168,239 @@
 
 
           <div class="form-right">
-            <div class="form-title">
-              <span [ngClass]="{'active': !propertyTabShown , 'inactive': propertyTabShown}" [ngStyle]="{'cursor': propertyTabShown ? 'pointer' : 'auto'}">
-                <a (click)="propertyTabShown = false;">Propiedades del Formulario</a>
-              </span>
-              <span [ngClass]="{'active': propertyTabShown , 'inactive': !propertyTabShown}" [ngStyle]="{'cursor': !propertyTabShown ? 'pointer' : 'auto'}">
-                <a (click)="propertyTabShown = true;">Propiedades del Campo</a>
-              </span>
-            </div>
-            <form *ngIf="!propertyTabShown">
-              <div>
-                <div class="valid-right">
-                  <label class="label-gray">Opciones de correo electrónico</label>
-                  <div>
-                    <small>
-                      <em>Seleccione el correo electrónico que se enviará al enviar el formulario. Para editar, haga clic aqui</em>
-                    </small>
-                    <select class="email-list"  #modelSelector>
-                      <option value="-1">--por favor, elija--</option>
-                      <option value="{{ item.modelId }}" *ngFor="let  item of models">{{ item.name }}</option>
-                    </select>
-                  </div>
+              <!--<div class="form-title">
+                <span class="active" style="width: 100% !important">
+                  <a>
+                      Propiedades de formulario
+                  </a>
+                </span>
+              </div>
+              <form novalidate="">
+                  <input type="text" name="formName" [(ngModel)]="formName" />
+              </form>-->
+
+              <div class="form-title">
+                  <!--<span [ngClass]="{'active': !propertyTabShown , 'inactive': propertyTabShown}" [ngStyle]="{'cursor': propertyTabShown ? 'pointer' : 'auto'}">
+                    <a (click)="propertyTabShown = false;">Propiedades del Formulario</a>
+                  </span> -->
+                  <span class="active" style="width: 100% !important">
+                    <a (click)="propertyTabShown = true;">Propiedades del Campo</a>
+                  </span>
+                </div>
+              
+              <form novalidate="" *ngIf="true">
+                <div *ngIf=" (selectedElementIndex !== -1 || shouldShowButtonActionSection)">
                   <div>
                     <div>
-                      <p>
-                        <input type="checkbox" id="registration-form" #isRegisterform>
-                        <label for="registration-form">Mostrar en la página de registro</label>
-                      </p>
+                        <div *ngIf="selectedElementIndex !== -1 && !shouldShowButtonActionSection">
+                      <label for="form-title">Nombre del campo</label>
+                      <input type="text" id="form-title" name="elementLabelTitle" [(ngModel)]="elementLabelTitle" autocomplete="off" value="" #labelTitleInput (blur)="editLabelTitle()">
+                      <label for="form-title">papel de los campos</label>
+                      <select #roleSelector (change)="setElementRole()">
+                        <option value="0">Seleccione un rol para el campo</option>
+                        <option value="lastname">Apellido</option>
+                        <option value="firstname">Nombre</option>
+                        <option value="college">Colegio</option>
+                        <option value="phone">Teléfono móvil</option>
+                        <option value="email">Email</option>
+                      </select>
+                      <br>
+  
+  
+                      
+                        <span>
+                          <input type="checkbox" id="required-field" #isFieldRequired (change)="makeFieldRequired()" name="requiredCheckedBoxIsChecked"
+                            [(ngModel)]="requiredCheckedBoxIsChecked">
+                          <label for="required-field">Campo obligatorio</label>
+                        </span>
+                        <span>
+                          <input type="checkbox" id="conditoned-field" #isFieldConditioned (change)="makeFieldCondition()" name="conditionCheckedBoxIsChecked"
+                            [(ngModel)]="conditionCheckedBoxIsChecked">
+                          <label for="conditoned-field">Campo condicionado</label>
+                        </span>
+                        <label for="info">Información</label>
+                        <textarea id="info"></textarea>
+                        
+  
+                        <div *ngIf="shoudlShowValueOptions">
+                          <label>opciones de campo </label>
+                          <small>ingrese cada opción en una línea</small>
+                          <textarea id="" name="optionsContent" [(ngModel)]="optionsContent" #valuesOptions (keyup)="changeValues($event.keyCode)"></textarea>
+                      
+                          <label> lista de colecciones </label>
+                          <select #collectionSelector (change)="collectionSelectorChanged()">
+                              <option value="-1">seleccione una colección</option>
+                              <option *ngFor="let item of collections" value="{{item.colectionId}}">{{item.collectionName}}</option>
+                          </select>
+                      </div>
+                      </div>
+                      <div *ngIf="shouldShowButtonActionSection">
+                          
+                          <div class="valid-right">
+                            <label class="label-gray">Opciones de correo electrónico</label>
+                            <div>
+                              <small>
+                                <em>Seleccione el correo electrónico que se enviará al enviar el formulario. Para editar, haga clic aqui</em>
+                              </small>
+                              <select class="email-list" #modelSelector>
+                                <option value="-1">--por favor, elija--</option>
+                                <option value="{{ item.modelId }}" *ngFor="let  item of models">{{ item.name }}</option>
+                              </select>
+                            </div>
+                            <div>
+                              <div>
+                                <p>
+                                  <input type="checkbox" id="registration-form" #isRegisterform>
+                                  <label for="registration-form">Mostrar en la página de registro</label>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="valid-right conditions" *ngIf="elementCounter !== 0">
+                        <label class="label-gray">Condiciones</label>
+                        <span>
+                          <em>
+                            <strong>IGUALDAD*</strong>
+                          </em>
+                        </span>
+                        <div class="conditioned-fields">
+                          <input type="radio" name="conditionRAdioGroup" [(ngModel)]="conditionRAdioGroup" [value]="1" (change)="selectEqualField(1)">
+                          <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #equalDropField11 (change)="loadDropDownValue(1)">
+                            <option *ngIf="selectTypeElements.length !==0" value="-1">Select element</option>
+                            <option *ngFor="let item of selectTypeElements" value="{{item.id}}">{{ item.labelTitle }}</option>
+                          </select>
+                          <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #equalDropField12>
+                            <option *ngIf="selectTypeValues.length !== 0" value="-1">Select</option>
+                            <option *ngFor="let c of selectTypeValues" value="{{c}}">{{ c }}</option>
+                          </select>
+                        </div>
+                        <div class="conditioned-fields">
+                          <input type="radio" name="conditionRAdioGroup" (change)="selectEqualField(2)" [(ngModel)]="conditionRAdioGroup" [value]="2">
+                          <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #equalDropField21>
+                            <option *ngFor="let item of textTypeElements" value="{{item.id}}">{{ item.labelTitle }}</option>
+                          </select>
+                          <input type="text" placeholder="Texto" #equalDropField22>
+                        </div>
+                        <div class="conditioned-fields">
+                          <input type="radio" name="conditionRAdioGroup" (change)="selectEqualField(3)" [(ngModel)]="conditionRAdioGroup" [value]="3">
+                          <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #equalDropField31>
+                            <option *ngFor="let item of oneOptionTypeElemnts" value="{{item.id}}">{{ item.labelTitle }}</option>
+                          </select>
+                          <p>
+                            <strong>Enabled</strong>
+                          </p>
+                        </div>
+                        <span>
+                          <em>
+                            <strong>DESIGUALDAD*</strong>
+                          </em>
+                        </span>
+                        <div class="conditioned-fields">
+                          <input type="radio" name="conditionRAdioGroup" (change)="selectNotEqualField(1)" [(ngModel)]="conditionRAdioGroup" [value]="-1">
+                          <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #notEqualDropField11 (change)="loadDropDownValue(2)">
+                            <option *ngIf="selectTypeElements.length !==0" value="-1">Select element</option>
+                            <option *ngFor="let item of selectTypeElements" value="{{item.id}}">{{ item.labelTitle }}</option>
+                          </select>
+                          <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #notEqualDropField12>
+                            <option *ngIf="selectTypeValuesNotEqual.length !== 0" value="-1">Select</option>
+                            <option *ngFor="let c of selectTypeValuesNotEqual" value="{{c}}">{{ c }}</option>
+                          </select>
+                        </div>
+                        <div class="conditioned-fields">
+                          <input type="radio" name="conditionRAdioGroup" (change)="selectNotEqualField(2)" [(ngModel)]="conditionRAdioGroup" [value]="-2">
+                          <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #notEqualDropField21>
+                            <option *ngFor="let item of textTypeElements" value="{{item.id}}">{{ item.labelTitle }}</option>
+                          </select>
+                          <input type="text" placeholder="Texto" #notEqualDropField22>
+                        </div>
+                        <div class="conditioned-fields">
+                          <input type="radio" name="conditionRAdioGroup" (change)="selectNotEqualField(3)" [(ngModel)]="conditionRAdioGroup" [value]="-3">
+                          <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #notEqualDropField31>
+                            <option *ngFor="let item of oneOptionTypeElemnts" value="{{item.id}}">{{ item.labelTitle }}</option>
+                          </select>
+                          <p>
+                            <strong>Enabled</strong>
+                          </p>
+                        </div>
+                        <span *ngIf="showActionSection">
+                          <em>
+                            <strong>ACCIONES*</strong>
+                          </em>
+                        </span>
+                        <div class="conditioned-fields" *ngIf="showActionSection && !shouldShowButtonActionSection">
+                          <input type="radio" name="actionRadioGroup" (change)="createCondition(1)" [(ngModel)]="actionRadioGroup" [value]="1">
+                          <!-- <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionMaskSelector>
+                            <option *ngFor="let c of conditionedFormCompotion" value="{{c.id}}">{{ c.labelTitle }}</option>
+                          </select> -->
+                          <p>
+                            <strong>Esconder</strong>
+                          </p>
+                        </div>
+                        <div class="conditioned-fields" *ngIf="showActionSection && !shouldShowButtonActionSection">
+                          <input type="radio" name="actionRadioGroup" (change)="createCondition(2)" [(ngModel)]="actionRadioGroup" [value]="2">
+                          <!-- <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionRequiredSelector>
+                            <option *ngFor="let c of conditionedFormCompotion" value="{{c.id}}">{{ c.labelTitle }}</option>
+                          </select> -->
+                          <p>
+                            <strong>Obligatorio</strong>
+                          </p>
+                        </div>
+                        <div class="conditioned-fields" *ngIf="showActionSection && !shouldShowButtonActionSection">
+                          <input type="radio" name="actionRadioGroup" (change)="createCondition(3)" [(ngModel)]="actionRadioGroup" [value]="3">
+                          <!-- <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionNotRequiredSelector>
+                            <option *ngFor="let c of conditionedFormCompotion" value="{{c.id}}">{{ c.labelTitle }}</option>
+                          </select> -->
+                          <p>
+                            <strong>No es obligatorio</strong>
+                          </p>
+                        </div>
+                        <small style="margin-bottom: 10px;" *ngIf="showActionSection && !shouldShowButtonActionSection">
+                          <strong>Valor de copia</strong>
+                        </small>
+                        <div class="conditioned-fields" *ngIf="showActionSection && !shouldShowButtonActionSection">
+                          <input type="radio" name="actionRadioGroup" [(ngModel)]="actionRadioGroup" (change)="createCondition(4)" [value]="4">
+                          <!-- <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionCopyValueFromSelector>
+                            <option *ngFor="let c of conditionedFormCompotion" value="{{c.id}}">{{ c.labelTitle }}</option>
+                          </select> -->
+                          <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionCopyValueToSelector>
+                            <option *ngFor="let c of conditionedFormCompotion" value="{{c.id}}">{{ c.labelTitle }}</option>
+                          </select>
+                        </div>
+                        <small style="margin-bottom: 10px;" *ngIf="showActionSection && !shouldShowButtonActionSection">
+                          <strong>Copia texto</strong>
+                        </small>
+                        <div class="conditioned-fields" *ngIf="showActionSection && !shouldShowButtonActionSection">
+                          <input type="radio" name="actionRadioGroup" [(ngModel)]="actionRadioGroup" (change)="createCondition(5)" [value]="5">
+                          <input type="text" placeholder="Texto" #actionCopyTextInput>
+                          <!-- <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionCopyTextToSelector>
+                            <option *ngFor="let c of conditionedFormCompotion" value="{{c.id}}">{{ c.labelTitle }}</option>
+                          </select> -->
+                        </div>
+                        <div *ngIf="shouldShowButtonActionSection">
+                          <small style="margin-bottom: 10px;" *ngIf="showActionSection && shouldShowButtonActionSection">
+                            <strong>Botón a la sección</strong>
+                          </small>
+                          <div class="conditioned-fields" *ngIf="showActionSection && shouldShowButtonActionSection">
+                            <input type="radio" name="actionRadioGroup" [(ngModel)]="actionRadioGroup" (change)="createCondition(6)" [value]="6">
+                            <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #jumpToPageSelector>
+                              <option value="0" *ngIf="pages.length === 0 ">step 1</option>
+                              <option *ngFor="let c of pages ; let i = index" value="{{ i }}">{{ c.pageTitle}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="btn-group btn__mod">
+                      <button class="btn btn-confirm" (click)="validateCondition()">Actualizar</button>
                     </div>
                   </div>
                 </div>
-                <div class="btn-group btn__mod">
-                  <button class="btn btn-confirm">Actualizar</button>
+                <div *ngIf="(!elementSelected || elementCounter == 0) && !shouldShowButtonActionSection">
+                  Sin Campo seleccionado
                 </div>
-              </div>
-            </form>
-            <form novalidate="" *ngIf="propertyTabShown">
-              <div *ngIf="elementCounter !== 0">
-                <div>
-                  <label for="form-title">Nombre del campo</label>
-                  <input type="text" id="form-title" autocomplete="off" value="" #labelTitleInput (blur)="editLabelTitle()">
-                  <label for="form-title">papel de los campos</label>
-                  <select #roleSelector (change)="setElementRole()">
-                    <option value="0">Seleccione un rol para el campo</option>
-                    <option value="lastname">Apellido</option>
-                    <option value="firstname">Nombre</option>
-                    <option value="college">Colegio</option>
-                    <option value="phone">Teléfono móvil</option>
-                    <option value="email">Email</option>
-                  </select>
-                  <br>
-
-                  <div>
-                    <span>
-                      <input type="checkbox" id="required-field"  #isFieldRequired (change)="makeFieldRequired()">
-                      <label for="required-field">Campo obligatorio</label>
-                    </span>
-                    <span>
-                      <input type="checkbox" id="conditoned-field" #isFieldConditioned  (change)="makeFieldCondition()" >
-                      <label for="conditoned-field">Campo condicionado</label>
-                    </span>
-                    <label for="info">Información</label>
-                    <textarea id="info"></textarea>
-
-                    <div *ngIf="shoudlShowValueOptions">
-                      <label>opciones de campo </label>
-                      <small>ingrese cada opción en una línea</small>
-                      <textarea id="" #valuesOptions (keyup)="changeValues($event.keyCode)"></textarea>
-
-
-
-                    </div>
-
-                    <div class="valid-right conditions">
-                      <label class="label-gray">Condiciones</label>
-                      <span>
-                        <em>
-                          <strong>IGUALDAD*</strong>
-                        </em>
-                      </span>
-                      <div class="conditioned-fields">
-                        <input type="radio" name="condition" [(ngModel)]="conditionRAdioGroup" [value]="1" (change)="selectEqualField(1)">
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #equalDropField11>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #equalDropField12>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                      </div>
-                      <div class="conditioned-fields">
-                        <input type="radio" name="condition" (change)="selectEqualField(2)" [(ngModel)]="conditionRAdioGroup" [value]="2">
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #equalDropField21>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                        <input type="text" placeholder="Texto" #equalDropField22>
-                      </div>
-                      <div class="conditioned-fields">
-                        <input type="radio" name="condition" (change)="selectEqualField(3)" [(ngModel)]="conditionRAdioGroup" [value]="3">
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #equalDropField31>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                        <p>
-                          <strong>Enabled</strong>
-                        </p>
-                      </div>
-                      <span>
-                        <em>
-                          <strong>DESIGUALDAD*</strong>
-                        </em>
-                      </span>
-                      <div class="conditioned-fields">
-                        <input type="radio" name="condition" (change)="selectNotEqualField(1)" [(ngModel)]="conditionRAdioGroup" [value]="-1">
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #notEqualDropField11>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #notEqualDropField12>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                      </div>
-                      <div class="conditioned-fields">
-                        <input type="radio" name="condition" (change)="selectNotEqualField(2)" [(ngModel)]="conditionRAdioGroup" [value]="-2">
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #notEqualDropField21>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                        <input type="text" placeholder="Texto" #notEqualDropField22>
-                      </div>
-                      <div class="conditioned-fields">
-                        <input type="radio" name="condition" (change)="selectNotEqualField(3)" [(ngModel)]="conditionRAdioGroup" [value]="-3">
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #notEqualDropField31>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                        <p>
-                          <strong>Enabled</strong>
-                        </p>
-                      </div>
-                      <span *ngIf="showActionSection">
-                        <em>
-                          <strong>ACCIONES*</strong>
-                        </em>
-                      </span>
-                      <div class="conditioned-fields" *ngIf="showActionSection">
-                        <input type="radio" name="action" (change)="createCondition(1)" [(ngModel)]="actionRadioGroup" [value]="1">
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionMaskSelector>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                        <p>
-                          <strong>Esconder</strong>
-                        </p>
-                      </div>
-                      <div class="conditioned-fields" *ngIf="showActionSection">
-                        <input type="radio" name="action" (change)="createCondition(2)" [(ngModel)]="actionRadioGroup" [value]="2">
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionRequiredSelector>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                        <p>
-                          <strong>Obligatorio</strong>
-                        </p>
-                      </div>
-                      <div class="conditioned-fields" *ngIf="showActionSection">
-                        <input type="radio" name="action" (change)="createCondition(3)" [(ngModel)]="actionRadioGroup" [value]="3">
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionNotRequiredSelector>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-
-                        </select>
-                        <p>
-                          <strong>No es obligatorio</strong>
-                        </p>
-                      </div>
-                      <small style="margin-bottom: 10px;" *ngIf="showActionSection">
-                        <strong>Valor de copia</strong>
-                      </small>
-                      <div class="conditioned-fields" *ngIf="showActionSection">
-                        <input type="radio" name="action" (change)="createCondition(4)">
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionCopyValueFromSelector>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionCopyValueToSelector>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                      </div>
-                      <small style="margin-bottom: 10px;" *ngIf="showActionSection">
-                        <strong>Copia texto</strong>
-                      </small>
-                      <div class="conditioned-fields" *ngIf="showActionSection">
-                        <input type="radio" name="action" (change)="createCondition(5)">
-                        <input type="text" placeholder="Texto" #actionCopyTextInput>
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;" #actionCopyTextToSelector>
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                      </div>
-                      <small style="margin-bottom: 10px;" *ngIf="showActionSection">
-                        <strong>Botón a la sección</strong>
-                      </small>
-                      <div class="conditioned-fields" *ngIf="showActionSection">
-                        <input type="radio" name="action" (change)="createCondition(6)">
-                        <select name="fields" style="border: 1px solid rgb(224, 224, 224); height: 29px; flex: 0 0 50%;">
-                          <option *ngFor="let c of formComposition" value="{{c.id}}">{{ c.labelTitle }}</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="btn-group btn__mod">
-                    <button class="btn btn-confirm" (click)="validateCondition()">Actualizar</button>
-                  </div>
-                </div>
-              </div>
-              <div *ngIf="!elementSelected || elementCounter == 0">
-                Sin Campo seleccionado
-              </div>
-            </form>
-          </div>
+              </form>
+            </div>
 
 
 

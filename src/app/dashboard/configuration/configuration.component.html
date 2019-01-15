@@ -1,0 +1,77 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+    <div class="dash-content users-page">
+      <div class="block-inner">
+        <div class="task-wrapper">
+          <section class="panel-menu">
+            <ul>
+              <li>
+                <a class="active" routerLink="/configuation">colecciones de datos</a>
+              </li>
+              <li>
+                <a class="" routerLink="/calendar" >calendario</a>
+              </li>
+            </ul>
+          </section>
+          <section class="users-view">
+            <div class="users-header">
+              <span class="users-title">campos de recopilación de datos</span>
+              <div class="btn-group">
+                <a (click)="createNewCollection(false)" title="Usuario nuevo" class="btn btn-confirm">+ nueva colección</a>
+              </div>
+            </div>
+            <div class="search-block">
+              <input type="search" placeholder="Buscar" value="">
+            </div>
+            <div class="form-center" style="width: 100% !important; margin: 5px 0px !important">
+
+              <form action="">
+
+                <div class="wrapper">
+                  <div class="left-col col" #leftContainer>
+
+
+
+
+                  </div>
+                  <div class="right-col col">
+                    <div [ngStyle]="{'display': showCreateNewCollectionPanel ? 'block' : 'none'}">
+                      <label for="options">Elegir
+                        <a title="Agregar opción" (click)="addCollectionItem()">
+                          <i class="fa fa-plus-square"></i>
+                        </a>
+                        <div class="react-csv-input">
+                          <label>Seleccione CSV para importar datos</label>
+                          <input class="csv-input" type="file" accept="text/csv" (change)="onFileSelect($event.target)">
+                        </div>
+                      </label>
+                      <ul #collectionItemContainer>
+                        <!-- <li id="ci-0">
+                          <input type="text" id="ci-input-0" value="" placeholer="entra en el elemento>" >
+                          <a title="Eliminar opción" id="ci-del-0">
+                            <i class="fa fa-minus-square"></i>
+                          </a>
+                        </li> -->
+                      </ul>
+                      <a (click)="validateCollection()" class="btn btn-confirm" style="margin-top: 10px">Guardar</a>
+                    </div>
+                  </div>
+
+                </div>
+
+
+              </form>
+
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <app-footer></app-footer>
+  </div>
+</section>

@@ -1,0 +1,22 @@
+.calendar-class{
+    font-size: 12px;
+    width: 600px;
+    margin-left: 45px;
+}
+.cal-day-cell{
+    width: 50px !important;
+    height: 50px !important;
+}
+
+.cal-day-selected, .cal-day-selected:hover {
+background-color: blue !important;
+}
+.cal-day-disabled, .cal-day-disabled:hover {
+    background-color: #e8e8e8 !important;
+}
+.cal-day-full-booked, .cal-day-full-booked:hover {
+    background-color: #C01111 !important;
+}
+.cal-day-part-booked, .cal-day-part-booked:hover {
+    background-color: yellow !important;
+}

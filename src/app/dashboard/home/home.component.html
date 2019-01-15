@@ -191,7 +191,7 @@
                   </ul>
                 </th>
               </tr>
-              <tr class="row-data">
+              <tr class="row-data" *ngFor="let item of eventsData">
                 <td class="edit">
                   <a href="/app/crm/inicio/interview/1541999026298">
                     <span class="icon">
@@ -209,7 +209,7 @@
                 <td class="">
                   <select class="assign-interviewer">
                     <option value="-1">Pendiente asignar</option>
-                    <option value="1">Guillermo&nbsp;Lorenzo</option>
+                    <option value="{{u.userID}}" *ngFor="let u of users" >{{u.firstName +' '+ u.lastName !== ' ' ? u.firstName +' '+ u.lastName : u.login}}</option>
                   </select>
                 </td>
               </tr>

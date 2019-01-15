@@ -7,6 +7,11 @@ import { AuthService } from '../../shared/auth/auth.service';
 import { Router } from '@angular/router';
 import { ModelsService } from '../../shared/models/models.service';
 import { Model } from '../../models/model/model.model';
+import { DragulaService } from 'ng2-dragula';
+import { Collection } from '../../models/collection/collection.model';
+import { ConfigurationService } from '../../shared/configuration/configuration.service';
+import { DiscardChangesPopupComponent } from '../popup/discard-changes-popup/discard-changes-popup.component';
+import { MatDialog } from '@angular/material';
 
 
 @Component({
@@ -47,8 +52,16 @@ export class DeveloperCreateFormComponent implements OnInit {
     @ViewChild('isRegisterform') isRegisterform: ElementRef;
     @ViewChild('isFieldRequired') isFieldRequired: ElementRef;
     @ViewChild('isFieldConditioned') isFieldConditioned: ElementRef;
-
+    @ViewChild('jumpToPageSelector') jumpToPageSelector: ElementRef;
+    @ViewChild('collectionSelector') collectionSelector: ElementRef;
+    formName = 'Entervista';
+    elementLabelTitle= '';
+    optionsContent;
     shoudlShowValueOptions = false;
+    conditionCheckedBoxIsChecked: Boolean = false;
+    requiredCheckedBoxIsChecked: Boolean = false;
+    fieldConditionChanged = false ; 
+    discardChangePopUpShowed = false;
 
     conditionRAdioGroup;
     actionRadioGroup;
@@ -59,12 +72,26 @@ export class DeveloperCreateFormComponent implements OnInit {
     elementSelected: Boolean = false;
 
     showActionSection: Boolean = false;
+    shouldShowButtonActionSection: Boolean = false;
+    buttonSelected: string;
     selectedElementIndex: number;
+    componentSelected: Element;
     formComposition: Array<Element>;
+    conditionedFormCompotion: Array<Element>;
+    selectTypeElements: Array<Element>;
+    selectTypeValues: Array<string>;
+    selectTypeValuesNotEqual: Array<string>;
+    textTypeElements: Array<Element>;
+    oneOptionTypeElemnts: Array<Element>;
     pages: Array<Page>;
+    pagesIndex: Array<number>;
 
     form: Form;
     pageIndex = 0;
+    pageTitleTemp:string = undefined;
+
+    collections: Collection[];
+    selectedCollection: Collection;
 
     conditions: Array<{
         conditionType: string,
@@ -83,24 +110,58 @@ export class DeveloperCreateFormComponent implements OnInit {
         private formService: FormsService,
         private authService: AuthService,
         private modelService: ModelsService,
-        private router: Router) { }
+        private configService: ConfigurationService,
+        private dragulaService: DragulaService,
+        private router: Router,
+        public dialog: MatDialog) { }
 
     ngOnInit() {
         this.formComposition = [];
         this.pages = [];
         this.conditions = [];
+        this.conditionedFormCompotion = [];
+        this.selectTypeElements = [];
+        this.textTypeElements = [];
+        this.oneOptionTypeElemnts = [];
+        this.selectedElementIndex = -1;
+        this.selectTypeValues = [];
+        this.selectTypeValuesNotEqual = [];
+        this.pagesIndex = [1];
+        this.dragulaService.drop('elemnts').subscribe(({ name, el, target, source, sibling }) => {
+            // ...
+            console.log('dragula drop event');
+            console.log(el.id);
+            console.log(el.parentElement.className);
+            console.log('siblings');
+            console.log(sibling);
+            this.orderChanged(el,
+                el.parentElement.className === 'left-col col' ? 'LEFT' : 'RIGHT',
+                sibling);
+        });
+
         this.modelService.listModels().subscribe(
             (mods: Model[]) => {
                 this.models = mods;
             }
         );
 
+        this.configService.listCollection().subscribe(
+            (collections: Collection[]) => {
+                this.collections = collections;
+            }
+        );
+
 
     }
 
-    drag(event, type) {
+    drag(event, type, id?) {
         console.log('type ' + type);
         event.dataTransfer.setData('elementType', type);
+        console.log('id');
+        console.log(id);
+        if (id !== undefined) {
+            event.dataTransfer.setData('id', id);
+        }
         console.log('drag event');
         console.log(event);
         console.log('class name');
@@ -115,19 +176,39 @@ export class DeveloperCreateFormComponent implements OnInit {
         console.log('drag class name');
         console.log(event.target.tagName);
         const type = event.dataTransfer.getData('elementType');
-        if (type === '') {
+        const id = event.dataTransfer.getData('id');
+        if (id !== '') {
             console.log('drop from inter');
+            console.log(event);
+            console.log(container);
+            console.log('id');
+            console.log(event.dataTransfer.getData('id'));
         } else {
             this.formComposition.push(new Element(this.elementCounter, type, type, (container === 1 ? 'LEFT' : 'RIGHT')));
             this.createElement(type, container);
             this.elementCounter++;
-
-
         }
+    }
 
+    orderChanged(elementId, targetContainer, sibling) {
+        console.log('sibling');
+        console.log(sibling);
+        const droppedId = parseInt(elementId.id.replace(/el-/g, ''), 10);
+        let nextElementId;
+        if (sibling !== null) {
+            nextElementId = parseInt(sibling.id.replace(/el-/g, ''), 10);
+        } else {
+            nextElementId = (this.elementCounter - 1);
+        }
+        console.log('droped element ' + droppedId);
+        console.log('nex element ' + nextElementId);
+        const aux = this.formComposition[droppedId];
+        this.formComposition[droppedId] = this.formComposition[nextElementId];
+        this.formComposition[droppedId].container = targetContainer;
+        this.formComposition[nextElementId] = aux;
 
-
-
+        console.log('new form composiiton');
+        console.log(this.formComposition);
     }
 
     allowDrag(event) {
@@ -139,17 +220,17 @@ export class DeveloperCreateFormComponent implements OnInit {
     createElement(type: string, container, labelTitle?: string) {
 
         console.log('type is ' + type);
-        let div = '<div class="two-col dynamic" style="opacity: 1; background: none;" draggable="true"' +
+        let div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: none;" draggable="true"' +
             ' id="el-' + this.elementCounter + '" >';
         switch (type) {
             case 'single_line': {
                 div += '<label id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Single Line' : labelTitle) +
                     '</label>' +
-                    '<input type="text" id="" name="singleLine" />';
+                    '<input type="text" id="" name="singleLine" style="display: none" />';
                 break;
             }
             case 'phone': {
-                div += '<label >' + (labelTitle === undefined ? 'phone' : labelTitle) + '</label>' +
+                div += '<label  id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'phone' : labelTitle) + '</label>' +
                     '<input type="tel" id="" name="phone" />';
                 break;
             }
@@ -254,6 +335,17 @@ export class DeveloperCreateFormComponent implements OnInit {
                     '<input type="text" id="" name="percent" />';
                 break;
             }
+            case 'password': {
+                div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Password' : labelTitle) +
+                    '</label>' +
+                    '<input type="password" id="" name="percent" />';
+                break;
+            }
+            case 'white_space': {
+                div += '<label class="whitespace" id="lbl-' + this.elementCounter + '" style="height: 20px;">  </label>';
+                div += '<span > </span>';
+                break;
+            }
 
         }
         let path = '';
@@ -295,6 +387,8 @@ export class DeveloperCreateFormComponent implements OnInit {
             if (this.elementRef.nativeElement.querySelector('#el-' + i) !== undefined
                 && this.elementRef.nativeElement.querySelector('#el-' + i) !== null) {
                 this.elementRef.nativeElement.querySelector('#el-' + i).addEventListener('click', (event) => this.selectElement(event));
+                this.elementRef.nativeElement.querySelector('#el-' + i).addEventListener('dragstart',
+                    (event) => this.drag(event, type, i));
                 this.elementRef.nativeElement.querySelector('#delete-' + i).addEventListener('click',
                     (event) => this.removeElement(event, container, i));
                 this.elementRef.nativeElement.querySelector('#move-' + i).addEventListener('click',
@@ -304,7 +398,8 @@ export class DeveloperCreateFormComponent implements OnInit {
         }
     }
 
-    selectElement(event) {
+    
+    selectElementAction(event){
         this.shoudlShowValueOptions = false;
         if (this.labelTitleInput !== undefined) {
             this.labelTitleInput.nativeElement.value = '';
@@ -334,15 +429,91 @@ export class DeveloperCreateFormComponent implements OnInit {
             // tslint:disable-next-line:radix
             this.selectedElementIndex = parseInt(target.id.replace(/el-/g, ''));
             console.log('selected element ' + this.selectedElementIndex);
+            this.componentSelected = this.formComposition[this.selectedElementIndex];
+            this.conditionCheckedBoxIsChecked = this.formComposition[this.selectedElementIndex].isConditioned;
+            this.requiredCheckedBoxIsChecked = this.formComposition[this.selectedElementIndex].isRequired;
+            this.elementLabelTitle =this.formComposition[this.selectedElementIndex].labelTitle;
+            if(this.labelTitleInput !== undefined){
+                this.labelTitleInput.nativeElement.value = this.formComposition[this.selectedElementIndex].labelTitle;
+            }
 
             if (this.formComposition[this.selectedElementIndex].type === 'radio'
                 || this.formComposition[this.selectedElementIndex].type === 'checkbox'
                 || this.formComposition[this.selectedElementIndex].type === 'multi_select'
                 || this.formComposition[this.selectedElementIndex].type === 'dropdown') {
                 this.shoudlShowValueOptions = true;
+                if (this.formComposition[this.selectedElementIndex].options !== ''
+                    && this.formComposition[this.selectedElementIndex].options !== undefined) {
+                    const opts = JSON.parse(this.formComposition[this.selectedElementIndex].options);
+                    this.optionsContent = '';
+                    if (opts !== undefined) {
+                        for (let i = 0; i < opts.length - 1; i++) {
+                            this.optionsContent += opts[i] + '\n';
+                        }
+                        this.optionsContent += opts[opts.length - 1] + '\n';
+
+                    }
+
+                }
 
             }
         }
+
+    }
+
+    selectElement(event) {
+        console.log('fieldConditionChanged '+this.fieldConditionChanged) ; 
+        if(this.fieldConditionChanged === true){
+            console.log('open dialog DiscardChangesPopupComponent') ; 
+            if(!this.discardChangePopUpShowed){
+                this.discardChangePopUpShowed = true;
+                const message = "Discard changes on field ?";
+                const dialogRef = this.dialog.open(DiscardChangesPopupComponent, {
+                    width: '300px',
+                    height: '200px',
+                    data: { message: message }
+                });
+        
+                dialogRef.afterClosed().subscribe(result => {
+                    console.log('The dialog was closed');
+                    console.log(result);
+                    this.discardChangePopUpShowed = false;
+                    if (result === true) {
+                        this.fieldConditionChanged = !result ; 
+                        this.selectElementAction(event) ; 
+                    }
+                });
+            }
+           
+        }else{
+        this.selectElementAction(event) ; 
+        }
+
+    }
+
+
+    collectionSelectorChanged() {
+        const id = this.collectionSelector.nativeElement.options[this.collectionSelector.nativeElement.selectedIndex].value;
+        if (id !== '-1') {
+            for (let i = 0; i < this.collections.length; i++) {
+                if (this.collections[i].colectionId === id) {
+                    this.selectedCollection = this.collections[i];
+                    break;
+                }
+            }
+        } else {
+            this.selectedCollection = null;
+        }
+
+        if (this.selectedCollection !== null) {
+            this.optionsContent = '';
+            for (let i = 0; i < this.selectedCollection.items.length; i++) {
+                this.optionsContent += this.selectedCollection.items[i];
+                this.optionsContent += '\n';
+            }
+            this.changeValues(13);
+        }
+
     }
 
     setElementRole() {
@@ -362,7 +533,7 @@ export class DeveloperCreateFormComponent implements OnInit {
 
         console.log('code');
         console.log(code);
-        if (code === 13 || code === 8) {
+        if (code === 13 || code === 8 || true) {
             const values = this.valuesOptions.nativeElement.value.split('\n');
             console.log('v');
             console.log(this.valuesOptions.nativeElement.value);
@@ -420,6 +591,16 @@ export class DeveloperCreateFormComponent implements OnInit {
     }
 
     disselectAllElemnt() {
+        this.shouldShowButtonActionSection = false;
+        if (this.isFieldRequired !== undefined) {
+            console.log('uncheck');
+            this.requiredCheckedBoxIsChecked = false;
+            this.conditionCheckedBoxIsChecked = false;
+            this.actionRadioGroup = 0;
+            this.conditionRAdioGroup = 0;
+            this.optionsContent = '';
+        }
+
         let children = this.left_container.nativeElement.children;
         for (let i = 0; i < children.length; i++) {
             this.renderer.setStyle(children[i], 'opacity', '1');
@@ -437,6 +618,8 @@ export class DeveloperCreateFormComponent implements OnInit {
 
     removeElement(event, fromContainer, id) {
         console.log('delete element');
+        this.disselectAllElemnt(); 
+        this.formComposition.splice(id , 1); 
         this.deleteElement(id, fromContainer);
     }
 
@@ -449,7 +632,11 @@ export class DeveloperCreateFormComponent implements OnInit {
         } else {
             container = this.right_container;
         }
-        this.renderer.removeChild(container.nativeElement, element);
+        try{
+            this.renderer.removeChild(container.nativeElement, element);
+        }catch(error){
+
+        }
     }
 
     moveElement(event, toContainer, type, id) {
@@ -460,9 +647,12 @@ export class DeveloperCreateFormComponent implements OnInit {
     addPage() {
         console.log('add page');
         this.pageCounter++;
-        const page = new Page(this.formComposition, this.formTitleContainer.nativeElement.innerHTML, this.elementCounter);
+        const page = new Page(this.formComposition, 
+            this.pageTitleTemp === undefined ? 'step ' + this.pageCounter : this.pageTitleTemp ,
+            this.elementCounter
+            );
+            this.pageTitleTemp = undefined  ; 
         page.conditions = this.conditions;
-
         this.pages.push(page);
 
         this.elementCounter = 0;
@@ -471,15 +661,29 @@ export class DeveloperCreateFormComponent implements OnInit {
         this.left_container.nativeElement.innerHTML = '';
         this.right_container.nativeElement.innerHTML = '';
         console.log(this.pages);
+        this.pagesIndex.push(this.pageIndex + 1);
+    }
+
+    editFormNameChanged(code){
+        if(code === 13){
+            this.editFormName();
+        }
     }
 
     editFormName() {
         if (!this.editFormTitleEnabled) {
             this.editFormTitleEnabled = true;
             this.formNameInput.nativeElement.value = this.formTitleContainer.nativeElement.innerHTML;
+            this.formNameInput.nativeElement.focus();
         } else {
             this.editFormTitleEnabled = false;
             this.formTitleContainer.nativeElement.innerHTML = this.formNameInput.nativeElement.value;
+                console.log('page index '+this.pageIndex);
+                if(this.pages[this.pageIndex] !== undefined){
+                    this.pages[this.pageIndex].pageTitle = this.formNameInput.nativeElement.value;                    
+                }else{
+                    this.pageTitleTemp = this.formNameInput.nativeElement.value;
+                }
         }
     }
 
@@ -514,12 +718,14 @@ export class DeveloperCreateFormComponent implements OnInit {
 
     }
 
-    selectEqualField(index) {
+    selectEqualField(index, shouldLoadValue?) {
         console.log('select radio condition');
+        this.fieldConditionChanged = true ;
 
         if (index === 1) {
             const ecp1 = this.equalDropField11.nativeElement.options[this.equalDropField11.nativeElement.selectedIndex].value;
             const ecp2 = this.equalDropField12.nativeElement.options[this.equalDropField12.nativeElement.selectedIndex].value;
+
             console.log('ecp');
             console.log(ecp1 + '  ' + ecp2);
             this.cond = {
@@ -549,12 +755,18 @@ export class DeveloperCreateFormComponent implements OnInit {
             };
         }
         if (index === 3) {
-            //     const ecp1 = this.equalDropField11.nativeElement.options[this.equalDropField11.nativeElement.selectedIndex].value;
-            //     const ecp2 = this.equalDropField12.nativeElement.options[this.equalDropField12.nativeElement.selectedIndex].value;
-            //     console.log('ecp');
-            //     console.log(ecp1 + '  ' + ecp2);
-            //     const condition = { conditionType: 'equal', compareTo: ecp1, compareType: 'element', compareValue: ecp2 };
-            //     this.conditions.push(condition);
+            const ecp1 = this.equalDropField31.nativeElement.options[this.equalDropField31.nativeElement.selectedIndex].value;
+            console.log('ecp');
+            console.log(ecp1);
+            this.cond = {
+                conditionType: 'equal',
+                compareTo: ecp1,
+                compareType: 'activate',
+                compareValue: '',
+                actionOn: '',
+                actionType: '',
+                actionFrom: ''
+            };
         }
 
         this.showActionSection = true;
@@ -562,8 +774,10 @@ export class DeveloperCreateFormComponent implements OnInit {
 
     }
 
-    selectNotEqualField(index) {
+    selectNotEqualField(index, shouldLoadValue?) {
         console.log('select radio condition');
+        this.fieldConditionChanged = true ;
+
 
         if (index === 1) {
             const ecp1 = this.notEqualDropField11.nativeElement.options[this.notEqualDropField11.nativeElement.selectedIndex].value;
@@ -597,12 +811,18 @@ export class DeveloperCreateFormComponent implements OnInit {
             };
         }
         if (index === 3) {
-            //     const ecp1 = this.equalDropField11.nativeElement.options[this.equalDropField11.nativeElement.selectedIndex].value;
-            //     const ecp2 = this.equalDropField12.nativeElement.options[this.equalDropField12.nativeElement.selectedIndex].value;
-            //     console.log('ecp');
-            //     console.log(ecp1 + '  ' + ecp2);
-            //     const condition = { conditionType: 'equal', compareTo: ecp1, compareType: 'element', compareValue: ecp2 };
-            //     this.conditions.push(condition);
+            const ecp1 = this.notEqualDropField31.nativeElement.options[this.notEqualDropField31.nativeElement.selectedIndex].value;
+            console.log('ecp');
+            console.log(ecp1);
+            this.cond = {
+                conditionType: 'notequal',
+                compareTo: ecp1,
+                compareType: 'activate',
+                compareValue: '',
+                actionOn: '',
+                actionType: '',
+                actionFrom: ''
+            };
         }
 
         this.showActionSection = true;
@@ -610,14 +830,67 @@ export class DeveloperCreateFormComponent implements OnInit {
 
     }
 
+    loadDropDownValue(equal) {
+        if (equal === 1) {
+            const ecp1 = this.equalDropField11.nativeElement.options[this.equalDropField11.nativeElement.selectedIndex].value;
+            if (ecp1 !== -1) {
+                console.log('ecp is not -1');
+                console.log(ecp1);
+                let index = -1;
+                for (let i = 0; i < this.formComposition.length; i++) {
+                    console.log('element id ' + this.formComposition[i].id);
+                    if (this.formComposition[i].id.toString() === ecp1.toString()) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index !== -1) {
+                    console.log('cp is not defined');
+                    if (this.formComposition[index].options !== undefined && this.formComposition[index].options !== '') {
+                        console.log('cp option is good');
+                        this.selectTypeValues = JSON.parse(this.formComposition[index].options);
+                    }
+                }
+            } else {
+                this.selectTypeValues = [];
+            }
+            console.log('options &&&&&&&&');
+            console.log(this.selectTypeValues);
+
+        } else {
+            const ecp1 = this.notEqualDropField11.nativeElement.options[this.notEqualDropField11.nativeElement.selectedIndex].value;
+            if (ecp1 !== -1) {
+                let index = -1;
+                for (let i = 0; i < this.formComposition.length; i++) {
+                    console.log('element id ' + this.formComposition[i].id);
+                    if (this.formComposition[i].id.toString() === ecp1.toString()) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index !== -1) {
+                    console.log('cp is not defined');
+                    if (this.formComposition[index].options !== undefined && this.formComposition[index].options !== '') {
+                        console.log('cp option is good');
+                        this.selectTypeValuesNotEqual = JSON.parse(this.formComposition[index].options);
+                    }
+                }
+            } else {
+                this.selectTypeValuesNotEqual = [];
+            }
+            console.log('options &&&&&&&');
+            console.log(this.selectTypeValuesNotEqual);
+        }
+    }
+
 
     createCondition(index) {
+        this.fieldConditionChanged = true ;
 
         switch (index) {
             case 1: {
                 // Mask Field
-                const ao =
-                    this.actionMaskSelector.nativeElement.options[this.actionMaskSelector.nativeElement.selectedIndex].value;
+                const ao = this.componentSelected.id;
                 const at = 'mask';
                 const af = '';
                 this.cond.actionOn = ao;
@@ -627,8 +900,7 @@ export class DeveloperCreateFormComponent implements OnInit {
             }
             case 2: {
                 // field not required
-                const ao =
-                    this.actionRequiredSelector.nativeElement.options[this.actionRequiredSelector.nativeElement.selectedIndex].value;
+                const ao = this.componentSelected.id;
                 const at = 'fieldRequired';
                 const af = '';
                 this.cond.actionOn = ao;
@@ -638,8 +910,7 @@ export class DeveloperCreateFormComponent implements OnInit {
             }
             case 3: {
                 // field not required
-                const ao =
-                    this.actionNotRequiredSelector.nativeElement.options[this.actionNotRequiredSelector.nativeElement.selectedIndex].value;
+                const ao = this.componentSelected.id;
                 const at = 'fieldNotRequired';
                 const af = '';
                 this.cond.actionOn = ao;
@@ -649,8 +920,7 @@ export class DeveloperCreateFormComponent implements OnInit {
             }
             case 4: {
                 // copy value from element to element
-                const ao =
-                    this.actionCopyValueToSelector.nativeElement.options[this.actionCopyValueToSelector.nativeElement.selectedIndex].value;
+                const ao = this.componentSelected.id;
                 const at = 'copyValue';
                 const af =
                     this.actionCopyValueFromSelector.nativeElement
@@ -662,8 +932,8 @@ export class DeveloperCreateFormComponent implements OnInit {
             }
             case 5: {
                 // copy text to element
-                const ao =
-                    this.actionCopyTextToSelector.nativeElement.options[this.actionCopyTextToSelector.nativeElement.selectedIndex].value;
+                console.log('copy text case');
+                const ao = this.componentSelected.id;
                 const at = 'copyText';
                 const af = this.actionCopyTextInput.nativeElement.value;
                 this.cond.actionOn = ao;
@@ -672,6 +942,12 @@ export class DeveloperCreateFormComponent implements OnInit {
                 break;
             }
             case 6: {
+                // button condition
+                this.cond.actionOn = this.buttonSelected;
+                this.cond.actionType = 'jump_to';
+                this.cond.actionFrom =
+                    this.jumpToPageSelector.nativeElement.options[this.jumpToPageSelector.nativeElement.selectedIndex].value;
+
                 break;
             }
         }
@@ -679,6 +955,9 @@ export class DeveloperCreateFormComponent implements OnInit {
     }
 
     validateCondition() {
+        console.log('creating condition');
+        this.fieldConditionChanged = false ;
+
         console.log(this.conditionRAdioGroup);
         console.log(this.actionRadioGroup);
         if (this.conditionRAdioGroup > 0) {
@@ -690,8 +969,15 @@ export class DeveloperCreateFormComponent implements OnInit {
         }
 
         console.log('condition is ');
+        if (this.cond === undefined) {
+            this.cond = {};
+        }
         console.log(this.cond);
         this.conditions.push(this.cond);
+        if (this.pages.length !== 0) {
+            this.pages[this.pageIndex].conditions = this.conditions;
+        }
+
     }
 
     makeFieldRequired() {
@@ -703,32 +989,122 @@ export class DeveloperCreateFormComponent implements OnInit {
     }
 
     makeFieldCondition() {
+        console.log('make field contioned');
+        console.log(this.formComposition[this.selectedElementIndex].type);
         if (this.isFieldConditioned.nativeElement.checked) {
             this.formComposition[this.selectedElementIndex].isConditioned = true;
+            if (this.formComposition[this.selectedElementIndex].type === 'radio'
+                || this.formComposition[this.selectedElementIndex].type === 'dropdown') {
+                console.log('field radio or dropdown');
+                this.selectTypeElements.push(this.formComposition[this.selectedElementIndex]);
+            } else if (this.formComposition[this.selectedElementIndex].type === 'checkbox') {
+                const options = JSON.parse(this.formComposition[this.selectedElementIndex].options);
+                if (options !== undefined) {
+                    if (options.length === 1) {
+                        console.log('field checkbox');
+                        this.oneOptionTypeElemnts.push(this.formComposition[this.selectedElementIndex]);
+                    }
+                }
+
+            } else {
+                if (this.formComposition[this.selectedElementIndex].type !== 'password'
+                    && this.formComposition[this.selectedElementIndex].type !== 'multi_select'
+                ) {
+                    console.log('field text');
+                    this.textTypeElements.push(this.formComposition[this.selectedElementIndex]);
+                }
+            }
+
+
+            this.conditionedFormCompotion.push(this.formComposition[this.selectedElementIndex]);
         } else {
             this.formComposition[this.selectedElementIndex].isConditioned = false;
+
+
+            if (this.formComposition[this.selectedElementIndex].type === 'radio'
+                || this.formComposition[this.selectedElementIndex].type === 'dropdown') {
+                let popIndex = -1;
+                for (let i = 0; i < this.selectTypeElements.length; i++) {
+                    if (this.selectTypeElements[i].id === this.formComposition[this.selectedElementIndex].id) {
+                        popIndex = i;
+                    }
+                }
+                if (popIndex !== -1) {
+                    this.selectTypeElements.splice(popIndex, 1);
+                }
+            } else if (this.formComposition[this.selectedElementIndex].type === 'checkbox') {
+                const options = JSON.parse(this.formComposition[this.selectedElementIndex].options);
+                if (options !== undefined) {
+                    if (options.length === 1) {
+                        let popIndex = -1;
+                        for (let i = 0; i < this.oneOptionTypeElemnts.length; i++) {
+                            if (this.oneOptionTypeElemnts[i].id === this.formComposition[this.selectedElementIndex].id) {
+                                popIndex = i;
+                            }
+                        }
+                        if (popIndex !== -1) {
+                            this.oneOptionTypeElemnts.splice(popIndex, 1);
+                        }
+                    }
+                }
+
+            } else {
+                if (this.formComposition[this.selectedElementIndex].type !== 'password'
+                    && this.formComposition[this.selectedElementIndex].type === 'multi_select'
+                ) {
+                    let popIndex = -1;
+                    for (let i = 0; i < this.textTypeElements.length; i++) {
+                        if (this.textTypeElements[i].id === this.formComposition[this.selectedElementIndex].id) {
+                            popIndex = i;
+                        }
+                    }
+                    if (popIndex !== -1) {
+                        this.textTypeElements.splice(popIndex, 1);
+                    }
+                }
+            }
+
+
         }
+        console.log('select type elements');
+        console.log(this.selectTypeElements);
+        console.log('text type element');
+        console.log(this.textTypeElements);
+        console.log('one option type element');
+        console.log(this.oneOptionTypeElemnts);
+    }
+
+    selectButton(buttonIndex) {
+        this.disselectAllElemnt();
+        this.buttonSelected = buttonIndex;
+        this.shouldShowButtonActionSection = true;
+        this.showActionSection = true;
+        this.selectedElementIndex = -1;
+    }
+
+    previewForm(){
+        if (this.pages.length === 0) {
+            this.addPage();
+        }
+        const form = new Form(this.authService.getUserSession().userID,
+            this.pages,
+            (new Date()).toString(),
+            this.formName);
+            this.formService.setSelectedForm(form);
+            this.router.navigate(['preview']);
     }
 
 
 
     saveForm() {
         console.log('form composition ' + this.pageIndex);
-        // if (this.pages.length === 0) {
-        //     const page = new Page(this.formComposition, this.formTitleContainer.nativeElement.innerHTML, this.elementCounter);
-        //     // page.conditions = this.conditions;
-        //     this.pages.push(page);
-        // } else {
-
-        //     this.pages[this.pageIndex] =
-        //         new Page(this.formComposition, this.formTitleContainer.nativeElement.innerHTML, this.elementCounter);
-        //     // this.pages[this.pageIndex].conditions = this.conditions;
-        // }
-
+        if (this.pages.length === 0) {
+            this.addPage();
+        }
         const form = new Form(this.authService.getUserSession().userID,
             this.pages,
-            'test',
-            this.formTitleContainer.nativeElement.innerHTML);
+            (new Date()).toString(),
+            this.formName);
 
         if (this.modelSelector !== undefined) {
             if (this.modelSelector.nativeElement.selectedIndex !== 0) {

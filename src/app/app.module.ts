@@ -16,7 +16,7 @@ import { CandidateService } from './shared/candidate/candidate.service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

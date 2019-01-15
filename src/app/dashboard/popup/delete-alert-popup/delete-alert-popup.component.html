@@ -1,0 +1,19 @@
+<div mat-dialog-content class="delete-popup" tabindex="-1" role="dialog" style="position: absolute; top: 10%; left: 32%; right: auto; bottom: auto; border: 1px solid rgb(204, 204, 204); background: rgb(255, 255, 255); overflow: auto; border-radius: 4px; outline: none; padding: 20px; margin-right: -50%; width: 36%; height: 80%;">
+  <form class="user-details">
+    <label>{{message}}</label>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="action-btns">
+      <button type="button" class="close" mat-button (click)="onNoClick()" [mat-dialog-close]="confirm">Cerrar</button>
+      <button type="submit" class="save" mat-button [mat-dialog-close]="confirm">Eliminar</button>
+    </div>
+  </form>
+</div>

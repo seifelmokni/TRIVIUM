@@ -46,7 +46,11 @@
         <li routerLinkActive="active">
           <a *ngIf="navigationEnabled" routerLink="/models">Comunicaciones</a>
         </li>
-        <li class="dropdown-block" *ngIf="navigationEnabled">
+        <li routerLinkActive="active">
+          <a *ngIf="navigationEnabled" routerLink="/configuation">Configuation</a>
+        </li>
+
+        <!-- <li class="dropdown-block" *ngIf="navigationEnabled">
           <a  data-toggle="dropdown" class="dropdown-toggler">
             <span class="icon icon-more"></span>
           </a>
@@ -63,7 +67,7 @@
               </li>
             </ul>
           </div>
-        </li>
+        </li> -->
       </ul>
     </div>
     <div class="dash-action">

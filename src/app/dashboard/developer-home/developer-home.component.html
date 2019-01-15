@@ -12,7 +12,11 @@
 
           <div class="block-item" *ngFor="let item of forms; let i = index">
             <div class="item-inner">
-              <div class="item-title">{{item.title}}</div>
+              <div class="item-title">
+                <span [ngStyle]="{'display': formNameInputIndexSelected === i ? 'none' : 'block'}">{{item.title}}</span>
+                <input [ngStyle]="{'display': formNameInputIndexSelected === i ? 'block' : 'none'}" type="text" name="formName" id="formNameInput-{{i}}"
+                  [(ngModel)]="formName" (blur)="changeFormName(i)" (keyup)="formNameInputChange(i , $event.keyCode)" />
+              </div>
               <div class="item-action">
                 <ul>
                   <li>
@@ -24,7 +28,7 @@
                       </span>
                     </a>
                   </li>
-                  <li class="dropdown-block dropdown-open" id="dpc-{{i}}">
+                  <li class="dropdown-block" id="dpc-{{i}}">
                     <a class="dropdown-toggler" (click)="openDropDown(i)">
                       <span class="icon icon">
                         <svg>
@@ -32,16 +36,16 @@
                         </svg>
                       </span>
                     </a>
-                    <div class="dropdown-content" >
+                    <div class="dropdown-content">
                       <ul>
                         <li>
-                          <a href="#">Editar nombre</a>
+                          <a (click)="enableEditFormName(i)">Editar nombre</a>
                         </li>
                         <li>
-                          <a href="#">Duplicar</a>
+                          <a (click)="duplicateForm(i)">Duplicar</a>
                         </li>
                         <li>
-                          <a href="#">Eliminar</a>
+                          <a (click)="deleteForm(i)" >Eliminar</a>
                         </li>
                         <li>
                           <a href="javascript:void(0)" (click)="previewForm(item)">preview</a>

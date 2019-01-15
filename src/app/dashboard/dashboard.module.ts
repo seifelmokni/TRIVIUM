@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { HeaderComponent } from './header/header.component';
@@ -26,6 +27,14 @@ import { AdmissionsComponent } from './admissions/admissions.component';
 import { ResidentsComponent } from './residents/residents.component';
 import { CandidateDetailsComponent } from './candidate-details/candidate-details.component';
 import { CandidateEntreviewComponent } from './candidate-entreview/candidate-entreview.component';
+import { DragulaModule } from 'ng2-dragula';
+import { ConfigurationComponent } from './configuration/configuration.component';
+import { DeleteAlertPopupComponent } from './popup/delete-alert-popup/delete-alert-popup.component';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { CalendarComponent } from './calendar/calendar.component';
+import { DiscardChangesPopupComponent } from './popup/discard-changes-popup/discard-changes-popup.component';
+
 
 @NgModule({
     imports: [
@@ -33,7 +42,13 @@ import { CandidateEntreviewComponent } from './candidate-entreview/candidate-ent
         RouterModule,
         MatDialogModule,
         FormsModule,
-        CKEditorModule
+        CKEditorModule,
+        DragulaModule.forRoot(),
+        CalendarModule.forRoot({
+            provide: DateAdapter,
+            useFactory: adapterFactory
+        }),
+        NgbModule
     ],
     declarations: [HeaderComponent,
         SvgSpiritComponent,
@@ -56,9 +71,14 @@ import { CandidateEntreviewComponent } from './candidate-entreview/candidate-ent
         AdmissionsComponent,
         ResidentsComponent,
         CandidateDetailsComponent,
-        CandidateEntreviewComponent
+        CandidateEntreviewComponent,
+        ConfigurationComponent,
+        DeleteAlertPopupComponent,
+        CalendarComponent,
+        DiscardChangesPopupComponent,
+        
     ],
-    exports: [AddUserPopupComponent],
-    entryComponents: [AddUserPopupComponent]
+    exports: [AddUserPopupComponent, DeleteAlertPopupComponent , DiscardChangesPopupComponent ],
+    entryComponents: [AddUserPopupComponent, DeleteAlertPopupComponent , DiscardChangesPopupComponent ]
 })
 export class DashboardModule { }

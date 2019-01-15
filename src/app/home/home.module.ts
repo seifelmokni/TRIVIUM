@@ -10,13 +10,22 @@ import { FooterComponent } from './footer/footer.component';
 import { CandidatComponent } from './candidat/candidat.component';
 import { RouterModule } from '@angular/router';
 import { FormSubmittedComponent } from './form-submitted/form-submitted.component';
+import { CalendarModule } from 'angular-calendar';
+import { DateAdapter } from '@angular/material';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        RouterModule
+        RouterModule,
+        CalendarModule.forRoot({
+            provide: DateAdapter,
+            useFactory: adapterFactory
+        }),
+        NgbModule
     ],
     declarations: [LoginComponent,
         HomeComponent,
