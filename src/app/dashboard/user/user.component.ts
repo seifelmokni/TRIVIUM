@@ -61,7 +61,21 @@ export class UserComponent implements OnInit {
     editUser() {
         const dialogRef = this.dialog.open(AddUserPopupComponent, {
             width: '300px',
-            data: { user: this.selectUser }
+            data: { user: this.selectedUser }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result.login !== '') {
+
+                console.log('The dialog was closed');
+                console.log(result);
+                this.authservice.updateUser(result).then(data => {
+                    console.log('adding user result');
+                    console.log(data);
+                });
+
+            }
+
         });
     }
 

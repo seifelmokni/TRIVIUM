@@ -1,0 +1,6 @@
+.ReactModal__Content.ReactModal__Content--after-open div.info-block label{
+    width: 300px !important;
+}
+.ReactModal__Content.ReactModal__Content--after-open div.info-block input[type=checkbox]{
+    width: 20px !important;
+}

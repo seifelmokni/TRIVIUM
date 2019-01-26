@@ -33,6 +33,24 @@ export class CandidateService {
         );
     }
 
+    listAdmissionCandidate() {
+        return this.db.collection('candidate').snapshotChanges().map(
+            actions => {
+                return actions.map(
+                    a => {
+
+                        const data = a.payload.doc.data() as Candidate;
+                        console.log('data');
+                        console.log(a);
+                        data.candidateId = a.payload.doc.id;
+                        console.log(data);
+                        return data;
+                    }
+                );
+            }
+        );
+    }
+
     updateCandidate(candidate: Candidate) {
         return this.db.doc('candidate/' + candidate.candidateId ).update(candidate);
     }

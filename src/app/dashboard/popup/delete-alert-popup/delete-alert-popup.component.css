@@ -1,7 +1,18 @@
 .mat-dialog-container{
-    height: 10% !important;
+    height: 2% !important;
 }
 .delete-popup{
-height: 35% !important;
+height: 15% !important;
+width: 40% !important;
 top: 30% !important;
+-webkit-border-radius: 11px !important;
+-moz-border-radius: 11px !important;
+border-radius: 11px !important;
+}
+.close {
+    float: left !important;
+    margin-left: 25% !important;
+}
+.save{
+    color: red;
 }

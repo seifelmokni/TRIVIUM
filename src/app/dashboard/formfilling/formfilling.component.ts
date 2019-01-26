@@ -20,6 +20,7 @@ import { Interview } from 'src/app/models/interview/interview.model';
 import { DayViewHour } from 'calendar-utils';
 import { DatePipe, Location } from '@angular/common';
 import { InterviewDateService } from 'src/app/shared/interviewDate/interview-date.service';
+import { Element } from 'src/app/models/element/element.model';
 const colors: any = {
     red: {
         primary: '#ad2121',
@@ -50,6 +51,7 @@ export class FormfillingComponent implements OnInit {
     form: Form;
     page: Page;
     pageIndex = 0;
+    isSingleColumnForm:Boolean = false ; 
 
     condidateForm: FormGroup;
     candidateResponse: Response;
@@ -145,6 +147,7 @@ export class FormfillingComponent implements OnInit {
         console.log(new Date());
         const now = new Date();
         this.form = this.formService.getSelectedForm();
+        this.isSingleColumnForm = this.form.isSingleColumnForm;
                         console.log('the form');
                         console.log(this.form);
                         if (this.form !== undefined) {
@@ -165,7 +168,8 @@ export class FormfillingComponent implements OnInit {
                                             (this.page.formComposition[i].container === 'LEFT' ? 1 : 2),
                                             this.page.formComposition[i].labelTitle,
                                             i,
-                                            options
+                                            options , 
+                                            this.page.formComposition[i]
                                         );
                                     }
                                     
@@ -406,24 +410,55 @@ export class FormfillingComponent implements OnInit {
         });
         this.refresh.next();*/
     }
-
-    createElement(type: string, container, labelTitle: string, index: number, values: Array<string>) {
+    createElement(type: string, container, labelTitle: string, index: number, values: Array<string> , element: Element) {
         this.elementCounter = index;
         console.log('type is ' + type);
-        let div = '<div class="two-col dynamic" style="opacity: 1; background: none;" draggable="true"' +
-            ' id="el-' + this.elementCounter + '" >';
+        let div = '';
+        
+        switch (type) {
+            case 'title': {
+                div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: none; display: block !important" draggable="true"' +
+                ' id="el-' + this.elementCounter + '"  >';
+                break ; 
+            }
+            case 'section': {
+                div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: rgb(105, 21, 27); display: block !important" draggable="true"' +
+                ' id="el-' + this.elementCounter + '"  >';
+                break ; 
+            }
+            case '2_line_text' :{
+                div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: none; display:grid;" draggable="true"' +
+                ' id="el-' + this.elementCounter + '"  >';
+                break ; 
+            } 
+            case 'paragraph': {
+                div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: none; display: block !important" draggable="true"' +
+                ' id="el-' + this.elementCounter + '" >';
+                break ; 
+            }
+            case 'youtube': {
+                div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: none; padding-left: 11%" draggable="true"' +
+                ' id="el-' + this.elementCounter + '" >';
+                break;
+            }
+            default : {
+                div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: none;" draggable="true"' +
+                ' id="el-' + this.elementCounter + '" >';
+                break ; 
+            }
+        }
         switch (type) {
             case 'single_line': {
-                div += '<label id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Single Line' : labelTitle) +
+                div += '<label id="lbl-' + this.elementCounter + '" style="height:37px" >' + (labelTitle === undefined ? 'Single Line' : labelTitle) +
                     '</label>' +
                     '<input type="text" id="fc' + this.elementCounter + '"  name="singleLine" style="display:none" />';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
                 break;
             }
             case 'phone': {
-                div += '<label >' + (labelTitle === undefined ? 'phone' : labelTitle) + '</label>' +
+                div += '<label id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'phone' : labelTitle) + '</label>' +
                     '<input type="tel" id="fc' + this.elementCounter + '" name="phone" />';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
@@ -431,88 +466,92 @@ export class FormfillingComponent implements OnInit {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Multi line' : labelTitle) +
                     '</label>' +
                     '<textarea id="fc' + this.elementCounter + '" name="multiLine" cols="25" rows="5" defaultvalue=""></textarea>';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
             case 'url': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'url' : labelTitle) +
                     '</label>' + '<input type="url" id="fc' + this.elementCounter + '" name="url" />';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
             case 'date': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'date' : labelTitle) +
                     '</label>' + '<input type="date" id="fc' + this.elementCounter + '" name="date" />';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
             case 'file_upload': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'File' : labelTitle) +
                     '</label>' + '<input type="file" id="fc' + this.elementCounter + '" name="fileUpload" />';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
             case 'radio': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Radio' : labelTitle) +
                     '</label>' +
-                    '<div>';
+                    '<div id="rd-' + this.elementCounter + '">';
                 for (let i = 0; i < values.length; i++) {
-                    div += '<p>' +
-                        '<input type="radio" name="checkbox" id="fc' + this.elementCounter + '-' + i + '" ' +
+                    if(values[i] !== ''){
+                        div += '<p>' +
+                        '<input type="radio" name="checkbox" id="fc' + this.elementCounter + '-1" ' +
                         ' value="checkbox 1"><label for="radio1">' + values[i] + '</label>' +
                         '</p>';
+                    }
                 }
 
                 div += '</div>';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
             case 'image': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'image' : labelTitle) +
                     '</label>' + '<input type="file" id="fc' + this.elementCounter + '" name="image" />';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
             case 'checkbox': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Radio' : labelTitle) +
                     '</label>' +
-                    '<div>';
+                    '<div id="cb-' + this.elementCounter + '">';
                 for (let i = 0; i < values.length; i++) {
-                    div += '<p>' +
-                        '<input type="checkbox" name="checkbox" id="fc' + this.elementCounter + '-' + i + '" ' +
+                    if(values[i] !== ''){
+                        div += '<p>' +
+                        '<input type="checkbox" name="checkbox" id="fc' + this.elementCounter + '-1" ' +
                         ' value="checkbox 1"><label for="radio1">' + values[i] + '</label>' +
                         '</p>';
+                    }
                 }
 
                 div += '</div>';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
             case 'text': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'text' : labelTitle) +
                     '</label>' + '<input type="text" id="fc' + this.elementCounter + '" name="text" />';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
             case 'email': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'email' : labelTitle) +
                     '</label>' + '<input type="email" id="fc' + this.elementCounter + '" name="email" />';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
             case 'number': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'number' : labelTitle) +
                     '</label>' + '<input type="number" id="fc' + this.elementCounter + '" name="number" />';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
@@ -520,14 +559,14 @@ export class FormfillingComponent implements OnInit {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'description' : labelTitle) +
                     '</label>' +
                     '<textarea id="fc' + this.elementCounter + '" name="description" cols="25" rows="5" defaultvalue=""></textarea>';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
             case 'decimal': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Decimal' : labelTitle) +
                     '</label>' + '<input type="text" id="fc' + this.elementCounter + '" name="decimal" />';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
@@ -535,24 +574,15 @@ export class FormfillingComponent implements OnInit {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Multi select' : labelTitle) +
                     '</label>' +
                     '<select multiple="" id="fc' + this.elementCounter + '" name="multiSelect">' +
-                    '<option value="">--por favor, elija--</option>';
-                for (let i = 0; i < values.length; i++) {
-                    div += '<option value="' + values[i] + '">' + values[i] + '</option>';
-                }
-                div += '</select>';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+                    '<option value="">--por favor, elija--</option></select>';
+
 
                 break;
             }
             case 'dropdown': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Dropdown' : labelTitle) +
                     '</label>' +
-                    '<select id="fc' + this.elementCounter + '" name="dropdown"><option value="">--por favor, elija--</option>';
-                for (let i = 0; i < values.length; i++) {
-                    div += '<option value="' + values[i] + '">' + values[i] + '</option>';
-                }
-                div += '</select>';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+                    '<select id="sel-' + this.elementCounter + '" name="dropdown"><option value="">--por favor, elija--</option></select>';
 
                 break;
             }
@@ -560,7 +590,7 @@ export class FormfillingComponent implements OnInit {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Note' : labelTitle) +
                     '</label>' +
                     '<textarea id="fc' + this.elementCounter + '" name="note" cols="25" rows="5" defaultvalue=""></textarea>';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
@@ -568,36 +598,77 @@ export class FormfillingComponent implements OnInit {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Percent' : labelTitle) +
                     '</label>' +
                     '<input type="text" id="fc' + this.elementCounter + '" name="percent" />';
-                this.condidateForm.addControl('fc' + this.elementCounter, new FormControl(''));
+
 
                 break;
             }
             case 'password': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Password' : labelTitle) +
                     '</label>' +
-                    '<input type="password" id="fc' + this.elementCounter + '" name="percent" />';
+                    '<input type="password" id="" name="percent" />';
                 break;
             }
             case 'white_space': {
                 div += '<label class="whitespace" id="lbl-' + this.elementCounter + '" style="height: 20px;">  </label>';
                 div += '<span > </span>';
                 break;
+            }case 'photo' : {
+                div +='<label id="lbl-' + this.elementCounter + '" style="display:none"></label>';
+                div += '<img id="src-' + this.elementCounter + '" src="'+(element.value !== '' ? element.value : 'https://vignette.wikia.nocookie.net/the-darkest-minds/images/4/47/Placeholder.png/revision/latest?cb=20160927044640')+'"  width="100%"  style="background: #d6d6d6;" /> ' ;
+                break;
+            }
+            case 'video' : {
+                div +='<label id="lbl-' + this.elementCounter + '" style="display:none"></label>';
+                div += '<video id="src-' + this.elementCounter + '" src="'+element.value+'" width="100%"  style="background: #d6d6d6;"> </video> ' ;
+                break;
+            }
+            case 'title' : {
+                div +='<label id="lbl-' + this.elementCounter + '" style="font-size: 25px; font-weight: bold;">' + (labelTitle === undefined ? 'Title' : labelTitle) +
+                '</label>';
+                div += '<input type="text" style="display: none"> </video> ' ;
+                break;
+            }
+            case 'section' : {
+                div +='<label id="lbl-' + this.elementCounter + '" style="font-size: 20px; font-weight: bold; color: #FFF">' + (labelTitle === undefined ? 'Title' : labelTitle) +
+                '</label>';
+                div += '<input type="text" style="display: none"> </video> ' ;
+                break;
+            }
+            case 'paragraph' : {
+                div +='<p id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Paragraph' : labelTitle) +
+                '</p>';
+                div += '<input type="text" style="display: none"> </video> ' ;
+                break;
+            }
+            case 'youtube' : {
+                div +='<label id="lbl-' + this.elementCounter + '" style="display:none"></label>';
+                div += '<iframe id="src-' + this.elementCounter +'" width="420" height="315" src="'+element.value+'"></iframe>' ;
+                break;
+                
+            }
+            case '2_line_text' : {
+                div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'text' : labelTitle) +
+                '</label><br><small id="sm-'+this.elementCounter+'">'+(element.value != undefined ? element.value : 'description value')+'</small><br>' 
+                + '<input type="text" id="" name="text" />';
+                break;
+
             }
 
         }
         let path = '';
         if (container === 1) {
-            path = '<path fill="currentColor" ' +
-                // tslint:disable-next-line:max-line-length
-                'd="M256 8c137 0 248 111 248 248S393 504 256 504 8 393 8 256 119 8 256 8zM140 300h116v70.9c0 10.7 13 16.1 20.5 8.5l114.3-114.9c4.7-4.7 4.7-12.2 0-16.9l-114.3-115c-7.6-7.6-20.5-2.2-20.5 8.5V212H140c-6.6 0-12 5.4-12 12v64c0 6.6 5.4 12 12 12z">' +
-                '</path>';
+            path = '<i class="fa fa-pencil"></i>';
         } else {
-            path = '<path fill="currentColor" '
-                // tslint:disable-next-line:max-line-length
-                + 'd="M256 504C119 504 8 393 8 256S119 8 256 8s248 111 248 248-111 248-248 248zm116-292H256v-70.9c0-10.7-13-16.1-20.5-8.5L121.2 247.5c-4.7 4.7-4.7 12.2 0 16.9l114.3 114.9c7.6 7.6 20.5 2.2 20.5-8.5V300h116c6.6 0 12-5.4 12-12v-64c0-6.6-5.4-12-12-12z">'
-                + '</path>';
+            path = '<i class="fa fa-pencil"></i>';
         }
 
+        div += '<span style="display: '+(type !== 'youtube' ? 'none' : 'block')+';">' +
+            '<a title="Mover a la derecha" id="move-' + this.elementCounter + '" style="display: '+(type !== 'youtube' ? 'none' : 'block')+';">' +
+            '<i class="fas fa-pencil-alt"></i>' +
+            '</a>' +
+            '<a title="Borrar" id="delete-' + this.elementCounter + '">' +
+            '<i class="fa fa-trash-alt"></i></a>'+
+            '</span>';
         div += '</div>';
         if (container === 1) {
             this.left_container.nativeElement.insertAdjacentHTML('beforeEnd', div);
@@ -605,48 +676,9 @@ export class FormfillingComponent implements OnInit {
             this.right_container.nativeElement.insertAdjacentHTML('beforeEnd', div);
 
         }
-        if (this.elementRef.nativeElement.querySelector('#fc' + this.elementCounter)) {
-            this.elementRef.nativeElement.querySelector('#fc' + this.elementCounter).addEventListener('change',
-                (event) => this.formInputValueChanged(this.elementCounter, type, this.page.conditions));
-
-        } else {
-            for (let i = 0; i < values.length; i++) {
-                this.elementRef.nativeElement.querySelector('#fc' + this.elementCounter + '-' + i).addEventListener('change',
-                    (event) => this.formInputValueChanged(this.elementCounter, type, this.page.conditions));
-            }
-        }
+   
     }
 
-    formInputValueChanged(index, type, conditions) {
-        console.log('form input value changed ' + index + ' ' + type);
-        console.log(conditions);
-        for (let i = 0; i < conditions.length; i++) {
-            console.log('index ' + this.page.formComposition[index].id + ' condition compare to ' + conditions[i].compareTo);
-            if(conditions[i] !== undefined){
-                if(conditions[i].compareTo !== undefined){
-                    if (this.page.formComposition[index].id.toString() === conditions[i].compareTo.toString()) {
-                        console.log('index match');
-                        const r = this.getFieldResponse(index);
-                        console.log('field response');
-                        console.log(r.value);
-                        console.log('condition compare Value');
-                        console.log(conditions[i].compareValue);
-                        if (r.value === conditions[i].compareValue) {
-                            console.log('value match');
-                            console.log('condition action type');
-                            console.log(conditions[i].actionType);
-                            this.applyCondition(conditions[i], r);
-                        } else {
-                            if (conditions[i].actionType === 'mask') {
-                                this.applyCondition(conditions[i], r);
-                            }
-                        }
-                    }
-                }
-            }
-            
-        }
-    }
 
     applyCondition(condition, response) {
         switch (condition.actionType) {
@@ -782,7 +814,7 @@ export class FormfillingComponent implements OnInit {
                 this.createElement(
                     this.page.formComposition[i].type,
                     (this.page.formComposition[i].container === 'LEFT' ? 1 : 2),
-                    this.page.formComposition[i].labelTitle, i, options);   
+                    this.page.formComposition[i].labelTitle, i, options , this.page.formComposition[i]);   
                 }
             }
         }

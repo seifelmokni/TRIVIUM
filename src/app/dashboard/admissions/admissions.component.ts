@@ -14,6 +14,7 @@ export class AdmissionsComponent implements OnInit {
 
     responses: Response[];
     candidates: Candidate[];
+    candidateResponses: Map<string, Response[]> = new Map();
     constructor(private responseService: ResponseService,
         private candidateSerivce: CandidateService,
         private router: Router) { }
@@ -26,7 +27,18 @@ export class AdmissionsComponent implements OnInit {
         // );
         this.candidateSerivce.listCandidate().subscribe(
             (candidates: Candidate[]) => {
-                this.candidates = candidates;
+                this.candidates = [] ; 
+                for(let i = 0 ; i < candidates.length ; i++){
+                    if(candidates[i].status == 'Interview Fixed'){
+                        this.responseService.listCandidateResponse(candidates[i].candidateId).subscribe(
+                            (r: Response[]) => {
+                                this.candidateResponses.set(candidates[i].candidateId , r) ; 
+                            }
+                        )
+                        this.candidates.push(candidates[i]);
+                    }
+                }
+                //this.candidates = candidates;
             }
         );
     }
@@ -34,8 +46,11 @@ export class AdmissionsComponent implements OnInit {
     showDetails(candidate: Candidate) {
         this.candidateSerivce.selectedCandidate = candidate;
         this.router.navigate(['candidateDetails']);
+    }
 
-
+    loadResponse(candidate:Candidate){
+        this.candidateSerivce.selectedCandidate = candidate ; 
+        this.router.navigate(['previewResponses']);
     }
 
 }

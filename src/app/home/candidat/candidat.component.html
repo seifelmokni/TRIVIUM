@@ -5,17 +5,19 @@
       <div class="block-inner">
         <div class="blocks-grid blocks-grid__mod">
           <h2 class="step-name">
-            <em>Admisión</em>
+            <em> {{form != undefined ? form.title : 'Admisión'}}</em>
           </h2>
           <section class="main-content">
             <form novalidate="" class="dynamic-form" #formCandidate>
               <div class="wrapper">
-                  <div class="left-col col" #left_container [ngStyle]="{'display': !shouldShowCalendarPage ?  'block' : 'none' }">
-
-                    </div>
-                    <div class="right-col col" #right_container [ngStyle]="{'display': !shouldShowCalendarPage ?  'block' : 'none' }">
-    
-                    </div>
+                <div class="left-col col" #left_container [style.display]="!shouldShowCalendarPage ?  'block' : 'none'" 
+                [style.width]="!isSingleColumnForm ? '50%' : '500%'" 
+                [style.margin-left]= "!isSingleColumnForm  ? '0%' : '0%'">
+	  
+                </div>
+                <div  class="right-col col" #right_container 
+                [style.display]="(!shouldShowCalendarPage && !isSingleColumnForm) ?  'block' : 'none'"  >
+                </div>
                 
               <div *ngIf="shouldShowCalendarPage">
                 
@@ -70,6 +72,9 @@
               <div class="btn-group">
                 <button *ngIf="pageIndex > 0" (click)="previous()" class="btn btn-sc">Atrás</button>
                 <button (click)="next()" class="btn btn-confirm" id="submit">Enviar</button>
+              </div>
+              <div *ngIf="showMandatoryFieldsMissingBox">
+                Faltan campos obligatorios
               </div>
             </form>
           </section>

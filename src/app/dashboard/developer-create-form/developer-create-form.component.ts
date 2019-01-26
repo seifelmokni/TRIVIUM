@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Renderer2, Injectable, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer2, Injectable, ViewChild, Input, ViewEncapsulation } from '@angular/core';
 import { FormsService } from '../../shared/forms/forms.service';
 import { Form } from '../../models/form/form.model';
 import { Element } from '../../models/element/element.model';
@@ -12,6 +12,10 @@ import { Collection } from '../../models/collection/collection.model';
 import { ConfigurationService } from '../../shared/configuration/configuration.service';
 import { DiscardChangesPopupComponent } from '../popup/discard-changes-popup/discard-changes-popup.component';
 import { MatDialog } from '@angular/material';
+import { Upload } from 'src/app/models/upload/upload.model';
+import { UploadService } from 'src/app/shared/upload/upload.service';
+import * as firebase from 'firebase/app';
+import 'firebase/storage';
 
 
 @Component({
@@ -54,14 +58,21 @@ export class DeveloperCreateFormComponent implements OnInit {
     @ViewChild('isFieldConditioned') isFieldConditioned: ElementRef;
     @ViewChild('jumpToPageSelector') jumpToPageSelector: ElementRef;
     @ViewChild('collectionSelector') collectionSelector: ElementRef;
+    @ViewChild('lineTextTypeSelector') lineTextTypeSelector:ElementRef;
     formName = 'Entervista';
     elementLabelTitle= '';
+    smallLabelTitle= '';
+    youtubeSource = '' ; 
     optionsContent;
     shoudlShowValueOptions = false;
     conditionCheckedBoxIsChecked: Boolean = false;
     requiredCheckedBoxIsChecked: Boolean = false;
     fieldConditionChanged = false ; 
     discardChangePopUpShowed = false;
+    isDeleteProcessRunning = false ; 
+    isSingleColumnForm = false ;
+    deleteCallNumber= 0 ; 
+
 
     conditionRAdioGroup;
     actionRadioGroup;
@@ -112,6 +123,7 @@ export class DeveloperCreateFormComponent implements OnInit {
         private modelService: ModelsService,
         private configService: ConfigurationService,
         private dragulaService: DragulaService,
+        private uploadService: UploadService,
         private router: Router,
         public dialog: MatDialog) { }
 
@@ -127,17 +139,12 @@ export class DeveloperCreateFormComponent implements OnInit {
         this.selectTypeValues = [];
         this.selectTypeValuesNotEqual = [];
         this.pagesIndex = [1];
-        this.dragulaService.drop('elemnts').subscribe(({ name, el, target, source, sibling }) => {
-            // ...
-            console.log('dragula drop event');
-            console.log(el.id);
-            console.log(el.parentElement.className);
-            console.log('siblings');
-            console.log(sibling);
-            this.orderChanged(el,
-                el.parentElement.className === 'left-col col' ? 'LEFT' : 'RIGHT',
+        this.dragulaService.find('elemnts').drake.on('drop', (dropElm: any, target: any, source: any, sibling: any) => {
+            //do stuff here.
+            this.orderChanged(dropElm,
+                dropElm.parentElement.className === 'left-col col' ? 'LEFT' : 'RIGHT',
                 sibling);
-        });
+            });
 
         this.modelService.listModels().subscribe(
             (mods: Model[]) => {
@@ -184,15 +191,15 @@ export class DeveloperCreateFormComponent implements OnInit {
             console.log('id');
             console.log(event.dataTransfer.getData('id'));
         } else {
-            this.formComposition.push(new Element(this.elementCounter, type, type, (container === 1 ? 'LEFT' : 'RIGHT')));
-            this.createElement(type, container);
+            const el = new Element(this.elementCounter, type, type, (container === 1 ? 'LEFT' : 'RIGHT')) ;
+            this.formComposition.push(el);
+            this.createElement(type, container ,undefined , el);
             this.elementCounter++;
         }
     }
 
     orderChanged(elementId, targetContainer, sibling) {
-        console.log('sibling');
-        console.log(sibling);
+        //this.pageSaved = false ; 
         const droppedId = parseInt(elementId.id.replace(/el-/g, ''), 10);
         let nextElementId;
         if (sibling !== null) {
@@ -200,15 +207,36 @@ export class DeveloperCreateFormComponent implements OnInit {
         } else {
             nextElementId = (this.elementCounter - 1);
         }
-        console.log('droped element ' + droppedId);
-        console.log('nex element ' + nextElementId);
         const aux = this.formComposition[droppedId];
-        this.formComposition[droppedId] = this.formComposition[nextElementId];
-        this.formComposition[droppedId].container = targetContainer;
-        this.formComposition[nextElementId] = aux;
-
-        console.log('new form composiiton');
-        console.log(this.formComposition);
+        const dropIndex = this.getComponentIndexSelected(droppedId); 
+        const nextElementIndex = this.getComponentIndexSelected(nextElementId);
+        
+        console.log('index dropIndex '+dropIndex+' next element index '+nextElementIndex) ; 
+        if(dropIndex != undefined && nextElementIndex != undefined){
+            //this.formComposition.splice(dropIndex , 1) ; 
+            const component = this.formComposition[dropIndex]; 
+            component.container = targetContainer;
+            console.log('the droped component');
+            console.log(component);
+            this.formComposition.splice(dropIndex , 1);
+            let composition = []  ; 
+            for(let i = 0 ; i < this.formComposition.length ; i++){
+                console.log('i : '+i+' nextelementIndex'+nextElementIndex);
+                if(i == nextElementIndex ){
+                    console.log('adding the droped element');
+                    composition.push(component);
+                    composition.push(this.formComposition[i]);
+                    
+                }else{
+                    composition.push(this.formComposition[i]);
+                }
+            }
+          //composition.splice(dropIndex , 1);  
+          console.log('new form composition') ; 
+          console.log(composition);  
+          this.formComposition = composition ; 
+        }
+        
     }
 
     allowDrag(event) {
@@ -217,14 +245,43 @@ export class DeveloperCreateFormComponent implements OnInit {
 
 
 
-    createElement(type: string, container, labelTitle?: string) {
+    createElement(type: string, container, labelTitle: string , element:Element) {
 
         console.log('type is ' + type);
-        let div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: none;" draggable="true"' +
-            ' id="el-' + this.elementCounter + '" >';
+        let div = '';
+        
+        switch (type) {
+            case 'title': {
+                div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: none;display: block !important" draggable="true"' +
+                ' id="el-' + this.elementCounter + '"  >';
+                break ; 
+            }
+            case 'section': {
+                div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: rgb(105, 21, 27);display: block !important" draggable="true"' +
+                ' id="el-' + this.elementCounter + '"  >';
+                break ; 
+            }
+            case '2_line_text' :{
+                div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: none; display:grid;" draggable="true"' +
+                ' id="el-' + this.elementCounter + '"  >';
+                break ; 
+            } 
+            case 'paragraph': {
+                div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: none; display: block !important" draggable="true"' +
+                ' id="el-' + this.elementCounter + '" >';
+                break ; 
+            }
+            default : {
+                div = '<div class="two-col dynamic" tabindex="0" style="opacity: 1; background: none;" draggable="true"' +
+                ' id="el-' + this.elementCounter + '" >';
+                break ; 
+            }
+        }
+
+
         switch (type) {
             case 'single_line': {
-                div += '<label id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Single Line' : labelTitle) +
+                div += '<label id="lbl-' + this.elementCounter + '" style="height:37px" >' + (labelTitle === undefined ? 'Single Line' : labelTitle) +
                     '</label>' +
                     '<input type="text" id="" name="singleLine" style="display: none" />';
                 break;
@@ -237,7 +294,7 @@ export class DeveloperCreateFormComponent implements OnInit {
             case 'multi_line': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Multi line' : labelTitle) +
                     '</label>' +
-                    '<textarea id="" name="multiLine" cols="25" rows="5" defaultvalue=""></textarea>';
+                    '<textarea id="desc-'+this.elementCounter+'" name="multiLine" cols="25" rows="5" defaultvalue=""></textarea>';
                 break;
             }
             case 'url': {
@@ -302,7 +359,7 @@ export class DeveloperCreateFormComponent implements OnInit {
             case 'description': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'description' : labelTitle) +
                     '</label>' +
-                    '<textarea id="" name="description" cols="25" rows="5" defaultvalue=""></textarea>';
+                    '<textarea id="desc-'+this.elementCounter+'" name="description" cols="25" rows="5" defaultvalue=""></textarea>';
                 break;
             }
             case 'decimal': {
@@ -326,7 +383,7 @@ export class DeveloperCreateFormComponent implements OnInit {
             case 'note': {
                 div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Note' : labelTitle) +
                     '</label>' +
-                    '<textarea id="" name="note" cols="25" rows="5" defaultvalue=""></textarea>';
+                    '<textarea id="desc-'+this.elementCounter+'" name="note" cols="25" rows="5" defaultvalue=""></textarea>';
                 break;
             }
             case 'percent': {
@@ -346,36 +403,63 @@ export class DeveloperCreateFormComponent implements OnInit {
                 div += '<span > </span>';
                 break;
             }
+            case 'photo' : {
+                div +='<label id="lbl-' + this.elementCounter + '" style="display:none"></label>';
+                div += '<img class="image-container-1" id="src-' + this.elementCounter + '" src="https://vignette.wikia.nocookie.net/the-darkest-minds/images/4/47/Placeholder.png/revision/latest?cb=20160927044640"    style="background: #d6d6d6;" /> ' ;
+                break;
+            }
+            case 'video' : {
+                div +='<label id="lbl-' + this.elementCounter + '" style="display:none"></label>';
+                div += '<video id="src-' + this.elementCounter + '" src="https://youtu.be/g_hzRJwgcpg" width="100%"  style="background: #d6d6d6;"> </video> ' ;
+                break;
+            }
+            case 'title' : {
+                div +='<label id="lbl-' + this.elementCounter + '" style="font-size: 25px; font-weight: bold;">' + (labelTitle === undefined ? 'Title' : labelTitle) +
+                '</label>';
+                div += '<input type="text" style="display: none"> </video> ' ;
+                break;
+            }
+            case 'section' : {
+                div +='<label id="lbl-' + this.elementCounter + '" style="font-size: 20px; font-weight: bold; color: #FFF">' + (labelTitle === undefined ? 'Title' : labelTitle) +
+                '</label>';
+                div += '<input type="text" style="display: none"> </video> ' ;
+                break;
+            }
+            case 'paragraph' : {
+                div +='<p id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'Paragraph' : labelTitle) +
+                '</p>';
+                div += '<input type="text" style="display: none"> </video> ' ;
+                break;
+            }
+            case 'youtube' : {
+                div +='<label id="lbl-' + this.elementCounter + '" style="display:none"></label>';
+                div += '<iframe id="src-' + this.elementCounter +'" width="420" height="315" src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>' ;
+                break;
+                
+            }
+            case '2_line_text' : {
+                div += '<label for="" id="lbl-' + this.elementCounter + '" >' + (labelTitle === undefined ? 'text' : labelTitle) +
+                '</label><br><small id="sm-'+this.elementCounter+'">'+(element.value != undefined ? element.value : 'description value')+'</small><br>' 
+                + '<input type="text" id="" name="text" />';
+                break;
+
+            }
 
         }
         let path = '';
         if (container === 1) {
-            path = '<path fill="currentColor" ' +
-                // tslint:disable-next-line:max-line-length
-                'd="M256 8c137 0 248 111 248 248S393 504 256 504 8 393 8 256 119 8 256 8zM140 300h116v70.9c0 10.7 13 16.1 20.5 8.5l114.3-114.9c4.7-4.7 4.7-12.2 0-16.9l-114.3-115c-7.6-7.6-20.5-2.2-20.5 8.5V212H140c-6.6 0-12 5.4-12 12v64c0 6.6 5.4 12 12 12z">' +
-                '</path>';
+            path = '<i class="fa fa-pencil"></i>';
         } else {
-            path = '<path fill="currentColor" '
-                // tslint:disable-next-line:max-line-length
-                + 'd="M256 504C119 504 8 393 8 256S119 8 256 8s248 111 248 248-111 248-248 248zm116-292H256v-70.9c0-10.7-13-16.1-20.5-8.5L121.2 247.5c-4.7 4.7-4.7 12.2 0 16.9l114.3 114.9c7.6 7.6 20.5 2.2 20.5-8.5V300h116c6.6 0 12-5.4 12-12v-64c0-6.6-5.4-12-12-12z">'
-                + '</path>';
+            path = '<i class="fa fa-pencil"></i>';
         }
 
-        div += '<span style="display: none;">' +
-            '<a title="Mover a la derecha" id="move-' + this.elementCounter + '">' +
-            '<svg aria-hidden="true" data-prefix="fas" data-icon="arrow-alt-circle-right" ' +
-            'class="svg-inline--fa fa-arrow-alt-circle-right fa-w-16 " role="img" ' +
-            'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">' +
-            path +
-            '</svg>' +
+        div += '<span style="display: '+(type !== 'youtube' ? 'none' : 'block')+';">' +
+            '<a title="Mover a la derecha" id="move-' + this.elementCounter + '" style="display: '+(type !== 'youtube' ? 'none' : 'block')+';">' +
+            '<i class="fas fa-pencil-alt"></i>' +
             '</a>' +
             '<a title="Borrar" id="delete-' + this.elementCounter + '">' +
-            '<svg aria-hidden="true" data-prefix="fas" data-icon="trash-alt" class="svg-inline--fa fa-trash-alt fa-w-14 " ' +
-            'role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">' +
-            '<path fill="currentColor" ' +
-            // tslint:disable-next-line:max-line-length
-            'd="M0 84V56c0-13.3 10.7-24 24-24h112l9.4-18.7c4-8.2 12.3-13.3 21.4-13.3h114.3c9.1 0 17.4 5.1 21.5 13.3L312 32h112c13.3 0 24 10.7 24 24v28c0 6.6-5.4 12-12 12H12C5.4 96 0 90.6 0 84zm416 56v324c0 26.5-21.5 48-48 48H80c-26.5 0-48-21.5-48-48V140c0-6.6 5.4-12 12-12h360c6.6 0 12 5.4 12 12zm-272 68c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208z">' +
-            '</path></svg></a></span>';
+            '<i class="fa fa-trash-alt"></i></a>'+
+            '</span>';
         div += '</div>';
         if (container === 1) {
             this.left_container.nativeElement.insertAdjacentHTML('beforeEnd', div);
@@ -383,19 +467,91 @@ export class DeveloperCreateFormComponent implements OnInit {
             this.right_container.nativeElement.insertAdjacentHTML('beforeEnd', div);
 
         }
-        for (let i = 0; i < this.elementCounter + 1; i++) {
+        //for (let i = 0; i < this.elementCounter + 1; i++) {
+            const i  = this.elementCounter ; 
             if (this.elementRef.nativeElement.querySelector('#el-' + i) !== undefined
                 && this.elementRef.nativeElement.querySelector('#el-' + i) !== null) {
                 this.elementRef.nativeElement.querySelector('#el-' + i).addEventListener('click', (event) => this.selectElement(event));
-                this.elementRef.nativeElement.querySelector('#el-' + i).addEventListener('dragstart',
-                    (event) => this.drag(event, type, i));
-                this.elementRef.nativeElement.querySelector('#delete-' + i).addEventListener('click',
-                    (event) => this.removeElement(event, container, i));
-                this.elementRef.nativeElement.querySelector('#move-' + i).addEventListener('click',
-                    (event) => this.moveElement(event, (container === 1 ? 2 : 1), type, i));
+                if(this.elementRef.nativeElement.querySelector('#desc-' +i) !== null){
+                    this.elementRef.nativeElement.querySelector('#desc-'+i).addEventListener('focus' , (event) => this.selectElement(event));
+                }
+                
+                this.renderer.listen(this.elementRef.nativeElement.querySelector('#el-' + i)
+                 , 'dragstart' , 
+                 (event) => this.drag(event, type, i));
+                this.renderer.listen(this.elementRef.nativeElement.querySelector('#delete-' + i) , 'click' ,(event) => this.removeElement(event, container, i) );    
+                this.renderer.listen(this.elementRef.nativeElement.querySelector('#move-' + i) , 'click' ,(event) => this.moveElement(event, (container === 1 ? 2 : 1), type, i) );    
             }
 
+        //}
+    }
+
+    onFileLoad(fileLoadedEvent) {
+        const img = fileLoadedEvent.target.result;
+
+        const image = new Image() ;
+        image.src = img ; 
+        image.onload = (e) => {
+
+            console.log('image is') ; 
+            console.log(image.height) ;
+            console.log(image.width) ; 
+            const ratio = image.height/image.width ; 
+            console.log(ratio) ;  
+            this.elementRef.nativeElement.querySelector('#src-'+this.componentSelected.id).src = img ; 
+            this.renderer.setStyle(this.elementRef.nativeElement.querySelector('#src-'+this.componentSelected.id) , 'height' , (ratio * 100)+'% !important' );
         }
+    }
+
+    sourceChanged(event){
+        console.log("file changed") ; 
+        console.log(event.target.files) ; 
+
+            const fileReader = new FileReader();
+            fileReader.onload = (e) => this.onFileLoad(e);
+            fileReader.readAsDataURL(event.target.files[0]);
+
+        
+        const upload = new Upload(event.target.files[0]);
+
+                const uploadTask = this.uploadService.pushUpload(upload);
+                uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, (snapshot) => {
+                    console.log('upload'); 
+                    console.log('upload finished') ;
+                    console.log(uploadTask.snapshot.downloadURL) ; 
+                },
+                    (error) => {
+                        // upload error
+                        console.log('error ');
+                        console.log(error);
+                    },
+                    () => {
+                        upload.url = uploadTask.snapshot.downloadURL;
+                        upload.name = upload.file.name;
+                        console.log('upad completed '+upload.url );
+                        uploadTask.snapshot.ref.getDownloadURL().then((downloadUrl) =>{
+                            console.log('download url') ; 
+                            console.log(downloadUrl) ; 
+                            this.componentSelected.value = downloadUrl ; 
+                            console.log(upload.file) ; 
+                        });
+                        
+                    }
+                ); 
+    }
+
+    inputTypeSelectChange(){
+        const inputType = this.lineTextTypeSelector.nativeElement.options[this.lineTextTypeSelector.nativeElement.selectedIndex].value ; 
+        this.componentSelected.inputType = inputType ; 
+        console.log('input tupe select change');
+        console.log(this.componentSelected) ;;
+    }
+
+    youtubeSourceChange(){
+        console.log('youtubeSourceChange '+this.youtubeSource) ; 
+        console.log('id '+('src-'+this.selectedElementIndex)) ; 
+        this.elementRef.nativeElement.querySelector('#src-'+this.selectedElementIndex).src = this.youtubeSource;
+        this.componentSelected.value = this.youtubeSource ; 
     }
 
     
@@ -407,7 +563,25 @@ export class DeveloperCreateFormComponent implements OnInit {
 
         }
         const target = event.target.parentNode;
-        if (event.target.tagName === 'DIV' || event.target.tagName === 'INPUT' || event.target.tagName === 'LABEL') {
+        if (event.target.tagName === 'DIV' 
+        || event.target.tagName === 'INPUT' 
+        || event.target.tagName === 'LABEL' 
+        || event.target.tagName === 'TEXTAREA'
+        || event.target.tagName === 'IMG'
+        || event.target.tagName === 'VIDEO'
+        || event.target.tagName === 'P'
+        || event.target.tagName === 'IFRAME'
+        || event.target.tagName === 'A'
+        || event.target.tagName === 'I'
+        || event.target.tagName === 'SMALL'
+        ) {
+            this.elementSelected = true;
+
+            // tslint:disable-next-line:radix
+            this.selectedElementIndex = parseInt(target.id.replace(/el-/g, '')) | parseInt(target.id.replace(/move-/g, '')) | parseInt(target.id.replace(/sm-/g, ''));
+            console.log('selected element ' + this.selectedElementIndex);
+            this.componentSelected = this.getComponentSelected(this.selectedElementIndex);
+            
             console.log('element select');
             this.disselectAllElemnt();
             console.log(target);
@@ -417,48 +591,80 @@ export class DeveloperCreateFormComponent implements OnInit {
             console.log(target.children);
             this.renderer.setStyle(target, 'opacity', '1');
             this.renderer.setStyle(target, 'background', 'rgb(244, 245, 245)');
+            
             // for (let i = 0; i < target.children.length; i++) {
             //     console.log(target.children[i].tagName) ;
             //     if (target.children[i].tagName == 'SPAN') {
             //         this.renderer.setStyle(target.children[i], 'display', 'bloc');
             //     }
             // }
-            this.renderer.setStyle(target.children[2], 'display', 'block');
-            this.elementSelected = true;
-
-            // tslint:disable-next-line:radix
-            this.selectedElementIndex = parseInt(target.id.replace(/el-/g, ''));
-            console.log('selected element ' + this.selectedElementIndex);
-            this.componentSelected = this.formComposition[this.selectedElementIndex];
-            this.conditionCheckedBoxIsChecked = this.formComposition[this.selectedElementIndex].isConditioned;
-            this.requiredCheckedBoxIsChecked = this.formComposition[this.selectedElementIndex].isRequired;
-            this.elementLabelTitle =this.formComposition[this.selectedElementIndex].labelTitle;
-            if(this.labelTitleInput !== undefined){
-                this.labelTitleInput.nativeElement.value = this.formComposition[this.selectedElementIndex].labelTitle;
-            }
-
-            if (this.formComposition[this.selectedElementIndex].type === 'radio'
-                || this.formComposition[this.selectedElementIndex].type === 'checkbox'
-                || this.formComposition[this.selectedElementIndex].type === 'multi_select'
-                || this.formComposition[this.selectedElementIndex].type === 'dropdown') {
-                this.shoudlShowValueOptions = true;
-                if (this.formComposition[this.selectedElementIndex].options !== ''
-                    && this.formComposition[this.selectedElementIndex].options !== undefined) {
-                    const opts = JSON.parse(this.formComposition[this.selectedElementIndex].options);
-                    this.optionsContent = '';
-                    if (opts !== undefined) {
-                        for (let i = 0; i < opts.length - 1; i++) {
-                            this.optionsContent += opts[i] + '\n';
-                        }
-                        this.optionsContent += opts[opts.length - 1] + '\n';
-
-                    }
-
+            if(this.componentSelected != undefined){
+                if(target.children[2] !== undefined){
+                    this.renderer.setStyle(target.children[2], 'display', 'block');
                 }
-
+                if(this.componentSelected.type === '2_line_text'){
+                    this.renderer.setStyle(target.children[5], 'display', 'block');
+                }
+                if(this.componentSelected.type === 'title'){
+                    this.renderer.setStyle(target , 'display' , 'block'); 
+                }
+                if(this.componentSelected.type === 'section'){
+                    this.renderer.setStyle(target , 'display' , 'block'); 
+                    this.renderer.setStyle(target , 'background' , 'rgb(105, 21, 27)');
+                }
+                this.conditionCheckedBoxIsChecked = this.componentSelected.isConditioned;
+                this.requiredCheckedBoxIsChecked = this.componentSelected.isRequired;
+                this.elementLabelTitle =this.componentSelected.labelTitle;
+                this.smallLabelTitle = this.componentSelected.value ; 
+                this.youtubeSource = this.componentSelected.value ; 
+                if(this.labelTitleInput !== undefined){
+                    this.labelTitleInput.nativeElement.value = this.componentSelected.labelTitle;
+                }
+    
+                if (this.componentSelected.type === 'radio'
+                    || this.componentSelected.type === 'checkbox'
+                    || this.componentSelected.type === 'multi_select'
+                    || this.componentSelected.type === 'dropdown') {
+                    this.shoudlShowValueOptions = true;
+                    if (this.componentSelected.options !== ''
+                        && this.componentSelected.options !== undefined) {
+                        const opts = JSON.parse(this.componentSelected.options);
+                        this.optionsContent = '';
+                        if (opts !== undefined) {
+                            for (let i = 0; i < opts.length - 1; i++) {
+                                this.optionsContent += opts[i] + '\n';
+                            }
+                            this.optionsContent += opts[opts.length - 1] + '\n';
+    
+                        }
+    
+                    }
+    
+                }
             }
+            
         }
 
+    }
+    getComponentIndexSelected(id){
+        console.log('form composition') ; 
+        console.log(this.formComposition) ; 
+        for(let i = 0 ; i < this.formComposition.length ; i++){
+            if(this.formComposition[i].id == id){
+                return i; 
+            }
+        }
+    }
+    getComponentSelected(id){
+        console.log('form composition') ; 
+        console.log(this.formComposition) ; 
+        //return this.formComposition[id];
+        
+        for(let i = 0 ; i < this.formComposition.length ; i++){
+            if(this.formComposition[i].id == id){
+                return this.formComposition[i] ; 
+            }
+        } 
     }
 
     selectElement(event) {
@@ -519,7 +725,7 @@ export class DeveloperCreateFormComponent implements OnInit {
     setElementRole() {
 
         if (this.roleSelector.nativeElement.options[this.roleSelector.nativeElement.selectedIndex].value !== '0') {
-            this.formComposition[this.selectedElementIndex].role =
+            this.componentSelected.role =
                 this.roleSelector.nativeElement.options[this.roleSelector.nativeElement.selectedIndex].value;
 
             this.labelTitleInput.nativeElement.value =
@@ -542,43 +748,43 @@ export class DeveloperCreateFormComponent implements OnInit {
             let div;
             let id = '';
 
-            if (this.formComposition[this.selectedElementIndex].type === 'radio'
+            if (this.componentSelected.type === 'radio'
             ) {
                 id = '#rd-' + this.selectedElementIndex;
 
             }
-            if (this.formComposition[this.selectedElementIndex].type === 'checkbox') {
+            if (this.componentSelected.type === 'checkbox') {
                 id = '#cb-' + this.selectedElementIndex;
 
             }
-            if (this.formComposition[this.selectedElementIndex].type === 'multi_select'
-                || this.formComposition[this.selectedElementIndex].type === 'dropdown') {
+            if (this.componentSelected.type === 'multi_select'
+                || this.componentSelected.type === 'dropdown') {
                 id = '#sel-' + this.selectedElementIndex;
             }
             console.log('the id ' + id);
             div = this.elementRef.nativeElement.querySelector(id);
             div.innerHTML = '';
 
-            if (this.formComposition[this.selectedElementIndex].type === 'multi_select'
-                || this.formComposition[this.selectedElementIndex].type === 'dropdown') {
+            if (this.componentSelected.type === 'multi_select'
+                || this.componentSelected.type === 'dropdown') {
                 div.innerHTML = '<option value="">--por favor, elija--</option></select>';
             }
-            this.formComposition[this.selectedElementIndex].options = JSON.stringify(values);
+            this.componentSelected.options = JSON.stringify(values);
             for (let i = 0; i < values.length; i++) {
                 if (values[i] !== '') {
-                    if (this.formComposition[this.selectedElementIndex].type === 'radio'
+                    if (this.componentSelected.type === 'radio'
                     ) {
                         const op = '<p><input type="radio" name="checkbox-' + this.selectedElementIndex + '" id="checkbox2" ' +
                             'value="checkbox 1"><label for="radio1">' + values[i] + '</label></p>';
                         div.innerHTML += op;
                     }
-                    if (this.formComposition[this.selectedElementIndex].type === 'checkbox') {
+                    if (this.componentSelected.type === 'checkbox') {
                         const op = '<p><input type="checkbox" name="checkbox-' + this.selectedElementIndex + '" id="checkbox2" ' +
                             'value="checkbox 1"><label for="radio1">' + values[i] + '</label></p>';
                         div.innerHTML += op;
                     }
-                    if (this.formComposition[this.selectedElementIndex].type === 'multi_select'
-                        || this.formComposition[this.selectedElementIndex].type === 'dropdown') {
+                    if (this.componentSelected.type === 'multi_select'
+                        || this.componentSelected.type === 'dropdown') {
                         const op = '<option value="' + values[i] + '">' + values[i] + '</option></select>';
                         div.innerHTML += op;
 
@@ -592,6 +798,7 @@ export class DeveloperCreateFormComponent implements OnInit {
 
     disselectAllElemnt() {
         this.shouldShowButtonActionSection = false;
+        this.smallLabelTitle = '' ; 
         if (this.isFieldRequired !== undefined) {
             console.log('uncheck');
             this.requiredCheckedBoxIsChecked = false;
@@ -603,24 +810,69 @@ export class DeveloperCreateFormComponent implements OnInit {
 
         let children = this.left_container.nativeElement.children;
         for (let i = 0; i < children.length; i++) {
+            const id = children[i].id.replace(/el-/g , '') ; 
+            const c = this.getComponentSelected(id) ;
             this.renderer.setStyle(children[i], 'opacity', '1');
             this.renderer.setStyle(children[i], 'background', 'none');
-            this.renderer.setStyle(children[i].children[2], 'display', 'none');
-        }
+            if(c.type !== 'youtube'){
+                this.renderer.setStyle(children[i].children[2], 'display', 'none');
+            }
+            
+            console.log('disselect type '+i) ; 
+            console.log(id) ; 
+            if(c !== undefined){
+                if(c.type === 'title'){
+                    this.renderer.setStyle(children[i] , 'display' , 'block'); 
+                }
+                if(c.type === 'section'){
+                    this.renderer.setStyle(children[i] , 'display' , 'block'); 
+                    this.renderer.setStyle(children[i] , 'background' , 'rgb(105, 21, 27)');
+                }
+                if(c.type === '2_line_text'){
+                    this.renderer.setStyle(children[i].children[5], 'display', 'none');
+                    this.renderer.setStyle(children[i].children[2], 'display', 'block');
 
-        children = this.right_container.nativeElement.children;
-        for (let i = 0; i < children.length; i++) {
-            this.renderer.setStyle(children[i], 'opacity', '1');
-            this.renderer.setStyle(children[i], 'background', 'none');
-            this.renderer.setStyle(children[i].children[2], 'display', 'none');
+
+                }
+            }
+
+        }
+        if(this.right_container !== undefined){
+            children = this.right_container.nativeElement.children;
+            for (let i = 0; i < children.length; i++) {
+                this.renderer.setStyle(children[i], 'opacity', '1');
+                this.renderer.setStyle(children[i], 'background', 'none');
+                this.renderer.setStyle(children[i].children[2], 'display', 'none');
+                const id = children[i].id.replace(/el-/g , '') ; 
+            const c = this.getComponentSelected(id) ; 
+            if(c !== undefined){
+                if(c.type === 'title'){
+                    this.renderer.setStyle(children[i] , 'display' , 'block'); 
+                }
+                if(c.type === 'section'){
+                    this.renderer.setStyle(children[i] , 'display' , 'block'); 
+                    this.renderer.setStyle(children[i] , 'background' , 'rgb(105, 21, 27)');
+                }
+            }
+            }
         }
     }
 
     removeElement(event, fromContainer, id) {
+        event.stopPropagation();
+        this.isDeleteProcessRunning = true ;
+        console.log('delete call number '+this.deleteCallNumber);
+        console.log(event);
+        this.deleteCallNumber ++;
         console.log('delete element');
+        console.log('old form compositon') ; 
+        console.log(this.formComposition);
         this.disselectAllElemnt(); 
-        this.formComposition.splice(id , 1); 
+        this.formComposition.splice(this.getComponentIndexSelected(id) , 1); 
         this.deleteElement(id, fromContainer);
+        console.log('new form compositon') ; 
+        console.log(this.formComposition);         
+        
     }
 
     deleteElement(id, fromContainer) {
@@ -640,9 +892,12 @@ export class DeveloperCreateFormComponent implements OnInit {
     }
 
     moveElement(event, toContainer, type, id) {
-        console.log('move element');
-        this.createElement(type, toContainer);
-        this.deleteElement(id, (toContainer === 1 ? 2 : 1));
+        if(type === 'youtube'){
+            this.selectElement(event);
+        }
+        //console.log('move element');
+        //this.createElement(type, toContainer);
+        //this.deleteElement(id, (toContainer === 1 ? 2 : 1));
     }
     addPage() {
         console.log('add page');
@@ -659,7 +914,9 @@ export class DeveloperCreateFormComponent implements OnInit {
         this.formComposition = [];
         // this.conditions = [];
         this.left_container.nativeElement.innerHTML = '';
-        this.right_container.nativeElement.innerHTML = '';
+        if(this.right_container != undefined){
+            this.right_container.nativeElement.innerHTML = '';
+        }
         console.log(this.pages);
         this.pagesIndex.push(this.pageIndex + 1);
     }
@@ -689,8 +946,15 @@ export class DeveloperCreateFormComponent implements OnInit {
 
     editLabelTitle() {
         const lbl = this.elementRef.nativeElement.querySelector('#lbl-' + this.selectedElementIndex);
-        lbl.innerHTML = this.labelTitleInput.nativeElement.value;
-        this.formComposition[this.selectedElementIndex].labelTitle = this.labelTitleInput.nativeElement.value;
+        lbl.innerHTML = this.labelTitleInput.nativeElement.value.replace(/\n/g,'<br>');
+        this.componentSelected.labelTitle = this.labelTitleInput.nativeElement.value.replace(/\n/g,'<br>');
+    }
+
+    editSmallLabelTitle() {
+        const lbl = this.elementRef.nativeElement.querySelector('#sm-' + this.selectedElementIndex);
+        lbl.innerHTML = this.smallLabelTitle;
+        console.log('small label '+this.smallLabelTitle) ; 
+        this.componentSelected.value = this.smallLabelTitle.replace(/\n/g,'<br>');
     }
 
     loadPage(page: Page, index: number) {
@@ -710,7 +974,7 @@ export class DeveloperCreateFormComponent implements OnInit {
             this.createElement(
                 this.formComposition[i].type,
                 (this.formComposition[i].container === 'LEFT' ? 1 : 2),
-                this.formComposition[i].labelTitle);
+                this.formComposition[i].labelTitle , this.formComposition[i]);
             this.elementCounter = i;
         }
 
@@ -836,21 +1100,25 @@ export class DeveloperCreateFormComponent implements OnInit {
             if (ecp1 !== -1) {
                 console.log('ecp is not -1');
                 console.log(ecp1);
-                let index = -1;
+                /*let index = -1;
                 for (let i = 0; i < this.formComposition.length; i++) {
                     console.log('element id ' + this.formComposition[i].id);
                     if (this.formComposition[i].id.toString() === ecp1.toString()) {
                         index = i;
                         break;
                     }
-                }
-                if (index !== -1) {
+                }*/
+                //if (index !== -1) {
+                    console.log(this.selectTypeElements);
                     console.log('cp is not defined');
-                    if (this.formComposition[index].options !== undefined && this.formComposition[index].options !== '') {
+                    const dropDownElement = this.getComponentSelected(ecp1) ; 
+                    console.log('element selected ') ; 
+                    console.log(dropDownElement);
+                    if (dropDownElement.options !== undefined && dropDownElement.options !== '') {
                         console.log('cp option is good');
-                        this.selectTypeValues = JSON.parse(this.formComposition[index].options);
+                        this.selectTypeValues = JSON.parse(dropDownElement.options);
                     }
-                }
+                //}
             } else {
                 this.selectTypeValues = [];
             }
@@ -860,21 +1128,25 @@ export class DeveloperCreateFormComponent implements OnInit {
         } else {
             const ecp1 = this.notEqualDropField11.nativeElement.options[this.notEqualDropField11.nativeElement.selectedIndex].value;
             if (ecp1 !== -1) {
-                let index = -1;
+                /*let index = -1;
                 for (let i = 0; i < this.formComposition.length; i++) {
                     console.log('element id ' + this.formComposition[i].id);
                     if (this.formComposition[i].id.toString() === ecp1.toString()) {
                         index = i;
                         break;
                     }
-                }
-                if (index !== -1) {
+                }*/
+                //if (index !== -1) {
+                    console.log(this.selectTypeElements);
                     console.log('cp is not defined');
-                    if (this.formComposition[index].options !== undefined && this.formComposition[index].options !== '') {
+                    const dropDownElement = this.getComponentSelected(ecp1) ; 
+                    console.log('element selected ') ; 
+                    console.log(dropDownElement);
+                    if (dropDownElement.options !== undefined && dropDownElement.options !== '') {
                         console.log('cp option is good');
-                        this.selectTypeValuesNotEqual = JSON.parse(this.formComposition[index].options);
+                        this.selectTypeValuesNotEqual = JSON.parse(dropDownElement.options);
                     }
-                }
+                //}
             } else {
                 this.selectTypeValuesNotEqual = [];
             }
@@ -956,7 +1228,6 @@ export class DeveloperCreateFormComponent implements OnInit {
 
     validateCondition() {
         console.log('creating condition');
-        this.fieldConditionChanged = false ;
 
         console.log(this.conditionRAdioGroup);
         console.log(this.actionRadioGroup);
@@ -977,68 +1248,70 @@ export class DeveloperCreateFormComponent implements OnInit {
         if (this.pages.length !== 0) {
             this.pages[this.pageIndex].conditions = this.conditions;
         }
+        this.fieldConditionChanged = false ;
+
 
     }
 
     makeFieldRequired() {
         if (this.isFieldRequired.nativeElement.checked) {
-            this.formComposition[this.selectedElementIndex].isRequired = true;
+            this.componentSelected.isRequired = true;
         } else {
-            this.formComposition[this.selectedElementIndex].isRequired = false;
+            this.componentSelected.isRequired = false;
         }
     }
 
     makeFieldCondition() {
         console.log('make field contioned');
-        console.log(this.formComposition[this.selectedElementIndex].type);
+        console.log(this.componentSelected.type);
         if (this.isFieldConditioned.nativeElement.checked) {
-            this.formComposition[this.selectedElementIndex].isConditioned = true;
-            if (this.formComposition[this.selectedElementIndex].type === 'radio'
-                || this.formComposition[this.selectedElementIndex].type === 'dropdown') {
+            this.componentSelected.isConditioned = true;
+            if (this.componentSelected.type === 'radio'
+                || this.componentSelected.type === 'dropdown') {
                 console.log('field radio or dropdown');
-                this.selectTypeElements.push(this.formComposition[this.selectedElementIndex]);
-            } else if (this.formComposition[this.selectedElementIndex].type === 'checkbox') {
-                const options = JSON.parse(this.formComposition[this.selectedElementIndex].options);
+                this.selectTypeElements.push(this.componentSelected);
+            } else if (this.componentSelected.type === 'checkbox') {
+                const options = JSON.parse(this.componentSelected.options);
                 if (options !== undefined) {
                     if (options.length === 1) {
                         console.log('field checkbox');
-                        this.oneOptionTypeElemnts.push(this.formComposition[this.selectedElementIndex]);
+                        this.oneOptionTypeElemnts.push(this.componentSelected);
                     }
                 }
 
             } else {
-                if (this.formComposition[this.selectedElementIndex].type !== 'password'
-                    && this.formComposition[this.selectedElementIndex].type !== 'multi_select'
+                if (this.componentSelected.type !== 'password'
+                    && this.componentSelected.type !== 'multi_select'
                 ) {
                     console.log('field text');
-                    this.textTypeElements.push(this.formComposition[this.selectedElementIndex]);
+                    this.textTypeElements.push(this.componentSelected);
                 }
             }
 
 
-            this.conditionedFormCompotion.push(this.formComposition[this.selectedElementIndex]);
+            this.conditionedFormCompotion.push(this.componentSelected);
         } else {
-            this.formComposition[this.selectedElementIndex].isConditioned = false;
+            this.componentSelected.isConditioned = false;
 
 
-            if (this.formComposition[this.selectedElementIndex].type === 'radio'
-                || this.formComposition[this.selectedElementIndex].type === 'dropdown') {
+            if (this.componentSelected.type === 'radio'
+                || this.componentSelected.type === 'dropdown') {
                 let popIndex = -1;
                 for (let i = 0; i < this.selectTypeElements.length; i++) {
-                    if (this.selectTypeElements[i].id === this.formComposition[this.selectedElementIndex].id) {
+                    if (this.selectTypeElements[i].id === this.componentSelected.id) {
                         popIndex = i;
                     }
                 }
                 if (popIndex !== -1) {
                     this.selectTypeElements.splice(popIndex, 1);
                 }
-            } else if (this.formComposition[this.selectedElementIndex].type === 'checkbox') {
-                const options = JSON.parse(this.formComposition[this.selectedElementIndex].options);
+            } else if (this.componentSelected.type === 'checkbox') {
+                const options = JSON.parse(this.componentSelected.options);
                 if (options !== undefined) {
                     if (options.length === 1) {
                         let popIndex = -1;
                         for (let i = 0; i < this.oneOptionTypeElemnts.length; i++) {
-                            if (this.oneOptionTypeElemnts[i].id === this.formComposition[this.selectedElementIndex].id) {
+                            if (this.oneOptionTypeElemnts[i].id === this.componentSelected.id) {
                                 popIndex = i;
                             }
                         }
@@ -1049,12 +1322,12 @@ export class DeveloperCreateFormComponent implements OnInit {
                 }
 
             } else {
-                if (this.formComposition[this.selectedElementIndex].type !== 'password'
-                    && this.formComposition[this.selectedElementIndex].type === 'multi_select'
+                if (this.componentSelected.type !== 'password'
+                    && this.componentSelected.type === 'multi_select'
                 ) {
                     let popIndex = -1;
                     for (let i = 0; i < this.textTypeElements.length; i++) {
-                        if (this.textTypeElements[i].id === this.formComposition[this.selectedElementIndex].id) {
+                        if (this.textTypeElements[i].id === this.componentSelected.id) {
                             popIndex = i;
                         }
                     }
@@ -1105,6 +1378,7 @@ export class DeveloperCreateFormComponent implements OnInit {
             this.pages,
             (new Date()).toString(),
             this.formName);
+            form.isSingleColumnForm = this.isSingleColumnForm;
 
         if (this.modelSelector !== undefined) {
             if (this.modelSelector.nativeElement.selectedIndex !== 0) {
@@ -1112,12 +1386,12 @@ export class DeveloperCreateFormComponent implements OnInit {
                     this.modelSelector.nativeElement.options[this.modelSelector.nativeElement.selectedIndex].value;
             }
             if (this.isRegisterform.nativeElement.checked) {
-                form.isRegisterFormPriority = (new Date()).toString();
+                //form.isRegisterFormPriority = (new Date()).toString();
             }
         }
 
         console.log(form);
-
+        
         this.formService.persist(form).then(
             () => {
                 this.router.navigate(['developper']);

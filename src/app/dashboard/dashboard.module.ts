@@ -34,6 +34,15 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { CalendarComponent } from './calendar/calendar.component';
 import { DiscardChangesPopupComponent } from './popup/discard-changes-popup/discard-changes-popup.component';
+import { FixInterviewDateComponent } from './fix-interview-date/fix-interview-date.component';
+import { ProposeInterviewDateComponent } from './propose-interview-date/propose-interview-date.component';
+import { ConfigurationFromsComponent } from './configuration-froms/configuration-froms.component';
+import { CandidateInformationComponent } from './candidate-information/candidate-information.component';
+import { CreateTaskComponent } from './popup/create-task/create-task.component';
+import { ShowTasksPopupComponent } from './popup/show-tasks-popup/show-tasks-popup.component';
+import { CandidateResponsesComponent } from './candidate-responses/candidate-responses.component';
+import { CreateDocumentComponent } from './communications/create-document/create-document.component';
+import { EditDocumentComponent } from './communications/edit-document/edit-document.component';
 
 
 @NgModule({
@@ -76,9 +85,18 @@ import { DiscardChangesPopupComponent } from './popup/discard-changes-popup/disc
         DeleteAlertPopupComponent,
         CalendarComponent,
         DiscardChangesPopupComponent,
+        FixInterviewDateComponent,
+        ProposeInterviewDateComponent,
+        ConfigurationFromsComponent,
+        CandidateInformationComponent,
+        CreateTaskComponent,
+        ShowTasksPopupComponent,
+        CandidateResponsesComponent,
+        CreateDocumentComponent,
+        EditDocumentComponent,
         
     ],
-    exports: [AddUserPopupComponent, DeleteAlertPopupComponent , DiscardChangesPopupComponent ],
-    entryComponents: [AddUserPopupComponent, DeleteAlertPopupComponent , DiscardChangesPopupComponent ]
+    exports: [AddUserPopupComponent, DeleteAlertPopupComponent , DiscardChangesPopupComponent , CreateTaskComponent , ShowTasksPopupComponent ],
+    entryComponents: [AddUserPopupComponent, DeleteAlertPopupComponent , DiscardChangesPopupComponent , CreateTaskComponent , ShowTasksPopupComponent ]
 })
 export class DashboardModule { }

@@ -7,7 +7,10 @@ export class Form extends Object {
     public creationTimestamp: string;
     public title: string;
     public modelToSendId: string;
-    public isRegisterFormPriority: string;
+    public isRegisterForm: Boolean = false;
+    public isPreInterviewForm: Boolean = false ; 
+    public isInterviewForm: Boolean = false;
+    public isSingleColumnForm: Boolean; 
 
     constructor(creator: string, composition: Array<Page>, timestamp: string, title: string) {
         super();

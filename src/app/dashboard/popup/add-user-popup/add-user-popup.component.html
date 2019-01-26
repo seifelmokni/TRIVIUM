@@ -16,10 +16,10 @@
     </div>
     <div class="info-block">
       <label for="name">Permisos</label>
-      <select>
+      <select #roleSelector (change)="roleSelected">
         <option value="-1">Sin autorización</option>
-        <option value="5b661a35564dd748249962fa">Super Administrador</option>
-        <option value="5bc6eb42eb6a1239b43f091e">Entrevistador</option>
+        <option value="admin" [selected]="user.role == admin">Super Administrador</option>
+        <option value="interviewer" [selected]="user.role == interviewer">Entrevistador</option>
       </select>
     </div>
     <div class="info-block">

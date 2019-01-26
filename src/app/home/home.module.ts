@@ -14,6 +14,8 @@ import { CalendarModule } from 'angular-calendar';
 import { DateAdapter } from '@angular/material';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { UpdatePasswordComponent } from './update-password/update-password.component';
+import { PasswordupdatedComponent } from './passwordupdated/passwordupdated.component';
 
 @NgModule({
     imports: [
@@ -33,6 +35,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
         HeaderComponent,
         FooterComponent,
         CandidatComponent,
-        FormSubmittedComponent]
+        FormSubmittedComponent,
+        UpdatePasswordComponent,
+        PasswordupdatedComponent]
 })
 export class HomeModule { }

@@ -9,6 +9,10 @@ import * as firebase from 'firebase/app';
 import 'firebase/storage';
 import { ModelsService } from '../../../shared/models/models.service';
 import { AuthService } from '../../../shared/auth/auth.service';
+import { FormsService } from 'src/app/shared/forms/forms.service';
+import { Form } from 'src/app/models/form/form.model';
+import { PlatformLocation } from '@angular/common';
+import { CKEditor5 } from '@ckeditor/ckeditor5-angular/ckeditor';
 
 @Component({
   selector: 'app-edit-model',
@@ -24,6 +28,7 @@ export class EditModelComponent implements OnInit {
     modelMetaData;
     modelFiles;
     modelContent;
+    ckEditor;
 
     @ViewChild('metaDataSelector') metaDataSelector: ElementRef;
     selectedFiles: FileList;
@@ -31,12 +36,15 @@ export class EditModelComponent implements OnInit {
     urls: Array<string>;
 
     model: Model;
+    forms : Form[] = [] ; 
 
 
     constructor(private router: Router,
         private uploadService: UploadService,
         private modelService: ModelsService,
-        private authService: AuthService) {
+        private authService: AuthService,
+        private formService: FormsService,
+        private plateformLocation: PlatformLocation) {
 
             this.model = this.modelService.selectedModel;
 
@@ -45,6 +53,13 @@ export class EditModelComponent implements OnInit {
     ngOnInit() {
         console.log('model');
         console.log(this.model);
+        this.formService.listForms().subscribe(
+            (fs: Form[]) =>{
+                console.log("forms") ; 
+                console.log(fs);
+                this.forms = fs;
+            }
+        );
     }
 
     cancel() {
@@ -54,6 +69,53 @@ export class EditModelComponent implements OnInit {
     }
     preview() {
 
+    }
+    insertMetaData(){
+        const meta = this.metaDataSelector.nativeElement.options[this.metaDataSelector.nativeElement.selectedIndex].value ;
+        let insertElement = '' ; 
+        switch (meta){
+            case 'email' : {
+                insertElement = '[BTEMAIL]';
+                break;
+            }
+            case 'name' : {
+                insertElement = '[BTNAME]';
+                break;
+            }
+            case 'passwordLink' : {
+                insertElement = '[BTPASSWORDLINK]';
+                break;
+            }
+            case 'securityToken' : {
+                insertElement = '[BTSECURITYTOKEN]';
+                break;
+            }
+            case '0' : {
+
+                break; 
+            }
+            default : {
+                //insert form 
+                console.log('location');
+                console.log((this.plateformLocation as any).location);
+                console.log((this.plateformLocation as any).location.href);
+                console.log((this.plateformLocation as any).location.origin);
+                const url = (this.plateformLocation as any).location.origin+'/fillCandidature/'+meta+'/[BTCANDIDATEID]' ;
+                console.log(url);
+                insertElement = url;
+               
+            }
+        }
+        this.ckEditor.setData(this.ckEditor.getData().replace(new RegExp('</p>'+'$') , insertElement ));
+        
+    }
+
+    editorReady(editor: CKEditor5.Editor){
+        console.log('editor ready setting data');
+        console.log(editor);
+        //editor.setData('test data') ; 
+        this.ckEditor = editor;
+        
     }
 
     editorChange({ editor }: ChangeEvent) {

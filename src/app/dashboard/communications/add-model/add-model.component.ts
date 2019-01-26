@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Renderer2 } from '@angular/core';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Router } from '@angular/router';
 import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
@@ -9,6 +9,10 @@ import * as firebase from 'firebase/app';
 import 'firebase/storage';
 import { ModelsService } from '../../../shared/models/models.service';
 import { AuthService } from '../../../shared/auth/auth.service';
+import { FormsService } from 'src/app/shared/forms/forms.service';
+import { Form } from 'src/app/models/form/form.model';
+import { PlatformLocation } from '@angular/common';
+import { CKEditor5 } from '@ckeditor/ckeditor5-angular/ckeditor';
 
 
 
@@ -20,25 +24,38 @@ import { AuthService } from '../../../shared/auth/auth.service';
 export class AddModelComponent implements OnInit {
 
     public editor = ClassicEditor;
+    ckEditor;
     modelName;
     modelDescription;
     modelSubject;
     modelMetaData;
     modelFiles;
     modelContent;
+    htmlData = '';
 
     @ViewChild('metaDataSelector') metaDataSelector: ElementRef;
     selectedFiles: FileList;
     currentUpload: Upload;
     urls: Array<string>;
-
+    forms: Form[] = [] ; 
 
     constructor(private router: Router,
         private uploadService: UploadService,
         private modelService: ModelsService,
-        private authService: AuthService) { }
+        private authService: AuthService,
+        private formService: FormsService,
+        private plateformLocation: PlatformLocation,
+        private elementRef: ElementRef,
+        private renderer: Renderer2) { }
 
     ngOnInit() {
+        this.formService.listForms().subscribe(
+            (fs: Form[]) =>{
+                console.log("forms") ; 
+                console.log(fs);
+                this.forms = fs;
+            }
+        );
     }
 
     cancel() {
@@ -48,6 +65,52 @@ export class AddModelComponent implements OnInit {
     }
     preview() {
 
+    }
+    insertMetaData(){
+        const meta = this.metaDataSelector.nativeElement.options[this.metaDataSelector.nativeElement.selectedIndex].value ;
+        let insertElement = '' ; 
+        switch (meta){
+            case 'email' : {
+                insertElement = '[BTEMAIL]';
+                break;
+            }
+            case 'name' : {
+                insertElement = '[BTNAME]';
+                break;
+            }
+            case 'passwordLink' : {
+                insertElement = '[BTPASSWORDLINK]';
+                break;
+            }
+            case 'securityToken' : {
+                insertElement = '[BTSECURITYTOKEN]';
+                break;
+            }
+            case '0' : {
+
+                break; 
+            }
+            default : {
+                //insert form 
+                console.log('location');
+                console.log((this.plateformLocation as any).location);
+                console.log((this.plateformLocation as any).location.href);
+                console.log((this.plateformLocation as any).location.origin);
+                const url = (this.plateformLocation as any).location.origin+'/fillCandidature/'+meta+'/[BTCANDIDATEID]' ;
+                console.log(url);
+                insertElement = url;
+               
+            }
+        }
+        this.ckEditor.setData(this.ckEditor.getData().replace(new RegExp('</p>'+'$') , insertElement ));
+        
+    }
+
+    editorReady(editor: CKEditor5.Editor){
+        console.log('editor ready setting data');
+        console.log(editor);
+        this.ckEditor = editor;
+        
     }
 
     editorChange({ editor }: ChangeEvent) {

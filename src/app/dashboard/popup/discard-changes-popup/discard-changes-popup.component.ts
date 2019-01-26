@@ -1,10 +1,11 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-discard-changes-popup',
   templateUrl: './discard-changes-popup.component.html',
-  styleUrls: ['./discard-changes-popup.component.css']
+  styleUrls: ['./discard-changes-popup.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DiscardChangesPopupComponent implements OnInit {
   message;

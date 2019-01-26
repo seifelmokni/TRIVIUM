@@ -125,9 +125,10 @@
                 <td class="">{{ item.college }}</td>
                 <td class="">{{ item.applicationDate }}</td>
                 <td class="">{{ item.phone }}</td>
-                <td class="">Invalid date</td>
+                <td class="">{{item.applicationDate}}</td>
                 <td class="">
-                  <span class="textcol-red text-underline">Incompleta</span>
+                  <span (click)="loadResponse(item)" class="textcol-red text-underline" *ngIf="candidateResponses.get(item.candidateId).length != 2" style="cursor: pointer;">Incompleta</span>
+                  <span (click)="loadResponse(item)" class="textcol-green text-underline" *ngIf="candidateResponses.get(item.candidateId).length == 2" style="cursor: pointer;">Completa</span>
                 </td>
                 <td class="">{{ item.email }}</td>
                 <td class="">{{ item.status }}</td>

@@ -36,17 +36,18 @@
                   </div>
                   <div class="right-column">
                     <input type="text" name="modelDescription" autocomplete="off" placeholder="Descripción" value="" [(ngModel)]="model.description">
-                    <select #metaDataSelector>
-                      <option value="0">- Elija metadatos--</option>
-                      <option value="email">Email</option>
-                      <option value="name">Nombre</option>
-                      <option value="passwordLink">Enlace de contraseña</option>
-                      <option value="securityToken">Token de seguridad</option>
-                    </select>
+                    <select #metaDataSelector (change)="insertMetaData()">
+                        <option value="0">- Elija metadatos--</option>
+                        <option value="email">Email</option>
+                        <option value="name">Nombre</option>
+                        <option value="passwordLink">Enlace de contraseña</option>
+                        <option value="securityToken">Token de seguridad</option>
+                        <option value="{{f.formId}}" *ngFor="let f of forms">Form : {{f.title}}</option>
+                      </select>
                   </div>
                 </div>
                 <div class="bottom-content">
-                  <ckeditor [editor]="editor" [data]="model.content" (change)="editorChange($event)" data=""></ckeditor>
+                  <ckeditor [editor]="editor" [data]="model.content" (ready)="editorReady($event)" (change)="editorChange($event)" data=""></ckeditor>
                 </div>
               </div>
             </div>

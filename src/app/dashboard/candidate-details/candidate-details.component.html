@@ -86,17 +86,23 @@
                 <select class="email-list">
                   <option value="-1">--por favor, elija--</option>
                 </select>
-                <textarea name="email-text" id="email" rows="10"></textarea>
+                <textarea name="email-text" id="email" rows="10" [(ngModel)]="messageContent"></textarea>
                 <div class="change-status">
                   <p>
                     <strong>Cambiar estado</strong>
                   </p>
                   <select class="email-list" #statusSelector>
                     <option value="-1">--por favor, elija--</option>
-                    <option value="Residente">Residente</option>
-                    <option value="Plaza rechazado">Plaza rechazado</option>
+
+                    <option value="Residente">Pendiente confirmar entrevista</option>
+                    <option value="Entrevista concertada">Entrevista concertada</option>
+                    <option value="pendiente de resolución">pendiente de resolución</option>
+                    <option value="Admitido">Admitido</option>
                     <option value="Lista de espera">Lista de espera</option>
+                    <option value="Rechazado">Rechazado</option>
                     <option value="Reserva">Reserva</option>
+                    <option value="sede asignada">sede asignada</option>
+                    <option value="Residente">residente</option>
                   </select>
                 </div>
                 <div class="change-status">
@@ -131,8 +137,8 @@
                 <p class="email">
                   <span class="icon icon-mail"></span>{{candidate.email}}</p>
                 <p>Sede: Villa Belagua</p>
-                <a href="mailto:utsavkumar.official@gmail.com" class="btn btn-sc">Enviar correo electrónico</a>
-                <a class="btn btn-sc" href="/app/crm/admisiones/user/1541999026298">Información de usuario</a>
+                <a href="mailto:{{candidate.email}}" class="btn btn-sc">Enviar correo electrónico</a>
+                <a class="btn btn-sc" (click)="showLogInformation()">Información de usuario</a>
               </div>
             </section>
           </div>

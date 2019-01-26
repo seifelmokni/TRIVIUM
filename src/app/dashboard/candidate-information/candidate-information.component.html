@@ -1,0 +1,270 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+    <div class="dash-content">
+
+      <section class="user-info-page">
+        <div class="block-inner">
+          <div class="task-wrapper">
+            <section class="panel-menu">
+              <ul>
+                <li><a [ngClass]="{'active': sectionSelected == 'resume' }" (click)="changeSection('resume')">Información
+                    resumida</a></li>
+                <li><a [ngClass]="{'active': sectionSelected == 'chronology' }" (click)="changeSection('chronology')">Cronología</a></li>
+                <li><a [ngClass]="{'active': sectionSelected == 'personalInfo' }" (click)="changeSection('personalInfo')">Información
+                    personal</a></li>
+                <li><a [ngClass]="{'active': sectionSelected == 'academicInfo' }" (click)="changeSection('academicInfo')">Information
+                    académica</a></li>
+                <li><a [ngClass]="{'active': sectionSelected == 'economicInfo' }" (click)="changeSection('economicInfo')">Information
+                    económica</a></li>
+                <li *ngFor="let f of forms ; let i = index"><a [ngClass]="{'active': sectionSelected == f.title }" (click)="changeSection(f.title)">Form: {{f.title}}</a></li>
+              </ul>
+            </section>
+            <!--Resume start-->
+            <section class="panel-view" *ngIf="sectionSelected == 'resume'">
+              <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541998891490"></a>
+                <div class="user-avatar">
+                  <img src="candidate.image" alt="user avatar" *ngIf="candidate.image != undefined && candidate.image != ''">
+                  <i class="fas fa-5x fa-user-circle" *ngIf=" false ||candidate.image != undefined || candidate.image != ''"></i>
+                </div>
+                <span>{{candidate.firstName+' '+candidate.lastName}}</span>
+                <div class="btn-group" *ngIf="!editModeEnabled"><a (click)="editButtonClicked()" title="Editar" class="btn btn-sc">Editar</a></div>
+                <div class="btn-group" *ngIf="editModeEnabled">
+                  <span style="display: inherit;">
+                    <a title="Cancelar" (click)="cancelEdition()" class="btn btn-confirm">Cancelar</a>
+                    <a title="Guardar" (click)="editButtonClicked()" class="btn btn-sc">Guardar</a>
+                  </span>
+                </div>
+              </div>
+              <form class="resume-wrapper">
+                <div class="date-wrapper-left">
+                  <div class="date-wrapper"><span class="date-title">Teléfono ﬁjo:</span><span class="date-value" *ngIf="!editModeEnabled">{{candidate.fixPhone}}</span>
+                    <input type="tel" name="fixPhone" [(ngModel)]="fixPhone" *ngIf="editModeEnabled" /></div>
+                  <div class="date-wrapper"><span class="date-title">Teléfono móvil:</span><span class="date-value"
+                      *ngIf="!editModeEnabled">{{candidate.phone}}</span> <input type="tel" name="phone" [(ngModel)]="phone"
+                      *ngIf="editModeEnabled" /></div>
+                  <div class="date-wrapper"><span class="date-title">Email:</span><span class="date-value" *ngIf="!editModeEnabled">{{candidate.email}}</span><input
+                      type="email" name="email" [(ngModel)]="email" *ngIf="editModeEnabled" /></div>
+                  <div class="date-wrapper"><span class="date-title">Fecha de nacimiento:</span><span class="date-value"
+                      *ngIf="!editModeEnabled">{{candidate.birthDate}}</span><input type="date" name="birthDate"
+                      [(ngModel)]="birthDate" *ngIf="editModeEnabled" /></div>
+                </div>
+                <div class="date-wrapper-right">
+                  <div class="date-wrapper"><span class="date-title">Sede:</span><span class="date-value" *ngIf="!editModeEnabled">{{candidate.hq}}</span><input
+                      type="text" name="hq" [(ngModel)]="hq" *ngIf="editModeEnabled" /></div>
+                </div>
+                <div class="panel-task">
+                  <p class="header-task"><span>Siguiente tarea</span><a (click)="createNewTask()"><span class="add-task">+ Añadir acción</span></a></p>
+                  <table>
+                    <tbody>
+                      <tr *ngFor="let t of tasks">
+                        <td width="200px"><span class="colored {{t.isClosed ? 'color-green' : 'color-red'}}">{{t.createdAt}}</span></td>
+                        <td width="300px">{{t.taskContent}}</td>
+                        <td width="150px">{{t.assignedTo.firstName +' '+ t.assignedTo.lastName}}</td>
+                        <td>
+                          <button *ngIf="!t.isClosed" style="color: green" (click)="closeTaks(t)"><i class="fas fa-check-circle"></i></button>
+                          <button *ngIf="!t.isClosed" style="color: blue" (click)="reassignTask(t)"><i class="fas fa-exchange-alt"></i></button>
+                        </td>
+                      </tr>
+                      <!--
+                      <tr>
+                        <td><span class="colored color-green">7 de febrero</span></td>
+                        <td>Asignar responsable entrevista</td>
+                      </tr> -->
+                    </tbody>
+                  </table>
+                </div>
+              </form>
+            </section>
+            <!--Resume end-->
+            <!--Chronology start-->
+            <section class="panel-view" *ngIf="sectionSelected == 'chronology'">
+              <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541999026298"></a>
+                <div class="user-avatar"><img src="/static/media/avatar.9e789c47.png" alt="user avatar"></div>
+                <span>{{candidate.firstName+' '+candidate.lastName}}</span>
+              </div>
+              <div class="chronology-wrapper">
+                <section class="history-view">
+                  <div class="history-header"><span class="history-title">Historial de{{' '+candidate.firstName+'
+                      '+candidate.lastName}}</span></div>
+                  <div class="history-day" *ngFor="let log of logs">
+                    <p class="history-date">{{log.day}}</p>
+                    <ul *ngFor="let l of log.logs">
+                      <li class="time">{{l.logHour}}</li>
+                      <li class="task" *ngIf="l.logType == 'first-application'" >primera aplicación</li>
+                      <li class="task" *ngIf="l.logType == 'assing-user'" >asignar usuario responsable</li>
+                      <li class="task" *ngIf="l.logType == 'interview-accepted'">fecha de entrevista aceptada</li>
+                      <li class="task" *ngIf="l.logType == 'interview-fixed'">fijó otra fecha de entrevista</li>
+                      <li class="task" *ngIf="l.logType == 'edit-resume-info'">editar información global</li>
+                      <li class="task" *ngIf="l.logType == 'edit-personal-info'">editar información personal</li>
+                      <li class="task" *ngIf="l.logType == 'edit-education-info'">editar información de educación</li>
+                      <li class="other">--</li>
+                      <li class="author">Dhaval Mashruwala</li>
+                    </ul>
+                    <!--
+                    <ul>
+                      <li class="time">05:56 am</li>
+                      <li class="task">Estado cambiado: Residente</li>
+                      <li class="other">--</li>
+                      <li class="author">Guillermo Lorenzo</li>
+                    </ul>-->
+                  </div>
+                </section>
+              </div>
+            </section>
+            <!--Chronology end-->
+            <!--Personal info start-->
+            <section class="panel-view" *ngIf="sectionSelected == 'personalInfo'">
+              <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541999026298"></a>
+                <div class="user-avatar"><img src="/static/media/avatar.9e789c47.png" alt="user avatar"></div><span>{{candidate.firstName+' '+candidate.lastName}}</span>
+                <div class="btn-group" *ngIf="!editPersonalInfoModeEnabled"><a (click)="editPersonalInfoButtonClicked()" title="Editar" class="btn btn-sc">Editar</a></div>
+                <div class="btn-group" *ngIf="editPersonalInfoModeEnabled">
+                  <span style="display: inherit;">
+                    <a title="Cancelar" (click)="cancelEdition()" class="btn btn-confirm">Cancelar</a>
+                    <a title="Guardar" (click)="editPersonalInfoButtonClicked()" class="btn btn-sc">Guardar</a>
+                  </span>
+                </div>              </div>
+              <form class="personal-wrapper">
+                <div class="date-wrapper-left">
+                  <div class="date-wrapper"><span class="date-title">Nombre:</span>
+                    <span class="date-value" *ngIf="!editPersonalInfoModeEnabled">{{candidate.firstName}}</span>
+                    <input type="text" name="firstName" [(ngModel)]="firstName" *ngIf="editPersonalInfoModeEnabled" />
+                  </div>
+                  <div class="date-wrapper"><span class="date-title">Apellido:</span>
+                    <span class="date-value" *ngIf="!editPersonalInfoModeEnabled">{{candidate.lastName}}</span>
+                    <input type="text" name="lastName" [(ngModel)]="lastName" *ngIf="editPersonalInfoModeEnabled" />
+                  </div>
+                  <div class="date-wrapper"><span class="date-title">Segundo apellido:</span>
+                    <span class="date-value" *ngIf="!editPersonalInfoModeEnabled">{{candidate.secondName}}</span>
+                    <input type="text" name="secondName" [(ngModel)]="secondName" *ngIf="editPersonalInfoModeEnabled" />
+                  </div>
+                  <div class="date-wrapper"><span class="date-title">Nacionalidad:</span>
+                    <span class="date-value" *ngIf="!editPersonalInfoModeEnabled">{{candidate.nationality}}</span>
+                    <input type="text" name="nationality" [(ngModel)]="nationality" *ngIf="editPersonalInfoModeEnabled" />
+                  </div>
+                </div>
+                <div class="date-wrapper-right">
+                  <div class="date-wrapper"><span class="date-title">Email:</span>
+                    <span class="date-value" *ngIf="!editPersonalInfoModeEnabled">{{candidate.email}}</span>
+                    <input type="text" name="email" [(ngModel)]="email" *ngIf="editPersonalInfoModeEnabled" />
+                  </div>
+                  <div class="date-wrapper"><span class="date-title">Email comunicaciones:</span>
+                    <span class="date-value" *ngIf="!editPersonalInfoModeEnabled">{{candidate.secondeEmail}}</span>
+                    <input type="text" name="secondEmail" [(ngModel)]="secondEmail" *ngIf="editPersonalInfoModeEnabled" />
+                  </div>
+                  <div class="date-wrapper"><span class="date-title">DNI / NIF / Pasaporte:</span>
+                    <span class="date-value" *ngIf="!editPersonalInfoModeEnabled">{{candidate.dni}}</span>
+                    <input type="text" name="dni" [(ngModel)]="dni" *ngIf="editPersonalInfoModeEnabled" />
+                  </div>
+                </div>
+              </form>
+            </section>
+            <!--Personal info end-->
+            <!--Academic info start-->
+            <section class="panel-view" *ngIf="sectionSelected == 'academicInfo'">
+              <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541999026298"></a>
+                <div class="user-avatar"><img src="/static/media/avatar.9e789c47.png" alt="user avatar"></div><span>{{candidate.firstName+' '+candidate.lastName}}</span>
+                <div class="btn-group" *ngIf="!editEducationInfoModeEnabled"><a (click)="editEdutioncaButtonClicked()" title="Editar" class="btn btn-sc">Editar</a></div>
+                <div class="btn-group" *ngIf="editEducationInfoModeEnabled">
+                  <span style="display: inherit;">
+                    <a title="Cancelar" (click)="cancelEdition()" class="btn btn-confirm">Cancelar</a>
+                    <a title="Guardar" (click)="editEdutioncaButtonClicked()" class="btn btn-sc">Guardar</a>
+                  </span>
+                </div>                </div>
+              <form class="academic-wrapper">
+                <div class="date-wrapper-left">
+                  <h4>3º ESO</h4>
+                  <div class="date-wrapper"><span class="date-title">Nota media</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[0] !== undefined ? candidate.education[0].averageGrade: ''}}</span>
+                  <input type="text" name="eso3AverageGrade" [(ngModel)]="eso3AverageGrade" *ngIf="editEducationInfoModeEnabled" />
+                  </div>
+                  <div class="date-wrapper"><span class="date-title">Provincia</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[0] !== undefined ? candidate.education[0].province: ''}}</span>
+                    <input type="text" name="eso3Province" [(ngModel)]="eso3Province" *ngIf="editEducationInfoModeEnabled" />
+                  </div>
+                  <div class="date-wrapper"><span class="date-title">Población</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[0] !== undefined ? candidate.education[0].population: ''}}</span>
+                    <input type="text" name="eso3Population" [(ngModel)]="eso3Population" *ngIf="editEducationInfoModeEnabled" />
+                  </div>
+                  <div class="date-wrapper"><span class="date-title">Centro</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[0] !== undefined ? candidate.education[0].center: ''}}</span>
+                    <input type="text" name="eso3Center" [(ngModel)]="eso3Center" *ngIf="editEducationInfoModeEnabled" />
+                  </div>
+                  <h4>1º Bachillerato</h4>
+                  <div class="date-wrapper"><span class="date-title">Nota media</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[1] !== undefined ? candidate.education[1].averageGrade: ''}}</span>
+                    <input type="text" name="bachAverageGrade" [(ngModel)]="bachAverageGrade" *ngIf="editEducationInfoModeEnabled" />
+                    </div>
+                    <div class="date-wrapper"><span class="date-title">Provincia</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[1] !== undefined ? candidate.education[1].province: ''}}</span>
+                      <input type="text" name="eso3Province" [(ngModel)]="bachProvince" *ngIf="editEducationInfoModeEnabled" />
+                    </div>
+                    <div class="date-wrapper"><span class="date-title">Población</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[1] !== undefined ? candidate.education[1].population: ''}}</span>
+                      <input type="text" name="bachPopulation" [(ngModel)]="bachPopulation" *ngIf="editEducationInfoModeEnabled" />
+                    </div>
+                    <div class="date-wrapper"><span class="date-title">Centro</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[1] !== undefined ? candidate.education[1].center: ''}}</span>
+                      <input type="text" name="bachCenter" [(ngModel)]="bachCenter" *ngIf="editEducationInfoModeEnabled" />
+                    </div></div>
+                <div class="date-wrapper-right">
+                  <h4>4º ESO</h4>
+                  <div class="date-wrapper"><span class="date-title">Nota media</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[2] !== undefined ? candidate.education[2].averageGrade : ''}}</span>
+                    <input type="text" name="eso4AverageGrade" [(ngModel)]="eso4AverageGrade" *ngIf="editEducationInfoModeEnabled" />
+                    </div>
+                    <div class="date-wrapper"><span class="date-title">Provincia</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[2] !== undefined ? candidate.education[2].province: ''}}</span>
+                      <input type="text" name="eso4Province" [(ngModel)]="eso4Province" *ngIf="editEducationInfoModeEnabled" />
+                    </div>
+                    <div class="date-wrapper"><span class="date-title">Población</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[2] !== undefined ? candidate.education[2].population: ''}}</span>
+                      <input type="text" name="eso4Population" [(ngModel)]="eso4Population" *ngIf="editEducationInfoModeEnabled" />
+                    </div>
+                    <div class="date-wrapper"><span class="date-title">Centro</span><span class="date-value" *ngIf="!editEducationInfoModeEnabled">{{candidate.education[2] !== undefined ? candidate.education[2].center: ''}}</span>
+                      <input type="text" name="eso4Center" [(ngModel)]="eso4Center" *ngIf="editEducationInfoModeEnabled" />
+                    </div>
+                </div>
+              </form>
+            </section>
+            <!--Academic info end-->
+            <!--Economic info start-->
+            <section class="panel-view" *ngIf="sectionSelected == 'economicInfo'">
+              <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541999026298"></a>
+                <div class="user-avatar"><img src="/static/media/avatar.9e789c47.png" alt="user avatar"></div><span>{{candidate.firstName+' '+candidate.lastName}}</span>
+                <div class="btn-group"><a title="Editar" class="btn btn-sc">Editar</a></div>
+              </div>
+            </section>
+            <!--Economic info end-->
+            <!--Historic info start-->
+            <section class="main-content" [style.display]="showResponseSection ? 'block' : 'none'">
+                <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541999026298"></a>
+                  <div class="user-avatar"><img src="/static/media/avatar.9e789c47.png" alt="user avatar"></div><span>{{candidate.firstName+' '+candidate.lastName}}</span>
+                  <!--<div class="btn-group"><a title="Editar" class="btn btn-sc">Editar</a></div>-->
+                </div>
+                <form novalidate="" class="dynamic-form" #formCandidate>
+                    <div class="wrapper">
+                    <div class="left-col col" #left_container [style.display]="'block'" 
+                    [style.width]="!isSingleColumnForm ? '50%' : '500%'" 
+                    [style.margin-left]= "!isSingleColumnForm  ? '0%' : '0%'">
+        
+                    </div>
+                    <div  class="right-col col" #right_container 
+                    [style.display]="(!isSingleColumnForm) ?  'block' : 'none'"  >
+                    </div>
+                    </div>
+                    <div class="btn-group">
+                        <button *ngIf="pageIndex > 0" (click)="previous()" class="btn btn-sc">Atrás</button>
+                        <button (click)="next()" class="btn btn-confirm" id="submit">Enviar</button>
+                      </div>
+
+
+                </form>
+              </section>
+            <!--Historic info end-->
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+    </div>
+
+
+    <app-footer></app-footer>
+  </div>
+</section>

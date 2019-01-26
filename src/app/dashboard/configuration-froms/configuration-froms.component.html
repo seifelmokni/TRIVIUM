@@ -1,0 +1,106 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+    <div class="dash-content users-page">
+      <div class="block-inner">
+        <div class="task-wrapper">
+          <section class="panel-menu">
+            <ul>
+              <li>
+                <a class="" routerLink="/configuation">colecciones de datos</a>
+              </li>
+              <li>
+                <a class="" routerLink="/calendar" >calendario</a>
+              </li>
+              <li>
+                <a class="active" routerLink="/formConfiguration">configuración de formulario</a>
+              </li>
+            </ul>
+          </section>
+          <section class="users-view">
+            <div class="users-header">
+              <span class="users-title">configuración de formulario</span>
+             
+            </div>
+            <div class="form-center" style="width: 100% !important; margin: 5px 0px !important">
+
+              <form action="">
+
+                <div class="wrapper">
+                  <table>
+
+                    <tr>
+                      <td>forma inicial</td>
+                      <td>
+                          <select #beginingFormSelector (change)="setFormType(0)">
+                              <option value="-1">seleccionar formulario</option>
+                              <option value="{{item.formId}}" [selected]="item.isRegisterForm" *ngFor="let item of availbleForms">{{item.title}}</option>
+                           </select>
+                      </td>
+                      <td>
+                        <a href="{{registerFormLink}}">{{registerFormLink}}</a>
+                        <!--  
+                          <select #beginingFormModelSelector (change)="setFormModel(0)">
+                              <option value="-1">seleccionar modelo</option>
+                              <option value="{{item.modelId}}"  [selected]="beginingModelId == item.modelId" *ngFor="let item of models">{{item.name}}</option>
+                           </select>
+                           -->
+                      </td>
+                    </tr>
+
+                    <tr>
+                        <td>formulario de pre-entrevista</td>
+                        <td>
+                            <select #preInterviewFormSelector (change)="setFormType(1)">
+                                <option value="-1">seleccionar formulario</option>
+                                <option value="{{item.formId}}"  [selected]="item.isPreInterviewForm" *ngFor="let item of availbleForms">{{item.title}}</option>
+                             </select>
+                        </td>
+                        <td>
+                            <a href="{{preInterviewFormLink}}">{{preInterviewFormLink}}</a>
+                            <!--
+                            <select #preInterviewFormModelSelector (change)="setFormModel(1)">
+                                <option value="-1">seleccionar modelo</option>
+                                <option value="{{item.modelId}}" [selected]="preInterviewModelId == item.modelId"  *ngFor="let item of models">{{item.name}}</option>
+                             </select>-->
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>formulario de entrevista</td>
+                        <td>
+                          <select #interviewFormSelector (change)="setFormType(2)">
+                            <option value="-1">seleccionar formulario</option>
+                            <option value="{{item.formId}}" [selected]="item.isInterviewForm" *ngFor="let item of availbleForms">{{item.title}}</option>
+                         </select>
+                      </td>
+                        <td>
+                            <a href="{{interviewFormLink}}">{{interviewFormLink}}</a>
+                          <!--
+                            <select #interviewFormModelSelector (change)="setFormModel(2)">
+                                <option value="-1">seleccionar modelo</option>
+                                <option value="{{item.modelId}}" [selected]="interviewModelId == item.modelId"  *ngFor="let item of models">{{item.name}}</option>
+                             </select>
+                             -->
+                        </td>
+                    </tr>
+                    
+                  </table>
+
+                </div>
+
+
+              </form>
+
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <app-footer></app-footer>
+  </div>
+</section>

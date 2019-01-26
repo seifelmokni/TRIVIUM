@@ -1,0 +1,29 @@
+.cdk-overlay-pane{
+    width: 0% !important;
+}
+
+.ReactModal__Content{
+    width: 340px !important;
+    height: 500px !important;
+    left: 35% !important;
+}
+.task{
+    display: grid;
+    margin-bottom: 10px;
+
+    /*color: white;*/
+}
+.message{
+    display: grid;
+}
+.green{
+    /*
+    background: green;
+    border: 2px green solid; */
+}
+
+.red{
+    /*
+    background: red;
+    border: 2px red solid; */
+}

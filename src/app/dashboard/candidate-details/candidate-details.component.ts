@@ -3,6 +3,8 @@ import { Candidate } from '../../models/candidate/candidate.model';
 import { CandidateService } from '../../shared/candidate/candidate.service';
 import { ResponseService } from '../../shared/response/response.service';
 import { Router } from '@angular/router';
+import { Email } from 'src/app/models/Email/email.model';
+import { EmailService } from 'src/app/shared/Email/email.service';
 
 @Component({
     selector: 'app-candidate-details',
@@ -14,10 +16,11 @@ export class CandidateDetailsComponent implements OnInit {
     candidateList: Candidate[];
     @ViewChild('statusSelector') statusSelector: ElementRef;
     @ViewChild('prioritySelector') prioritySelector: ElementRef;
-
+    messageContent = '';
     constructor(private candidateSerivce: CandidateService,
         private responseService: ResponseService,
-        private router: Router) { }
+        private router: Router,
+        private emailService: EmailService) { }
 
     ngOnInit() {
         this.candidate = this.candidateSerivce.selectedCandidate;
@@ -49,9 +52,27 @@ export class CandidateDetailsComponent implements OnInit {
             this.candidateSerivce.updateCandidate(this.candidate).then(
                 () => {
                     console.log('update done');
-                    this.goBack();
+                    if(this.messageContent.length != 0){
+                        const email = new Email();
+                        email.message = this.messageContent; 
+                        email.email = this.candidate.email;
+                        email.html = '<p>'+this.messageContent+'</p>';
+                        email.subject= 'Message from Balagua TRIVIUM';
+
+                        this.emailService.sendEmail(email).then(
+                            () => {
+                                this.goBack();
+                            }
+                        )
+                    }else{
+                        this.goBack();
+                    }
                 }
             );
+    }
+
+    showLogInformation(){
+        this.router.navigate(['information']);
     }
     goBack() {
         this.router.navigate(['admissions']);

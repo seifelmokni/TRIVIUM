@@ -15,6 +15,9 @@
               <li>
                 <a class="active" routerLink="/calendar">calendario</a>
               </li>
+              <li>
+                  <a class="" routerLink="/formConfiguration">configuración de formulario</a>
+                </li>
             </ul>
           </section>
           <section class="users-view">
@@ -141,6 +144,20 @@
                     <td>
                     </td>
                 </tr>
+                <tr>
+                  <td>configuración del día</td>
+                  <td>
+                    comienzo: 
+                    <select #startOfDay (change)="startOfTheDayChanged()">
+                    <option selected="{{i == interviewConfig.startOfTheDay}}" value="{{i}}" *ngFor="let i of hours">{{i}}</option>
+                    </select>
+                    comienzo: 
+                    <select #endOfDay (change)="endOfTheDayChanged()">
+                    <option selected="{{i == interviewConfig.endOfTheDay}}" value="{{i}}" *ngFor="let i of hours">{{i}}</option>
+                  </select>
+                </td>
+                  
+                </tr>
               </table>
               <br>
             </div>
@@ -150,13 +167,17 @@
             <div class="form-center" style="width: 100% !important; margin: 5px 0px !important">
               <div class="radio-group" *ngIf="interviewConfig.previosEnabled || !interviewConfig.hollyDaysEnabled " >
                 <div class="radio" *ngIf="!interviewConfig.hollyDaysEnabled">
-                  <input type="radio" name="setDaysType" [(ngModel)]="setDaysType" [value]="1"  />
+                  <input type="radio" name="setDaysType" [(ngModel)]="setDaysType" [value]="1" (change)="view =CalendarView.Month "  />
                   <label>estableciendo vacaciones</label>
                 </div>
                 <div class="radio" *ngIf="interviewConfig.previosEnabled ">
-                    <input type="radio" name="setDaysType" [(ngModel)]="setDaysType" [value]="2" />
+                    <input type="radio" name="setDaysType" [(ngModel)]="setDaysType" [value]="2" (change)="view =CalendarView.Month "  />
                     <label>estableciendo previos</label>
                   </div>
+                  <div class="radio" >
+                      <input type="radio" name="setDaysType" [(ngModel)]="setAuthHours" [value]="3" (change)=" setAuthHours == '3' ? view = CalendarView.Day : view =CalendarView.Month " />
+                      <label>seleccione horas de movilidad reducida</label>
+                    </div>
               </div>
               <br>
               <br>
@@ -180,8 +201,9 @@
                 <div style="display: inline-block; float: left; margin-left: 22%">
                   <label>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</label>
                 </div>
+ 
                 
-
+              
               </div>
               <br>
               <br>
@@ -194,7 +216,7 @@
                   (eventTimesChanged)="eventTimesChanged($event)">
                 </mwl-calendar-week-view>
                 <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events" [refresh]="refresh" (eventClicked)="handleEvent('Clicked', $event.event)"
-                  (eventTimesChanged)="eventTimesChanged($event)">
+                  (eventTimesChanged)="eventTimesChanged($event)" (hourSegmentClicked)="hourSegmentClicked($event.date)" (beforeViewRender)="beforeDayViewRender($event)">
                 </mwl-calendar-day-view>
               </div>
               <!--

@@ -10,6 +10,9 @@ export class InterviewConfig extends Object {
     interviewHoursDuration: number = 1;
     interviewMinuteDuration: number =  0;
     interviewMaxNumber: number = 8;
+    startOfTheDay: string = '8:00'
+    endOfTheDay: string = '18:00'
+    unauthorizedHour: Array<string> = [] ;
     constructor() {
         super();
     }

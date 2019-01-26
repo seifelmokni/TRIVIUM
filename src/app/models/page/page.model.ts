@@ -5,6 +5,7 @@ export class Page extends Object {
     public formComposition: Array<Element> = [];
 
     public elementCount: number;
+    pageSaved: Boolean = true ; 
 
     conditions: Array<{
         conditionType: string,

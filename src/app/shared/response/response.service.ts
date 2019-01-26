@@ -30,4 +30,22 @@ export class ResponseService {
             }
         );
     }
+
+    listCandidateResponse(candidateId:string) {
+        return this.db.collection('response' , ref => ref.where('candidateId' , '==' , candidateId)).snapshotChanges().map(
+             actions => {
+                 return actions.map(
+                     a => {
+ 
+                         const data = a.payload.doc.data() as Response;
+                         console.log('data');
+                         console.log(a);
+                         data.responseID = a.payload.doc.id;
+                         console.log(data);
+                         return data;
+                     }
+                 );
+             }
+         );
+     }
 }

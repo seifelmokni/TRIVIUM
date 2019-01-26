@@ -24,6 +24,7 @@ export class AuthService {
                         a => {
                             const data = a.payload.doc.data() as User;
                             data.userID = a.payload.doc.id;
+                            this.userSession =data;
                             return data;
                         }
                     );
@@ -43,6 +44,10 @@ export class AuthService {
     addUser(user: User) {
         return this.db.collection('users').add(user);
     }
+    updateUser(user: User) {
+        return this.db.doc('users/'+user.userID).update(user);
+    }
+
     list() {
         return this.db.collection('users').snapshotChanges().map(
             actions => {

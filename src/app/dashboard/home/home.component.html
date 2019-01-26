@@ -12,7 +12,7 @@
             </symbol>
           </defs>
         </svg>
-        <div class="dash-content-side">
+        <div class="dash-content-side" *ngIf="activeUser.role == 'admin'">
           <div class="dash-content-block">
             <table>
               <thead>
@@ -190,10 +190,37 @@
                     </li>
                   </ul>
                 </th>
+                <th class="">
+                    <ul>
+                      <li>
+                        <a>Tarea
+                          <span class="icon">
+                            <svg>
+                              <use href="#arrow_d" width="13" height="13" x="0" y="0"></use>
+                            </svg>
+                          </span>
+                        </a>
+                      </li>
+                    </ul>
+                  </th>
+                  <th class="">
+                      <ul>
+                        <li>
+                          <a>Observaciones
+                            <span class="icon">
+                              <svg>
+                                <use href="#arrow_d" width="13" height="13" x="0" y="0"></use>
+                              </svg>
+                            </span>
+                          </a>
+                        </li>
+                      </ul>
+                    </th>
+                  
               </tr>
-              <tr class="row-data" *ngFor="let item of eventsData">
+              <tr class="row-data" *ngFor="let item of candidates">
                 <td class="edit">
-                  <a href="/app/crm/inicio/interview/1541999026298">
+                  <a (click)="showDetails(item)">
                     <span class="icon">
                       <svg>
                         <use href="#pencil" width="19" height="19"></use>
@@ -201,18 +228,36 @@
                     </span>
                   </a>
                 </td>
-                <td class="">02/12/18</td>
-                <td class="">Admisión</td>
-                <td class="">Nueva solicitud</td>
-                <td class="">Normal</td>
-                <td class="">Dhaval</td>
+                <td class="">{{item.applicationDate}}</td>
+                <td class="">{{item.phase}}</td>
+                <td class="">{{item.isFirstRequest ? 'Nueva solicitud' :  'renovar solicitud'}}</td>
+                <td class="">{{item.priority}}</td>
+                <td class="">{{item.firstName+' '+item.lastName}}</td>
                 <td class="">
-                  <select class="assign-interviewer">
+                  <select class="assign-interviewer" (change)="assignUser(item , $event)" >
                     <option value="-1">Pendiente asignar</option>
-                    <option value="{{u.userID}}" *ngFor="let u of users" >{{u.firstName +' '+ u.lastName !== ' ' ? u.firstName +' '+ u.lastName : u.login}}</option>
+                    <option value="{{u.userID}}" *ngFor="let u of users" [selected]="item.userInChage === u.userID" >{{u.firstName +' '+ u.lastName !== ' ' ? u.firstName +' '+ u.lastName : u.login}}</option>
                   </select>
                 </td>
+                <td>
+                  <button (click)="showTasks(tasks.get(item.candidateId))" style="margin-left: 10%" *ngIf="tasks.get(item.candidateId) !=undefined && tasks.get(item.candidateId).length != 0" ><i class="fas fa-tasks"></i> {{ tasks.get(item.candidateId).length}}</button>
+                </td>
+                <td>
+                  
+                  <ul>
+                    <li *ngFor="let o of item.observations">{{o.author}}:{{o.ob}}</li>
+                    <li *ngIf="textAreaShown == 'txt-'+item.candidateId">
+                      <textarea id="txtarea-{{item.candidateId}}"></textarea>
+                    </li>
+                    <li>
+                      <a *ngIf="textAreaShown != 'txt-'+item.candidateId" (click)="showObservationTextArea(item.candidateId)"><i class="fas fa-plus-square"></i></a>
+                      <a *ngIf="textAreaShown == 'txt-'+item.candidateId" (click)="saveObservation(item.candidateId)"><i class="fas fa-cloud-upload-alt"></i></a>
+                    
+                    </li>
+                  </ul>
+                </td>
               </tr>
+              <!--
               <tr class="row-data">
                 <td class="edit">
                   <a href="/app/crm/inicio/interview/1541998891490">
@@ -234,7 +279,7 @@
                     <option value="1">Guillermo&nbsp;Lorenzo</option>
                   </select>
                 </td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>

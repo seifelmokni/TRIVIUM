@@ -22,6 +22,15 @@ import { CandidateDetailsComponent } from '../dashboard/candidate-details/candid
 import { CandidateEntreviewComponent } from '../dashboard/candidate-entreview/candidate-entreview.component';
 import { ConfigurationComponent } from '../dashboard/configuration/configuration.component';
 import { CalendarComponent } from '../dashboard/calendar/calendar.component';
+import { FixInterviewDateComponent } from '../dashboard/fix-interview-date/fix-interview-date.component';
+import { ProposeInterviewDateComponent } from '../dashboard/propose-interview-date/propose-interview-date.component';
+import { ConfigurationFromsComponent } from '../dashboard/configuration-froms/configuration-froms.component';
+import { CandidateInformationComponent } from '../dashboard/candidate-information/candidate-information.component';
+import { UpdatePasswordComponent } from '../home/update-password/update-password.component';
+import { PasswordupdatedComponent } from '../home/passwordupdated/passwordupdated.component';
+import { CandidateResponsesComponent } from '../dashboard/candidate-responses/candidate-responses.component';
+import { CreateDocumentComponent } from '../dashboard/communications/create-document/create-document.component';
+import { EditDocumentComponent } from '../dashboard/communications/edit-document/edit-document.component';
 
 
 
@@ -32,6 +41,7 @@ const appRoutes: Routes = [
     { path: 'developper', component: DeveloperHomeComponent },
     { path: 'createForm', component: DeveloperCreateFormComponent },
     { path: 'editForm', component: DeveloperEditFormComponent },
+    { path: 'editForm/:id' , component: DeveloperEditFormComponent},
     { path: 'preview', component: FormfillingComponent },
     { path: 'user', component: UserComponent },
     { path: 'permission', component: PermissionComponent },
@@ -41,13 +51,23 @@ const appRoutes: Routes = [
     { path: 'addModel', component: AddModelComponent },
     { path: 'editModel', component: EditModelComponent },
     { path: 'submitCandidature', component: CandidatComponent },
+    { path: 'fillCandidature/:formId/:candidateId' , component: CandidatComponent},
     { path: 'candutureSubmitted', component: FormSubmittedComponent },
     { path: 'admissions', component: AdmissionsComponent },
     { path: 'residents', component: ResidentsComponent },
     { path: 'candidateDetails' , component: CandidateDetailsComponent},
     { path: 'intreview' , component: CandidateEntreviewComponent},
     { path: 'configuation' , component: ConfigurationComponent},
-    { path: 'calendar' , component: CalendarComponent}
+    { path: 'calendar' , component: CalendarComponent},
+    { path: 'fixInterviewDate' , component: FixInterviewDateComponent},
+    { path: 'proposenewinterviewdate' , component: ProposeInterviewDateComponent},
+    { path: 'formConfiguration' , component: ConfigurationFromsComponent},
+    { path: 'information' , component: CandidateInformationComponent},
+    { path: 'updatePassword/:userID' , component: UpdatePasswordComponent},
+    { path: 'updatesuccess' , component: PasswordupdatedComponent},
+    { path: 'previewResponses', component: CandidateResponsesComponent},
+    { path: 'createDocument' , component: CreateDocumentComponent},
+    { path: 'editDocument' , component:EditDocumentComponent}
 ];
 
 

@@ -9,6 +9,22 @@ export class InterviewDateService {
 
   constructor(private db: AngularFirestore) { }
 
+  listInterviewForCandidate(candidateID:string){
+      return this.db.collection('interviews' , 
+      (ref) => ref.where('interviewCandidateId' , '==' , candidateID)
+      ).snapshotChanges().map(
+        actions => {
+            return actions.map(
+                a => {
+                    const data = a.payload.doc.data() as Interview;
+                    data.interviewId = a.payload.doc.id;
+                    return data;
+                }
+            );
+        }
+    );
+  }
+
   listAllInterview(){
     return this.db.collection('interviews').snapshotChanges().map(
       actions => {

@@ -7,6 +7,8 @@ export class Element extends Object {
     options: string;
     isRequired: Boolean;
     isConditioned: Boolean;
+    value:string = "";
+    inputType:string = ''
 
 
     constructor(id: number, type: string, labelTitle: string, con: string) {

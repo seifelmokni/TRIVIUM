@@ -1,0 +1,49 @@
+<div mat-dialog-content class="ReactModal__Content ReactModal__Content--after-open mat-dialog-content" tabindex="-1" role="dialog" style="position: absolute; top: 10%; left: 32%; right: auto; bottom: auto; border: 1px solid rgb(204, 204, 204); background: rgb(255, 255, 255); overflow: auto; border-radius: 4px; outline: none; padding: 20px; margin-right: -50%; width: 36%; height: 80%;">
+    <form class="user-details">
+      <label>lista de tareas</label>
+      <br>
+      <br>
+          <ul>  
+          <li class="task {{t.isClosed == true ? 'green' : 'red'}}" *ngFor="let t of tasks; let i = index">
+            <ul>
+            <li>Content :{{t.taskContent}} <a style="float: right" (click)="selectTask(t)"><i class="fas fa-caret-square-down"></i></a></li>
+            <li><small>{{t.createdAt}}</small></li>
+            <li><small> to : {{t.assignedTo.firstName + ' ' + t.assignedTo.lastName}}</small></li>
+            <li>
+            <div *ngIf="selectedTask == t">
+              <br>
+              <label>Conversation</label>
+              <br>
+              <br>
+              <label *ngIf="(t.conversation != undefined && t.conversation.length == 0)">No message</label>
+            <ul>
+                <li *ngFor="let c of t.conversation">{{c.author+':'}}
+                  <p style="margin-left: 15%">{{c.message}}</p>
+                <small>at {{c.timeStamp}}</small></li>
+            </ul>
+            <div class="message" id="resp-{{i}}" style="display: none">
+              <label>Your message</label>
+              <textarea id="msg-{{i}}"></textarea>
+            </div>
+            
+            <div class="btn btn-group" style="width: 300px">
+              <button class="btn btn-sc">Close task</button>
+              <button class="btn btn-sc">Reassign</button>
+              <button id="resp-action-{{i}}" class="btn btn-sc" (click)="showResponseBox(i)">Respond</button>
+              <button style="display: none" class="btn btn-sc" id="resp-btn-{{i}}" (click)="sendMessage(i , t)">Send a message</button>
+            </div>
+            </div>
+            </li>
+           </ul>
+          </li>
+        </ul>
+      <div class="action-btns" style="
+      position: absolute;
+      bottom: 5px;
+      left: 30%;
+      width: 100px !important;">
+        <button style="width: 100% !important" type="submit" class="save" mat-button [mat-dialog-close]="task">OK</button>
+      </div>
+    </form>
+  </div>
+  

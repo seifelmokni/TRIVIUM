@@ -1,10 +1,11 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-delete-alert-popup',
   templateUrl: './delete-alert-popup.component.html',
-  styleUrls: ['./delete-alert-popup.component.css']
+  styleUrls: ['./delete-alert-popup.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DeleteAlertPopupComponent implements OnInit {
     message;

@@ -11,9 +11,9 @@
 								<img src="assets/images/user-1.png" alt="">
 							</div>
 							<div class="user-meta">
-								<div class="user-name">Juan López</div>
-								<div class="user-email">juanlopez@gmail.com</div>
-								<div class="user-action"><a href="#">Configuración</a></div>
+								<div class="user-name">{{user != undefined ? user.firstName+' '+user.lastName : 'Juan López'}}</div>
+								<div class="user-email">{{user != undefined ? user.login : 'juanlopez@gmail.com'}}</div>
+								<div class="user-action"><a href="#">{{user != undefined ? user.role : 'Configuración'}}</a></div>
 							</div>
 						</div>
 						<div class="info-footer">

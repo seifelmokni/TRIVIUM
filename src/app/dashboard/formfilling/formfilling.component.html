@@ -26,11 +26,15 @@
 				<section class="main-content">
 				  <form novalidate="" class="dynamic-form" #formCandidate>
 					<div class="wrapper">
-						<div class="left-col col" #left_container [ngStyle]="{'display': !shouldShowCalendarPage ?  'block' : 'none' }">
+						<div class="left-col col" #left_container 
+						[style.display]="!shouldShowCalendarPage ?  'block' : 'none'" 
+						[style.width]="isSingleColumnForm ? '50%' : '500%'" 
+						[style.margin-left]= "isSingleColumnForm ? '0%' : '0%'">
 	  
 						  </div>
-						  <div class="right-col col" #right_container [ngStyle]="{'display': !shouldShowCalendarPage ?  'block' : 'none' }">
-		  
+							<div  class="right-col col" #right_container 
+							[style.display]="!isSingleColumnForm ?  'block' : 'none'"  
+							[style.padding-left]="isSingleColumnForm ? 'Opx' : ''">
 						  </div>
 					  
 					<div *ngIf="shouldShowCalendarPage">

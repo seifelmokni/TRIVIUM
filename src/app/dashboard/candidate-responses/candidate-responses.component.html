@@ -1,0 +1,51 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+    <div class="dash-content">
+      <div class="block-inner">
+        <div class="task-wrapper">
+          <section class="panel-menu">
+            <ul>
+              <li>
+                <a class="" href="javascript:void(0)" routerLink="/user">Usuarios</a>
+              </li>
+              <li>
+                <a  href="active">Permisos</a>
+              </li>
+            </ul>
+          </section>
+          <section class="main-content">
+            <div class="permissions-header">
+              <span class="permissions-title">Permisos</span>
+              
+            </div>
+            <div class="">
+                <form novalidate="" class="dynamic-form" #formCandidate>
+                    <div class="wrapper">
+                      <div class="left-col col" #left_container [style.display]="!shouldShowCalendarPage ?  'block' : 'none'" 
+                      [style.width]="!isSingleColumnForm ? '50%' : '500%'" 
+                      [style.margin-left]= "!isSingleColumnForm  ? '0%' : '0%'">
+          
+                      </div>
+                      <div  class="right-col col" #right_container 
+                      [style.display]="(!shouldShowCalendarPage && !isSingleColumnForm) ?  'block' : 'none'"  >
+                      </div>
+                      
+                    </div>
+                    <div class="btn-group">
+                      <button *ngIf="pageIndex > 0" (click)="previous()" class="btn btn-sc">Atrás</button>
+                      <button (click)="next()" class="btn btn-confirm" id="submit">Enviar</button>
+                    </div>
+                  </form>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <app-footer></app-footer>
+  </div>
+</section>

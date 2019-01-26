@@ -1,0 +1,136 @@
+<app-svg-spirit></app-svg-spirit>
+<section class="site-wrapper">
+  <div class="block block-dash">
+    <app-header></app-header>
+    <app-nav></app-nav>
+
+    <div class="dashboard-area">
+      <div class="user-dashboard">
+        <div class="confirm-interview">
+          <div class="dash-header">
+            <div class="block-inner">
+              <ul class="block-size">
+                <a class="icon icon-back" (click)="goBackAction()">
+                </a>
+                <li class="dropdown-block">
+                  <span class="dropdown-toggler">
+                    Mis tareas
+                  </span>
+                </li>
+              </ul>
+              <div class="page-title">
+                <span>
+                  <img class="task-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAWCAYAAADJqhx8AAABWUlEQVQ4jZXUv0scQRjG8c/JYSUmsbAXIliFS6PVGRGOwHWpBAvBHxCwSGORPyFaCCISEcRSkQQCaa71Dv8AORCUpBCuswgahCiIZ7EjLnu7ub1vszPP7PvMM7MvWyhXqjJYwnoYr2A37aViYj6Gz+jDe4wHvY4yHrCGs7jBFgbC/DX6sY89nAd9Bm8xG5L8DvpNEQtYDsI9hnEU5qXwvA7aNC5xHPSvhXKleoWXQZjEZtpZY3xCI4yvknfQiO2apISTpNjXZbcnFvE9bSGZII1JrGIqbTErQV10YSP4hjmc9pJgFYe4wxfUsuJlGdQwIWqm7aziNIMXKITxHxx4/sRPtEV90WHwRnT2gv/Txjs0kwZNvOpS3EHePsgknmAUOzlMH/ARv5IGLWzkNGilJbjFzy7FHcQNBvFBvq/wA3+TBkOifs9jUE8zuMB8l+IOiqJfWLvXwsC/R0SqPpGLFMojAAAAAElFTkSuQmCC"
+                    alt="task-icon">
+                  Validar fecha de entrevista de {{candidate.firstName+' '+candidate.lastName}}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="dash-content">
+            <div class="block-inner">
+              <div class="task-wrapper">
+                <section class="task-list">
+                  <div  (click)="changeCandidate(item)" class="task" [ngClass]="{'active' : item.candidateId === candidate.candidateId }" *ngFor="let item of admissionCandidate">
+                    <a >
+                      <p class="task-title">
+                        <img class="task-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAWCAYAAADJqhx8AAABWUlEQVQ4jZXUv0scQRjG8c/JYSUmsbAXIliFS6PVGRGOwHWpBAvBHxCwSGORPyFaCCISEcRSkQQCaa71Dv8AORCUpBCuswgahCiIZ7EjLnu7ub1vszPP7PvMM7MvWyhXqjJYwnoYr2A37aViYj6Gz+jDe4wHvY4yHrCGs7jBFgbC/DX6sY89nAd9Bm8xG5L8DvpNEQtYDsI9hnEU5qXwvA7aNC5xHPSvhXKleoWXQZjEZtpZY3xCI4yvknfQiO2apISTpNjXZbcnFvE9bSGZII1JrGIqbTErQV10YSP4hjmc9pJgFYe4wxfUsuJlGdQwIWqm7aziNIMXKITxHxx4/sRPtEV90WHwRnT2gv/Txjs0kwZNvOpS3EHePsgknmAUOzlMH/ARv5IGLWzkNGilJbjFzy7FHcQNBvFBvq/wA3+TBkOifs9jUE8zuMB8l+IOiqJfWLvXwsC/R0SqPpGLFMojAAAAAElFTkSuQmCC"
+                          alt="task-icon">{{item.firstName+' '+item.lastName}}</p>
+                      <p class="task-row task-row-top"><span class="task-date">{{item.applicationDate}}</span><br>
+                        <span class="task-status" >{{item.status}}</span>
+                      </p>
+                      <p class="task-row task-row-top">
+                        <span class="task-date">
+                          {{item.priority}}
+                        </span>
+                        <br>
+                        <span *ngFor='let u of users'>
+                        <span class="task-status" *ngIf="u.userID == item.userInChage">
+                            {{u.firstName +' '+ u.lastName !== ' ' ? u.firstName +' '+ u.lastName : u.login}}
+                        </span>
+                      </span>
+                      </p>
+                    </a>
+                  </div>
+                  <!---
+                  <div class="task"><a href="/app/crm/inicio/interview/1541998891490">
+                      <p class="task-title"><img class="task-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAWCAYAAADJqhx8AAABWUlEQVQ4jZXUv0scQRjG8c/JYSUmsbAXIliFS6PVGRGOwHWpBAvBHxCwSGORPyFaCCISEcRSkQQCaa71Dv8AORCUpBCuswgahCiIZ7EjLnu7ub1vszPP7PvMM7MvWyhXqjJYwnoYr2A37aViYj6Gz+jDe4wHvY4yHrCGs7jBFgbC/DX6sY89nAd9Bm8xG5L8DvpNEQtYDsI9hnEU5qXwvA7aNC5xHPSvhXKleoWXQZjEZtpZY3xCI4yvknfQiO2apISTpNjXZbcnFvE9bSGZII1JrGIqbTErQV10YSP4hjmc9pJgFYe4wxfUsuJlGdQwIWqm7aziNIMXKITxHxx4/sRPtEV90WHwRnT2gv/Txjs0kwZNvOpS3EHePsgknmAUOzlMH/ARv5IGLWzkNGilJbjFzy7FHcQNBvFBvq/wA3+TBkOifs9jUE8zuMB8l+IOiqJfWLvXwsC/R0SqPpGLFMojAAAAAElFTkSuQmCC"
+                          alt="task-icon">UTSAV&nbsp;KUMAR</p>
+                      <p class="task-row task-row-top"><span class="task-date">13/11/18</span><span class="task-status">Residente</span></p>
+                      <p class="task-row task-row-top"><span class="task-date">Normal</span><span class="task-status">Pendiente
+                          asignar</span></p>
+                    </a></div> -->
+                </section>
+                <section class="task-view">
+                  <div class="task-information">
+                    <p><span class="task-name textcol-grey">Priority</span><span>{{candidate.priority}}</span></p>
+                    <p><span class="task-name textcol-grey">Fecha</span>{{candidate.applicationDate}}<span></span></p>
+                    <p><span class="task-name textcol-grey">Estado</span>                        
+                      <label>{{candidate.status}}</label>
+                    </p>
+                    <p><span class="task-name textcol-grey">Propietario</span>
+                      <span *ngFor='let u of users'>
+                          <span class="task-status" *ngIf="u.userID == candidate.userInChage">
+                              {{u.firstName +' '+ u.lastName !== ' ' ? u.firstName +' '+ u.lastName : u.login}}
+                          </span>
+                        </span>
+                    </p>
+                  </div>
+                  <form class="task-hour" *ngIf="candidate.status != 'admission'">
+                    <div>
+                    <div style="width: 70% ; float: left ;">
+                    <p><span class="icon icon-calendar"></span>
+                      <select #interviewDateSelector (change)="showHour()">
+                        <option value="-1">--por favor, elija--</option>
+                        <option value="{{o}}" *ngFor="let i of interviewDates; let o = index">{{i.interviewDate}}</option>
+                      </select>
+                    </p>
+                    <p><span class="icon icon-clock"></span><span class="rc-time-picker ">
+                      <input class="rc-time-picker-input"
+                          type="text" id="" value="{{interviewHour}}"><span class="rc-time-picker-icon"></span></span></p>
+                        </div>
+                          <div class="btn-group" style="width: 30% ; float: right ; padding-top: 1px">
+                            <a (click)="fixThisDate()" class="btn btn-sc">acepta esta fecha</a>
+                          </div>
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                          <br>
+                          <br>
+                          <br>
+                        
+                    <div class="btn-group">
+                      <a (click)="proposeNewInterviewDate()" class="btn btn-sc">Asignar nueva fecha</a>
+                    </div>
+                  </form>
+                </section>
+                <section class="teacher-contacts">
+                    <div class="teacher-title">
+                      <div class="user-avatar">
+                        <img src="/static/media/avatar.9e789c47.png" alt="avatar">
+                      </div>
+                      <span>{{candidate.firstName}} {{candidate.lastName}}</span>
+                    </div>
+                    <div class="contacts-phone">
+                      <p class="phone-number1">
+                        <span class="icon icon-tel"></span>+34</p>
+                      <p class="phone-number2">
+                        <span class="icon icon-smartphone"></span>{{candidate.phone}}</p>
+                      <p class="email">
+                        <span class="icon icon-mail"></span>{{candidate.email}}</p>
+                      <p>Sede: Villa Belagua</p>
+                      <a href="mailto:{{candidate.email}}" class="btn btn-sc">Enviar correo electrónico</a>
+                      <a class="btn btn-sc" (click)="showInformationLog()">Información de usuario</a>
+                    </div>
+                  </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <app-footer></app-footer>
+  </div>
+</section>

@@ -2,7 +2,7 @@
 <section class="site-wrapper">
   <div class="block block-dash">
     <app-header></app-header>
-    <app-nav [searchEnabled]="false" [reloadEnabled]="false"></app-nav>
+    <app-nav [navigationEnabled]="true" [searchEnabled]="false" [reloadEnabled]="false"></app-nav>
 
     <div class="dash-content">
       <div class="block-inner">
@@ -61,6 +61,10 @@
                 <div class="btn-plug">
                   <span class="fas fa-1x fa-font"></span> Text</div>
               </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event , '2_line_text')">
+                  <div class="btn-plug">
+                    <span class="fas fa-1x fa-font"></span> 2 line text</div>
+                </li>
               <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'email')">
                 <div class="btn-plug">
                   <span class="fas fa-1x fa-envelope"></span> Email</div>
@@ -97,24 +101,78 @@
                 <div class="btn-plug">
                   <span class="fas fa-1x fa-text-height"></span> White Space</div>
               </li>
+              <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'photo')">
+                  <div class="btn-plug">
+                    <span class="fas fa-1x fa-image"></span>Photo</div>
+                </li>
+                <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'video')">
+                    <div class="btn-plug">
+                      <span class="fas fa-1x fa-video"></span>Video</div>
+                  </li>
+                  <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'title')">
+                      <div class="btn-plug">
+                        <span class="fas fa-1x fa-heading"></span>Title</div>
+                    </li>
+                    <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'section')">
+                        <div class="btn-plug">
+                          <span class="fab fa-1x fa-autoprefixer"></span>Section</div>
+                      </li>
+                      <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'paragraph')">
+                          <div class="btn-plug">
+                            <span class="fa fa-1x fa-paragraph"></span>Paragraph</div>
+                        </li>
+                        <li draggable="true" style="opacity: 1" (dragstart)="drag($event,'youtube')">
+                            <div class="btn-plug">
+                              <span class="fab fa-1x fa-youtube"></span>youtube</div>
+                          </li>
             </ul>
           </div>
           <div class="form-center">
             <div class="form-title">
-              <div class="wrapper">
-                <span [ngStyle]="{'display': !editFormTitleEnabled ? 'inline-block' : 'none'}" #formTitleContainer>{{pages[pageIndex].pageTitle}}</span>
-                <input type="text" 
-                class="stepname" 
-                [ngStyle]="{'display': editFormTitleEnabled ? 'inline-block' : 'none'}" 
-                #formNameInput
-                  (blur)="editFormName()" 
-                  (keyup)="editFormNameChanged($event.keyUp)"
-                  [value]="pages[pageIndex].pageTitle"
-                  />
-                <a href="javascript:void(0)">
-                  <span class="icon icon-pencil" (click)="editFormName()"></span>
-                </a>
-              </div>
+                <div class="wrapper" style="width: 150px">
+                    <span [ngStyle]="{'display': !editFormTitleEnabled ? 'inline-block' : 'none'}" #formTitleContainer>
+                      {{pages[pageIndex] !== undefined ? pages[pageIndex].pageTitle : 'step '+ (pageIndex +1)}}
+                    </span>
+                    <input type="text" 
+                    class="stepname" 
+                    [ngStyle]="{'display': editFormTitleEnabled ? 'inline-block' : 'none'}" 
+                    #formNameInput
+                      (blur)="editFormName()" 
+                      (keyup)="editFormNameChanged($event.keyUp)"
+                      [value]="pages[pageIndex] !== undefined ? pages[pageIndex].pageTitle : 'step '+ (pageIndex +1)"
+                      />
+                    <a href="javascript:void(0)">
+                      <span class="icon icon-pencil" (click)="editFormName()"></span>
+                    </a>
+                  </div>
+                  <div style="display: inline-flex">
+                    <span style="margin-right: 3px">
+                      forma de dos columnas
+                    </span>
+                    <div (click)="isSingleColumnForm = !isSingleColumnForm">
+                      <div *ngIf="!isSingleColumnForm" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                      <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(1, 124, 66);">
+                        <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;">ON</div>
+                        <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;">OFF</div>
+                      </div>
+                      <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                        <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 33px;"></div>
+                      </div>
+                      <input type="checkbox" value="true" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                    </div>
+
+                    <div *ngIf="isSingleColumnForm" style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none; -webkit-tap-highlight-color: transparent;">
+                      <div style="width: 52px; height: 20px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(65, 66, 68);">
+                        <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;">ON</div>
+                        <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;">OFF</div>
+                      </div>
+                      <div style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1 1 0%; align-self: stretch; align-items: center; justify-content: flex-start;">
+                        <div style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px; border-radius: 50%; box-sizing: border-box; background-color: rgb(250, 250, 250); position: relative; left: 1px;"></div>
+                      </div>
+                      <input type="checkbox" value="false" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
+                    </div>
+                    </div>
+                  </div>
               <div class="btn-group">
                 <a (click)="previewForm()" class="btn">
                   <span class="icon icon-eye"></span>
@@ -144,10 +202,20 @@
                 <em>Este es un nuevo paso. Comience a agregar elementos de formulario</em>
               </div>
               <div class="wrapper">
-                <div class="left-col col" #left_container (drop)="drop($event , 1 )" (dragover)="allowDrag($event)" dragula="elemnts" (dragulaModelChange)="orderChanged($event)">
+                <div class="left-col col" 
+                #left_container 
+                (drop)="drop($event , 1 )" 
+                (dragover)="allowDrag($event)" 
+                dragula="elemnts" 
+                [ngStyle]="{'width' : !isSingleColumnForm ? '50%' : '100%'}"
+                >
 
                 </div>
-                <div class="right-col col" #right_container (drop)="drop($event , 2 )" (dragover)="allowDrag($event)" dragula="elemnts" (dragulaModelChange)="orderChanged($event)">
+                <div [ngStyle]="{'display' : !isSingleColumnForm ? 'block' : 'none'}" 
+                class="right-col col" 
+                #right_container (drop)="drop($event , 2 )" 
+                (dragover)="allowDrag($event)" 
+                dragula="elemnts" >
 
                 </div>
 
@@ -155,8 +223,8 @@
 
 
             </form>
-            <div class="btn-group " style="display: flex; float: right; margin-right: 95px; margin-top: 5px;  margin-bottom: 5px;">
-              <a (click)="selectButton('back')" class="btn btn-sc" href="javascript:void(0)" style="width: 165px;margin-right: 5px;">Atrás</a>
+            <div class="btn-group " style="display: flex; float: right; margin-right: 95px; margin-top: 5px; margin-bottom: 5px;">
+              <a (click)="selectButton('back')" class="btn btn-sc" href="javascript:void(0)" style="width: 165px; margin-right: 5px;">Atrás</a>
               <a (click)="selectButton('next')" class="btn btn-confirm" href="javascript:void(0)" style="width: 165px">Siguiente</a>
             </div>
             <div class="btn-group btn__mod">
@@ -190,9 +258,23 @@
                 <div *ngIf=" (selectedElementIndex !== -1 || shouldShowButtonActionSection)">
                   <div>
                     <div>
-                        <div *ngIf="selectedElementIndex !== -1 && !shouldShowButtonActionSection">
-                      <label for="form-title">Nombre del campo</label>
-                      <input type="text" id="form-title" name="elementLabelTitle" [(ngModel)]="elementLabelTitle" autocomplete="off" value="" #labelTitleInput (blur)="editLabelTitle()">
+                        <div *ngIf="selectedElementIndex !== -1 
+                        && !shouldShowButtonActionSection 
+                        && !(componentSelected.type=='photo' || componentSelected.type=='video')">
+                      <label for="form-title" *ngIf="componentSelected.type !== 'youtube'">Nombre del campo</label>
+                      <label for="form-title" *ngIf="componentSelected.type == 'youtube'">Youtube source</label>
+                      <input *ngIf="componentSelected.type !== 'paragraph' && componentSelected.type !== 'youtube'" type="text" id="form-title" name="elementLabelTitle" [(ngModel)]="elementLabelTitle" autocomplete="off" value="" #labelTitleInput (keyup)="editLabelTitle()">
+                      <textarea *ngIf="componentSelected.type === 'paragraph'" name="elementLabelTitle" [(ngModel)]="elementLabelTitle" autocomplete="off" value="" #labelTitleInput (keyup)="editLabelTitle()"></textarea>
+                      <input *ngIf="componentSelected.type == 'youtube'" type="text" placeholder="Youtube source" name="youtubeSource" [(ngModel)]="youtubeSource" (keyup)="youtubeSourceChange()" />
+                      <input *ngIf="componentSelected.type === '2_line_text'" type="text" id="form-title" name="smallLabelTitle" [(ngModel)]="smallLabelTitle" autocomplete="off" value=""  (keyup)="editSmallLabelTitle()">
+                      <select *ngIf="componentSelected.type === '2_line_text'" #lineTextTypeSelector (change)="inputTypeSelectChange()">
+                        <option value="-1">seleccione el tipo de entrada</option>
+                        <option value="text" [selected]="componentSelected.inputType == 'text'">Text</option>
+                        <option value="email" [selected]="componentSelected.inputType == 'email'">Email</option>
+                        <option value="number" [selected]="componentSelected.inputType == 'number'">Number</option>
+                        <option value="tel" [selected]="componentSelected.inputType == 'tel'" >Phone</option>
+                      </select>
+                      <br>
                       <label for="form-title">papel de los campos</label>
                       <select #roleSelector (change)="setElementRole()">
                         <option value="0">Seleccione un rol para el campo</option>
@@ -203,9 +285,6 @@
                         <option value="email">Email</option>
                       </select>
                       <br>
-  
-  
-                      
                         <span>
                           <input type="checkbox" id="required-field" #isFieldRequired (change)="makeFieldRequired()" name="requiredCheckedBoxIsChecked"
                             [(ngModel)]="requiredCheckedBoxIsChecked">
@@ -232,6 +311,13 @@
                           </select>
                       </div>
                       </div>
+                      <div *ngIf="selectedElementIndex !== -1 && !shouldShowButtonActionSection && (componentSelected.type=='photo' || componentSelected.type=='video')">
+                        <label>{{'fuente de '+ (componentSelected.type == 'photo' ? 'imagen' : 'vídeo')}}</label>
+                        <br>
+                        <input type="file" name="source" (change)="sourceChanged($event)" accept="image" />
+                        
+                      </div>
+
                       <div *ngIf="shouldShowButtonActionSection">
                           
                           <div class="valid-right">
@@ -247,10 +333,11 @@
                             </div>
                             <div>
                               <div>
+                                <!--
                                 <p>
                                   <input type="checkbox" id="registration-form" #isRegisterform>
                                   <label for="registration-form">Mostrar en la página de registro</label>
-                                </p>
+                                </p> -->
                               </div>
                             </div>
                           </div>

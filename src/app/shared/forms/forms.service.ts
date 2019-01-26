@@ -44,6 +44,29 @@ export class FormsService {
         return this.db.doc('forms/' + form.formId).delete();
     }
 
+    getForm(formId:string){
+        return this.db.collection('forms' , ref => ref.where('formId' , '==' , formId)).snapshotChanges().map(
+            actions => {
+                return actions.map(
+                    a => {
+                        const data = a.payload.doc.data() as Form;
+                        console.log('data');
+                        console.log(a);
+                        data.formId = a.payload.doc.id;
+                        for(let i =  0 ; i < data.pages.length ; i++){
+                            if(data.pages[i].pageSaved == undefined){
+                                console.log('page is saved') ; 
+                                data.pages[i].pageSaved = true ; 
+                            }
+                        }
+                        console.log(data);
+                        return data;
+                    }
+                );
+            }
+        );
+    }
+
     getSelectedForm(): Form {
         return this.selectedForm;
     }
