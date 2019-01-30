@@ -1,20 +1,17 @@
 <div mat-dialog-content class="ReactModal__Content ReactModal__Content--after-open mat-dialog-content" tabindex="-1" role="dialog" style="position: absolute; top: 10%; left: 32%; right: auto; bottom: auto; border: 1px solid rgb(204, 204, 204); background: rgb(255, 255, 255); overflow: auto; border-radius: 4px; outline: none; padding: 20px; margin-right: -50%; width: 36%; height: 80%;">
     <form class="user-details">
-      <label>{{!isReassign ? 'crear nueva tarea' : 'reasignar tarea'}}</label>
-          <div class="info-block">
-              <label for="1528439029837">tarea</label>
-              <input type="text" id="1528439029837" name="nombre" autocomplete="off" [(ngModel)]="task.taskContent">
-            </div>
+      <label>{{!isReassign ? 'Crear nueva acción' : 'Crear acción'}}</label>
+          
 
             <div class="info-block">
-                <label for="1528439029837">asignado a</label>
+                <label for="">asignado a</label>
                 <select #userSelector (change)="selectUser()">
                   <option value="-1">--selecciona un usuario--</option>
                   <option value="{{i}}" *ngFor="let u of users; let i = index">{{u.firstName+' '+u.lastName}}</option>
                 </select>
             </div>
             <div class="info-block">
-                <label for="1528439029837">Tipo</label>
+                <label for="">Tipo</label>
                 <select #typeSelector (change)="selectType()">
                   <option value="-1">--seleccione un tipo--</option>
                   <option value="llamada" [selected]="task.taskType== 'llamada'">llamada</option>
@@ -24,16 +21,28 @@
                 </select>
             </div>
               <div class="info-block">
-                  <label for="1528439029837">
-                      <input type="checkbox" id="1528439029837" name="nombre" autocomplete="off" [(ngModel)]="task.sendEmail">
+                  <label for="">
+                      <input type="checkbox" id="" name="sendEmail" autocomplete="off" [(ngModel)]="task.sendEmail">
                     enviar un correo electrónico de alerta
                   </label>
                 </div>
+                <div class="info-block">
+                  <label for="subject">Asunto</label>
+                  <input type="text"  autocomplete="off" name="subject" [(ngModel)]="task.taskContent" style="width: 100%" />
+              </div>
+                <div class="info-block">
+                    <label for="">
+                        descripción
+                    </label>
+                    <textarea name="description" [(ngModel)]="task.description" style="width: 100%">
+
+                    </textarea>
+                  </div>
                 
       
       <div class="action-btns">
         <button type="button" class="close" mat-button (click)="onNoClick()">Cerrar</button>
-        <button type="submit" class="save" mat-button [mat-dialog-close]="task">Eliminar</button>
+        <button type="submit" class="save" mat-button [mat-dialog-close]="task">Confirmar</button>
       </div>
     </form>
   </div>

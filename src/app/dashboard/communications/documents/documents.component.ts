@@ -25,5 +25,8 @@ export class DocumentsComponent implements OnInit {
     this.documentService.documentSelected = d ;
     this.router.navigate(['editDocument'])
   }
+  deleteDocument(d:Document){
+    this.documentService.deleteDocument(d.documentId);
+  }
 
 }

@@ -93,7 +93,7 @@ export class HomeComponent implements OnInit {
     console.log(id);
     this.textAreaShown = 'txt-'+id ; 
   }
-
+  /*
   saveObservation(id){
     const textAreaId= '#txtarea-'+id ; 
     const textArea = this.elementRef.nativeElement.querySelector(textAreaId) ; 
@@ -112,7 +112,7 @@ export class HomeComponent implements OnInit {
         
       }
     }
-  }
+  } */
 
 
   assignUser(candidate: Candidate , event){

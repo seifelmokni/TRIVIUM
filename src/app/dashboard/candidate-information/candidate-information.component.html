@@ -16,11 +16,10 @@
                 <li><a [ngClass]="{'active': sectionSelected == 'chronology' }" (click)="changeSection('chronology')">Cronología</a></li>
                 <li><a [ngClass]="{'active': sectionSelected == 'personalInfo' }" (click)="changeSection('personalInfo')">Información
                     personal</a></li>
-                <li><a [ngClass]="{'active': sectionSelected == 'academicInfo' }" (click)="changeSection('academicInfo')">Information
-                    académica</a></li>
-                <li><a [ngClass]="{'active': sectionSelected == 'economicInfo' }" (click)="changeSection('economicInfo')">Information
-                    económica</a></li>
-                <li *ngFor="let f of forms ; let i = index"><a [ngClass]="{'active': sectionSelected == f.title }" (click)="changeSection(f.title)">Form: {{f.title}}</a></li>
+                <li><a [ngClass]="{'active': sectionSelected == 'academicInfo' }" (click)="changeSection('academicInfo')">Información académica</a></li>
+                <li><a [ngClass]="{'active': sectionSelected == 'economicInfo' }" (click)="changeSection('economicInfo')">Información económica</a></li>
+                <li *ngFor="let f of forms ; let i = index"><a [ngClass]="{'active': sectionSelected == f.title }" (click)="changeSection(f.title)">Ficha Resumen Informe entrevista</a></li>
+              
               </ul>
             </section>
             <!--Resume start-->
@@ -28,7 +27,7 @@
               <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541998891490"></a>
                 <div class="user-avatar">
                   <img src="candidate.image" alt="user avatar" *ngIf="candidate.image != undefined && candidate.image != ''">
-                  <i class="fas fa-5x fa-user-circle" *ngIf=" false ||candidate.image != undefined || candidate.image != ''"></i>
+                  <i class="fas fa-2x fa-user-circle" style="margin-top: 5px" *ngIf=" false ||candidate.image != undefined || candidate.image != ''"></i>
                 </div>
                 <span>{{candidate.firstName+' '+candidate.lastName}}</span>
                 <div class="btn-group" *ngIf="!editModeEnabled"><a (click)="editButtonClicked()" title="Editar" class="btn btn-sc">Editar</a></div>
@@ -41,29 +40,119 @@
               </div>
               <form class="resume-wrapper">
                 <div class="date-wrapper-left">
-                  <div class="date-wrapper"><span class="date-title">Teléfono ﬁjo:</span><span class="date-value" *ngIf="!editModeEnabled">{{candidate.fixPhone}}</span>
+                  <div class="date-wrapper"><span class="date-title">Teléfono ﬁjo:</span> <br>
+                    <span class="date-value" *ngIf="!editModeEnabled">{{candidate.fixPhone}}</span>
                     <input type="tel" name="fixPhone" [(ngModel)]="fixPhone" *ngIf="editModeEnabled" /></div>
-                  <div class="date-wrapper"><span class="date-title">Teléfono móvil:</span><span class="date-value"
+                  <div class="date-wrapper"><span class="date-title">Teléfono móvil:</span><br>
+                    <span class="date-value"
                       *ngIf="!editModeEnabled">{{candidate.phone}}</span> <input type="tel" name="phone" [(ngModel)]="phone"
                       *ngIf="editModeEnabled" /></div>
-                  <div class="date-wrapper"><span class="date-title">Email:</span><span class="date-value" *ngIf="!editModeEnabled">{{candidate.email}}</span><input
+                  <div class="date-wrapper"><span class="date-title">Email:<br>
+                  </span>
+                    <span class="date-value" *ngIf="!editModeEnabled">{{candidate.email}}</span><input
                       type="email" name="email" [(ngModel)]="email" *ngIf="editModeEnabled" /></div>
-                  <div class="date-wrapper"><span class="date-title">Fecha de nacimiento:</span><span class="date-value"
-                      *ngIf="!editModeEnabled">{{candidate.birthDate}}</span><input type="date" name="birthDate"
-                      [(ngModel)]="birthDate" *ngIf="editModeEnabled" /></div>
+                      <div class="date-wrapper"><span class="date-title">Email UNAV:</span><br>
+                    
+                        <span class="date-value" *ngIf="!editModeEnabled">{{candidate.emailUnav}}</span><input
+                          type="email" name="email" [(ngModel)]="candidate.emailemailUnav" *ngIf="editModeEnabled" /></div>
+                  
+                </div>
+                <div class="date-wrapper-center">
+                  <div class="date-wrapper"><span class="date-title">Fecha de nacimiento:</span><br>
+                    <span class="date-value"
+                    *ngIf="!editModeEnabled">{{candidate.birthDate}}</span><input type="date" name="birthDate"
+                    [(ngModel)]="birthDate" *ngIf="editModeEnabled" /></div>
+
+                  <div class="date-wrapper"><span class="date-title">Nacionalidad:</span><br>
+                    <span class="date-value"
+                    *ngIf="!editModeEnabled">{{candidate.nationality}}</span><input type="text" name="nationality"
+                    [(ngModel)]="candidate.nationality" *ngIf="editModeEnabled" /></div>
+                    
+
+                  <div class="date-wrapper"><span class="date-title">Región:</span><br>
+                    <span class="date-value"
+                    *ngIf="!editModeEnabled">{{candidate.province}}</span><input type="text" name="province"
+                    [(ngModel)]="candidate.province" *ngIf="editModeEnabled" /></div>
+                    
+
+                  <div class="date-wrapper"><span class="date-title">Ciudad:</span><br>
+                    <span class="date-value"
+                    *ngIf="!editModeEnabled">{{candidate.city}}</span><input type="text" name="city"
+                    [(ngModel)]="candidate.city" *ngIf="editModeEnabled" /></div>
+
+                  <div class="date-wrapper"><span class="date-title">Colegio:</span><br>
+                    <span class="date-value"
+                    *ngIf="!editModeEnabled">{{candidate.college}}</span><input type="text" name="college"
+                    [(ngModel)]="candidate.college" *ngIf="editModeEnabled" /></div>
+
                 </div>
                 <div class="date-wrapper-right">
-                  <div class="date-wrapper"><span class="date-title">Sede:</span><span class="date-value" *ngIf="!editModeEnabled">{{candidate.hq}}</span><input
-                      type="text" name="hq" [(ngModel)]="hq" *ngIf="editModeEnabled" /></div>
+                  <div class="date-wrapper"><span class="date-title">Sede:</span><br>
+                    
+                    <span class="date-value" *ngIf="!editModeEnabled">{{candidate.hq}}</span>
+                    <input type="text" name="hq" [(ngModel)]="hq" *ngIf="editModeEnabled" /> 
+                  </div>
+
+
+                  <div class="date-wrapper"><span class="date-title">Etapa:</span><br>
+                    
+                    <span class="date-value" *ngIf="!editModeEnabled">{{candidate.step}}</span>
+                    <input type="text" name="candidate.step" [(ngModel)]="step" *ngIf="editModeEnabled" /> 
+                  </div>
+
+                  <div class="date-wrapper"><span class="date-title">Carrera Solicitada:</span><br>
+                    
+                    <span class="date-value" *ngIf="!editModeEnabled">{{candidate.carrer}}</span>
+                    <input type="text" name="candidate.carrer" [(ngModel)]="carrer" *ngIf="editModeEnabled" /> 
+                  </div>
+
+                  <div class="date-wrapper"><span class="date-title">UA:</span><br>
+                    
+                    <span class="date-value" *ngIf="!editModeEnabled">{{candidate.ua}}</span>
+                    <input type="text" name="candidate.ua" [(ngModel)]="ua" *ngIf="editModeEnabled" /> 
+                  </div>
+
+
+                </div>
+
+                <div class="date-wrapper-left">
+                  <div class="date-wrapper" style="border: 1px solid grey; margin: 2px">
+                  <span class="date-title">Observación Personal</span><br>
+                    
+                  <span class="date-value" *ngIf="!editModeEnabled">{{candidate.personalObservation !=  undefined ? candidate.personalObservation : ''}}</span>
+                  <textarea name="personalObservation" [(ngModel)]="candidate.personalObservation" *ngIf="editModeEnabled"></textarea>
+                </div>
+                </div>
+                <div class="date-wrapper-center">
+                    <div class="date-wrapper" style="border: 1px solid grey; margin: 2px">
+
+                  <span class="date-title">Observación Académica</span><br>
+                    
+                  <span class="date-value" *ngIf="!editModeEnabled">{{candidate.academicObservation !=  undefined ? candidate.academicObservation : ''}}</span>
+                  <textarea name="academicObservation" [(ngModel)]="candidate.academicObservation" *ngIf="editModeEnabled"></textarea>
+                
+                </div>
+                </div>
+                <div class="date-wrapper-right">
+                    <div class="date-wrapper" style="border: 1px solid grey; margin: 2px">
+
+                  <span class="date-title">Observación Económica</span><br>
+                    
+                  <span class="date-value" *ngIf="!editModeEnabled">{{candidate.economicObservation !=  undefined ? candidate.economicObservation : ''}}</span>
+                  <textarea name="economicObservation" [(ngModel)]="candidate.economicObservation" *ngIf="editModeEnabled"></textarea>
+                
+                </div>
                 </div>
                 <div class="panel-task">
-                  <p class="header-task"><span>Siguiente tarea</span><a (click)="createNewTask()"><span class="add-task">+ Añadir acción</span></a></p>
+                  <p class="header-task"><span>Siguiente tarea</span></p>
                   <table>
                     <tbody>
                       <tr *ngFor="let t of tasks">
-                        <td width="200px"><span class="colored {{t.isClosed ? 'color-green' : 'color-red'}}">{{t.createdAt}}</span></td>
-                        <td width="300px">{{t.taskContent}}</td>
-                        <td width="150px">{{t.assignedTo.firstName +' '+ t.assignedTo.lastName}}</td>
+                        <td width="270px"><span class="colored {{t.isClosed ? 'color-green' : 'color-red'}}">{{t.createdAt}}</span></td>
+                        <td width="300px">{{t.description}}</td>
+                        <td width="150px">{{t.assignedTo != udnefined ?  t.assignedTo.firstName +' '+ t.assignedTo.lastName : ''}}</td>
+                        <td width="150px">{{t.taskContent != udnefined ?  t.taskContent : ''}}</td>
+
                         <td>
                           <button *ngIf="!t.isClosed" style="color: green" (click)="closeTaks(t)"><i class="fas fa-check-circle"></i></button>
                           <button *ngIf="!t.isClosed" style="color: blue" (click)="reassignTask(t)"><i class="fas fa-exchange-alt"></i></button>
@@ -78,22 +167,68 @@
                   </table>
                 </div>
               </form>
+              
+            <section class="panel-task">
+              <p class="header-task">
+                <span>Cronología</span>
+              </p>
+              <a (click)="createNewTask()" style="float: right !important; margin-top: 5px"><span class="add-task">+ Añadir acción</span></a>
+
+                <div class="chronology-wrapper">
+                  <section class="history-view">
+                    <!--
+                    <div class="history-day" *ngFor="let log of logs">
+                      <span style="margin-left: 10px" class="date-title-1">{{log.day}} {{log.logs[0].logHour}}</span>
+                      <ul *ngFor="let l of log.logs; let i = index">
+                        <li *ngIf="i < 10" class="time"></li>
+                        <li class="task date-title-1" *ngIf="l.logType == 'first-application' && i < 10" >primera aplicación</li>
+                        <li class="task date-title-1" *ngIf="l.logType == 'assing-user' && i < 10" >asignar usuario responsable</li>
+                        <li class="task date-title-1" *ngIf="l.logType == 'interview-accepted' && i < 10">fecha de entrevista aceptada</li>
+                        <li class="task date-title-1" *ngIf="l.logType == 'interview-fixed' && i < 10">fijó otra fecha de entrevista</li>
+                        <li class="task date-title-1" *ngIf="l.logType == 'edit-resume-info' && i < 10">editar información global</li>
+                        <li class="task date-title-1" *ngIf="l.logType == 'edit-personal-info' && i < 10">editar información personal</li>
+                        <li class="task date-title-1" *ngIf="l.logType == 'edit-education-info' && i < 10">editar información de educación</li>
+                        <li *ngIf="i < 10" class="other date-title">--</li>
+                        <li *ngIf="i < 10" class="author date-title">{{ l.author != undefined ? l.author.firstName+' '+l.author.lastName : '' }}</li>
+                      </ul>
+                    </div> -->
+                    <div class="" *ngFor="let t of allTasks" style="margin-left: -30px ; margin-bottom:20px ;border: 1px solid grey" >
+                      <div class="task-icon" [ngSwitch]="t.taskType" style="margin-bottom: 10px">
+                        <img src="/assets/img/icon-phone.png" width="50px" height="50px" *ngSwitchCase="'llamada'" style="position: relative; top: -3px" />
+                        <img src="/assets/img/icon-reunion.png" width="50px" height="50px" *ngSwitchCase="'reunión'" style="position: relative; top: -3px" />
+                        <img src="/assets/img/icon-message.png" width="50px" height="50px" *ngSwitchCase="'email'" style="position: relative; top: -3px" />
+                        <img src="/assets/img/icon-handshake.png" width="50px" height="50px" *ngSwitchCase="'visita'" style="position: relative; top: -3px" />
+                        <span style="position: relative; top: -23px">
+                        <strong style="margin-left: 10px; margin-right: 10px">{{t.taskType}}</strong>
+                        <small>{{t.createdAt}}</small>
+                        <strong style="margin-left: 10px; margin-right: 10px">{{t.assignedTo != undefined ? t.assignedTo.firstName +' '+ t.assignedTo.lastName : ''}}</strong>
+                        </span>
+                      </div>
+                       <div class="task-subject" style="margin-bottom: 10px ;position: relative; top: -20px"><strong>Asunto:</strong>{{t.taskContent}}</div>
+                      <div class="task-description" style="margin-bottom: 10px;position: relative; top: -20px">{{t.description}}</div>
+                    </div>
+                  </section>
+                </div>
+              </section>
             </section>
+            
             <!--Resume end-->
             <!--Chronology start-->
             <section class="panel-view" *ngIf="sectionSelected == 'chronology'">
               <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541999026298"></a>
-                <div class="user-avatar"><img src="/static/media/avatar.9e789c47.png" alt="user avatar"></div>
-                <span>{{candidate.firstName+' '+candidate.lastName}}</span>
+                <div class="user-avatar">
+                    <img src="candidate.image" alt="user avatar" *ngIf="candidate.image != undefined && candidate.image != ''">
+                    <i class="fas fa-2x fa-user-circle" style="margin-top: 5px" *ngIf=" false ||candidate.image != undefined || candidate.image != ''"></i>
+                  </div>                <span>{{candidate.firstName+' '+candidate.lastName}}</span>
               </div>
               <div class="chronology-wrapper">
                 <section class="history-view">
                   <div class="history-header"><span class="history-title">Historial de{{' '+candidate.firstName+'
                       '+candidate.lastName}}</span></div>
-                  <div class="history-day" *ngFor="let log of logs">
-                    <p class="history-date">{{log.day}}</p>
+                  <div class="history-day" *ngFor="let log of logs" >
+                    <p style="margin-left: 10px" class="history-date">{{log.day}} {{log.logs[0].logHour}}</p>
                     <ul *ngFor="let l of log.logs">
-                      <li class="time">{{l.logHour}}</li>
+                      <li class="time"></li>
                       <li class="task" *ngIf="l.logType == 'first-application'" >primera aplicación</li>
                       <li class="task" *ngIf="l.logType == 'assing-user'" >asignar usuario responsable</li>
                       <li class="task" *ngIf="l.logType == 'interview-accepted'">fecha de entrevista aceptada</li>
@@ -102,7 +237,7 @@
                       <li class="task" *ngIf="l.logType == 'edit-personal-info'">editar información personal</li>
                       <li class="task" *ngIf="l.logType == 'edit-education-info'">editar información de educación</li>
                       <li class="other">--</li>
-                      <li class="author">Dhaval Mashruwala</li>
+                      <li class="author">{{ l.author != undefined ? l.author.firstName+' '+l.author.lastName : '' }}</li>
                     </ul>
                     <!--
                     <ul>
@@ -119,7 +254,11 @@
             <!--Personal info start-->
             <section class="panel-view" *ngIf="sectionSelected == 'personalInfo'">
               <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541999026298"></a>
-                <div class="user-avatar"><img src="/static/media/avatar.9e789c47.png" alt="user avatar"></div><span>{{candidate.firstName+' '+candidate.lastName}}</span>
+                <div class="user-avatar">
+                    <img src="candidate.image" alt="user avatar" *ngIf="candidate.image != undefined && candidate.image != ''">
+                    <i class="fas fa-2x fa-user-circle" style="margin-top: 5px" *ngIf=" false ||candidate.image != undefined || candidate.image != ''"></i>
+                  </div>
+                  <span>{{candidate.firstName+' '+candidate.lastName}}</span>
                 <div class="btn-group" *ngIf="!editPersonalInfoModeEnabled"><a (click)="editPersonalInfoButtonClicked()" title="Editar" class="btn btn-sc">Editar</a></div>
                 <div class="btn-group" *ngIf="editPersonalInfoModeEnabled">
                   <span style="display: inherit;">
@@ -166,7 +305,11 @@
             <!--Academic info start-->
             <section class="panel-view" *ngIf="sectionSelected == 'academicInfo'">
               <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541999026298"></a>
-                <div class="user-avatar"><img src="/static/media/avatar.9e789c47.png" alt="user avatar"></div><span>{{candidate.firstName+' '+candidate.lastName}}</span>
+                <div class="user-avatar">
+                    <img src="candidate.image" alt="user avatar" *ngIf="candidate.image != undefined && candidate.image != ''">
+                    <i class="fas fa-2x fa-user-circle" style="margin-top: 5px" *ngIf=" false ||candidate.image != undefined || candidate.image != ''"></i>
+                  </div>
+                <span>{{candidate.firstName+' '+candidate.lastName}}</span>
                 <div class="btn-group" *ngIf="!editEducationInfoModeEnabled"><a (click)="editEdutioncaButtonClicked()" title="Editar" class="btn btn-sc">Editar</a></div>
                 <div class="btn-group" *ngIf="editEducationInfoModeEnabled">
                   <span style="display: inherit;">
@@ -223,7 +366,11 @@
             <!--Economic info start-->
             <section class="panel-view" *ngIf="sectionSelected == 'economicInfo'">
               <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541999026298"></a>
-                <div class="user-avatar"><img src="/static/media/avatar.9e789c47.png" alt="user avatar"></div><span>{{candidate.firstName+' '+candidate.lastName}}</span>
+                <div class="user-avatar">
+                    <img src="candidate.image" alt="user avatar" *ngIf="candidate.image != undefined && candidate.image != ''">
+                    <i class="fas fa-2x fa-user-circle" style="margin-top: 5px" *ngIf=" false ||candidate.image != undefined || candidate.image != ''"></i>
+                  </div>
+                <span>{{candidate.firstName+' '+candidate.lastName}}</span>
                 <div class="btn-group"><a title="Editar" class="btn btn-sc">Editar</a></div>
               </div>
             </section>
@@ -231,7 +378,11 @@
             <!--Historic info start-->
             <section class="main-content" [style.display]="showResponseSection ? 'block' : 'none'">
                 <div class="panel-header"><a class="icon icon-back" href="/app/crm/admisiones/1541999026298"></a>
-                  <div class="user-avatar"><img src="/static/media/avatar.9e789c47.png" alt="user avatar"></div><span>{{candidate.firstName+' '+candidate.lastName}}</span>
+                  <div class="user-avatar">
+                      <img src="candidate.image" alt="user avatar" *ngIf="candidate.image != undefined && candidate.image != ''">
+                      <i class="fas fa-2x fa-user-circle" style="margin-top: 5px" *ngIf=" false ||candidate.image != undefined || candidate.image != ''"></i>
+                    </div>
+                  <span>{{candidate.firstName+' '+candidate.lastName}}</span>
                   <!--<div class="btn-group"><a title="Editar" class="btn btn-sc">Editar</a></div>-->
                 </div>
                 <form novalidate="" class="dynamic-form" #formCandidate>

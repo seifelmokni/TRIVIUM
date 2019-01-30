@@ -103,6 +103,8 @@ export class CalendarComponent implements OnInit {
     setDaysType;
     setAuthHours;
 
+    hollyDaysAllTypes:Array<string>=[];  
+
     constructor(private modal: NgbModal,
          private configService: ConfigurationService,
          private authService: AuthService,
@@ -126,6 +128,15 @@ export class CalendarComponent implements OnInit {
                         console.log('day ' + this.interviewConfig.allowedDays[i].dayName + "id " + this.interviewConfig.allowedDays[i].dayId);
                         this.daysChecked[this.interviewConfig.allowedDays[i].dayId -1].isChecked = true;
                     }
+
+                    for(let i = 0 ; i < this.interviewConfig.hollyDays.length ; i++){
+                        this.hollyDaysAllTypes.push(this.interviewConfig.hollyDays[i]) ; 
+                    }
+
+                    for(let i = 0 ; i < this.interviewConfig.previosDays.length ; i++){
+                        this.hollyDaysAllTypes.push(this.interviewConfig.previosDays[i]) ; 
+                    }
+                    this.hollyDaysAllTypes.sort() ; 
                     console.log(this.daysChecked);
                     this.refresh.next();
                 }
@@ -360,6 +371,11 @@ export class CalendarComponent implements OnInit {
         )
         //this.addSelectedDayViewClass(dayView);
       }
+
+    deleteHollyDay(i){
+        this.interviewConfig.hollyDays.splice(i , 1) ; 
+        this.refresh.next(); 
+    }
  
     saveConfig() {
         console.log('config to save');

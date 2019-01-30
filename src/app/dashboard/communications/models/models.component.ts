@@ -29,5 +29,8 @@ export class ModelsComponent implements OnInit {
 
 
     }
+    deleteModel(model: Model) {
+        this.modelsService.deleteModel(model.modelId) ; 
+    }
 
 }

@@ -6,6 +6,7 @@ export class Document extends Object {
     documentTemplate:string = '' ; 
     documentDescription:string = '';
     createdBy:User ; 
+    metaFields:Array<{page:number , id:number , title:string}> =[];
     constructor(){
         super();
     }

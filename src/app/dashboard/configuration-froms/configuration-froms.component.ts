@@ -4,6 +4,8 @@ import { FormsService } from 'src/app/shared/forms/forms.service';
 import { ModelsService } from 'src/app/shared/models/models.service';
 import { Model } from 'src/app/models/model/model.model';
 import { PlatformLocation } from '@angular/common';
+import { Links } from 'src/app/models/links/links.model';
+import { LinksService } from 'src/app/shared/Links/links.service';
 
 @Component({
   selector: 'app-configuration-froms',
@@ -14,6 +16,8 @@ export class ConfigurationFromsComponent implements OnInit {
   @ViewChild('beginingFormSelector') beginingFormSelector: ElementRef;
   @ViewChild('preInterviewFormSelector') preInterviewFormSelector: ElementRef;
   @ViewChild('interviewFormSelector') interviewFormSelector: ElementRef ; 
+  @ViewChild('formSelector') formSelector: ElementRef ; 
+  @ViewChild('linkToCopy') linkToCopy: ElementRef ; 
 
 
   @ViewChild('beginingFormModelSelector') beginingFormModelSelector: ElementRef;
@@ -30,11 +34,18 @@ export class ConfigurationFromsComponent implements OnInit {
   registerFormLink= '' ; 
   preInterviewFormLink = '' ; 
   interviewFormLink = '' ; 
+  showNewLinkRow = false ; 
+  copied = false ; 
+  link='';
+  links : Links[] = [] ; 
+  index = 0 ; 
 
   constructor(
     private formService: FormsService ,
     private modelSerivce: ModelsService,
-    private plateformLocation: PlatformLocation
+    private plateformLocation: PlatformLocation,
+    private elementRef: ElementRef ,
+    private linkService: LinksService
     ) { }
 
   ngOnInit() {
@@ -45,17 +56,17 @@ export class ConfigurationFromsComponent implements OnInit {
         for(let i = 0 ; i < f.length ; i++){
           if(f[i].isRegisterForm){
             this.beginingModelId = f[i].modelToSendId ; 
-            this.registerFormLink = (this.plateformLocation as any).location.origin+'/editForm/'+f[i].formId ;
+            this.registerFormLink = (this.plateformLocation as any).location.origin+'/submitCandidature/'+f[i].formId ;
 
           }
           if(f[i].isPreInterviewForm){
             this.preInterviewModelId = f[i].modelToSendId ; 
-            this.preInterviewFormLink = (this.plateformLocation as any).location.origin+'/editForm/'+f[i].formId ;
+            this.preInterviewFormLink = (this.plateformLocation as any).location.origin+'/submitCandidature/'+f[i].formId ;
 
           }
           if(f[i].isInterviewForm){
             this.interviewModelId = f[i].modelToSendId ; 
-            this.interviewFormLink = (this.plateformLocation as any).location.origin+'/editForm/'+f[i].formId ;
+            this.interviewFormLink = (this.plateformLocation as any).location.origin+'/submitCandidature/'+f[i].formId ;
 
           }
         }
@@ -66,6 +77,11 @@ export class ConfigurationFromsComponent implements OnInit {
         this.models = m ; 
       }
     );
+    this.linkService.list().subscribe(
+      (l:Links[]) => {
+        this.links = l ; 
+      }
+    )
   }
 
   setFormModel( step: number){
@@ -128,7 +144,7 @@ export class ConfigurationFromsComponent implements OnInit {
           }
           this.forms[i].isRegisterForm = false;
         }
-        this.registerFormLink = (this.plateformLocation as any).location.origin+'/editForm/'+form.formId ;
+        this.registerFormLink = (this.plateformLocation as any).location.origin+'/submitCandidature/'+form.formId ;
 
         form.isRegisterForm = true;
         form.isInterviewForm = false; 
@@ -146,7 +162,7 @@ export class ConfigurationFromsComponent implements OnInit {
           }
           this.forms[i].isPreInterviewForm = false;
         }
-      this.preInterviewFormLink = (this.plateformLocation as any).location.origin+'/editForm/'+form.formId ;
+      this.preInterviewFormLink = (this.plateformLocation as any).location.origin+'/submitCandidature/'+form.formId ;
       form.isPreInterviewForm = true;
       form.isRegisterForm = false; 
       form.isInterviewForm = false ; 
@@ -163,13 +179,14 @@ export class ConfigurationFromsComponent implements OnInit {
         this.forms[i].isInterviewForm = false;
 
       }
-      this.interviewFormLink = (this.plateformLocation as any).location.origin+'/editForm/'+form.formId ;
+      this.interviewFormLink = (this.plateformLocation as any).location.origin+'/submitCandidature/'+form.formId ;
 
       form.isInterviewForm = true;
       form.isRegisterForm = false ; 
       form.isPreInterviewForm= false;
     }
   }
+
 
     
 
@@ -179,6 +196,47 @@ export class ConfigurationFromsComponent implements OnInit {
       this.formService.update(this.forms[i]);
     }
 
+  }
+
+
+  selectNormalForm(i){
+    const formSelector = this.elementRef.nativeElement.querySelector('#formSelector-'+i) ; 
+    if(formSelector != undefined){
+      const id = formSelector.options[formSelector.selectedIndex].value ; 
+      if(id != '-1'){
+       this.links[i].links = (this.plateformLocation as any).location.origin+'/submitCandidature/'+id;
+       this.linkService.save(this.links[i]) ; 
+      }
+    }
+    this.copied = false ; 
+    
+  }
+
+  deleteRow(i){
+    this.linkService.delete(this.links[i]) ; 
+  }
+
+  copyLink(i){
+    let selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.links[i].links;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.elementRef.nativeElement.querySelector('#checked-'+i).style = "display:content";
+  
+
+  }
+
+  addLink(){
+    console.log('adding link');
+    const l = new Links() ; 
+    this.links.push(l) ; 
   }
 
 

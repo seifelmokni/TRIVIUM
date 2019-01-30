@@ -28,7 +28,8 @@
 					<div class="wrapper">
 						<div class="left-col col" #left_container 
 						[style.display]="!shouldShowCalendarPage ?  'block' : 'none'" 
-						[style.width]="isSingleColumnForm ? '50%' : '500%'" 
+						[style.width]="!isSingleColumnForm ? '50%' : '500%'" 
+						[style.border-right]="!isSingleColumnForm ? '1px solid #f1f1f1' : 'none'" 
 						[style.margin-left]= "isSingleColumnForm ? '0%' : '0%'">
 	  
 						  </div>

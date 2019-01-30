@@ -203,19 +203,7 @@
                       </li>
                     </ul>
                   </th>
-                  <th class="">
-                      <ul>
-                        <li>
-                          <a>Observaciones
-                            <span class="icon">
-                              <svg>
-                                <use href="#arrow_d" width="13" height="13" x="0" y="0"></use>
-                              </svg>
-                            </span>
-                          </a>
-                        </li>
-                      </ul>
-                    </th>
+                 
                   
               </tr>
               <tr class="row-data" *ngFor="let item of candidates">
@@ -241,20 +229,6 @@
                 </td>
                 <td>
                   <button (click)="showTasks(tasks.get(item.candidateId))" style="margin-left: 10%" *ngIf="tasks.get(item.candidateId) !=undefined && tasks.get(item.candidateId).length != 0" ><i class="fas fa-tasks"></i> {{ tasks.get(item.candidateId).length}}</button>
-                </td>
-                <td>
-                  
-                  <ul>
-                    <li *ngFor="let o of item.observations">{{o.author}}:{{o.ob}}</li>
-                    <li *ngIf="textAreaShown == 'txt-'+item.candidateId">
-                      <textarea id="txtarea-{{item.candidateId}}"></textarea>
-                    </li>
-                    <li>
-                      <a *ngIf="textAreaShown != 'txt-'+item.candidateId" (click)="showObservationTextArea(item.candidateId)"><i class="fas fa-plus-square"></i></a>
-                      <a *ngIf="textAreaShown == 'txt-'+item.candidateId" (click)="saveObservation(item.candidateId)"><i class="fas fa-cloud-upload-alt"></i></a>
-                    
-                    </li>
-                  </ul>
                 </td>
               </tr>
               <!--

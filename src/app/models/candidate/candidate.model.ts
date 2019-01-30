@@ -9,10 +9,12 @@ export class Candidate extends Object {
     phone: string = '';
     fixPhone:string = '';
     email: string = '';
+    emailUnav: string = '';
     image: string  = '';
 
 
     // to get more info
+    step:string='';
     fatherName:string = '';
     fatherFirstName:string = '';
     fatherNationality:string = '';
@@ -30,6 +32,8 @@ export class Candidate extends Object {
     nationality:string = '';
     secondEmail:string = '';
     dni:string = '';
+    region:string = '';
+    city:string = '';
     //to get more info
 
     candidateId:string;
@@ -37,8 +41,10 @@ export class Candidate extends Object {
     userInChage: string;
     isFirstRequest: boolean = true;
     confirmedInterviewId:string;
-    observations:Array<{ob:string , author:string}> = [];
-
+    observations:Array<{ob:string , author:string , date:string , hour:string}> = [];
+    personalObservation:string= '' ; 
+    academicObservation:string= '' ; 
+    economicObservation:string= '' ; 
     education: Array<{id:string , averageGrade: string , province:string , population:string, center:string}> =[];
 
 

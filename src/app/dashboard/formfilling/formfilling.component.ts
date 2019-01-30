@@ -614,7 +614,7 @@ export class FormfillingComponent implements OnInit {
                 break;
             }case 'photo' : {
                 div +='<label id="lbl-' + this.elementCounter + '" style="display:none"></label>';
-                div += '<img id="src-' + this.elementCounter + '" src="'+(element.value !== '' ? element.value : 'https://vignette.wikia.nocookie.net/the-darkest-minds/images/4/47/Placeholder.png/revision/latest?cb=20160927044640')+'"  width="100%"  style="background: #d6d6d6;" /> ' ;
+                div += '<img class="image-container" id="src-' + this.elementCounter + '" src="'+(element.value !== '' ? element.value : 'https://vignette.wikia.nocookie.net/the-darkest-minds/images/4/47/Placeholder.png/revision/latest?cb=20160927044640')+'"   style="background: #d6d6d6;" /> ' ;
                 break;
             }
             case 'video' : {
@@ -891,7 +891,7 @@ export class FormfillingComponent implements OnInit {
                     break;
                 }
                 case 'dropdown': {
-                    response.value = elt.options[elt.selectedIndex].value;
+                    //response.value = elt.options[elt.selectedIndex].value;
                     break;
                 }
                 case 'note': {
@@ -1054,7 +1054,7 @@ export class FormfillingComponent implements OnInit {
 
         if (this.pageIndex < this.form.pages.length - 1) {
             console.log('form response');
-            this.getPageResponse();
+            //this.getPageResponse();
             this.pageIndex++;
             this.loadPage(this.pageIndex);
         } else {

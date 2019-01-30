@@ -36,5 +36,8 @@ export class ModelsService {
             }
         );
     }
+    deleteModel(id:string){
+        this.db.doc('models/'+id).delete(); 
+    }
 
 }

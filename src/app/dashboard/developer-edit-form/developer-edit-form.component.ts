@@ -229,6 +229,9 @@ export class DeveloperEditFormComponent implements OnInit {
             }
         }
 
+        this.pageCounter = this.form.pages.length ; 
+        this.pageIndex = 0 ; 
+
         this.dragulaService.find('elemnts').drake.on('drop', (dropElm: any, target: any, source: any, sibling: any) => {
             //do stuff here.
             this.orderChanged(dropElm,
@@ -1077,6 +1080,50 @@ export class DeveloperEditFormComponent implements OnInit {
         //this.createElement(type, toContainer);
         //this.deleteElement(id, (toContainer === 1 ? 2 : 1));
     }
+    addPage(addPageToList = false) {
+        console.log('add page');
+        if(!this.pageSaved){
+            this.pages[this.pageIndex] = new Page(this.formComposition, 
+                this.pageTitleTemp === undefined ? 'step ' + this.pageCounter : this.pageTitleTemp ,
+                this.elementCounter
+                );
+                this.pageTitleTemp = undefined  ; 
+                this.pages[this.pageIndex].conditions = this.conditions != undefined ? this.conditions : [];
+        }else{
+            const p = new Page([], 
+                this.pageTitleTemp === undefined ? 'step ' + this.pageCounter : this.pageTitleTemp ,
+                this.elementCounter
+                );
+                this.pageTitleTemp = undefined  ; 
+                this.pages[this.pageIndex].conditions = this.conditions;
+            p.conditions = [];
+            this.pages.push(p) ; 
+        }
+        
+            this.pageCounter++;
+
+        this.elementCounter = 0;
+        this.formComposition = [];
+        // this.conditions = [];
+        this.left_container.nativeElement.innerHTML = '';
+        if(this.right_container != undefined){
+            this.right_container.nativeElement.innerHTML = '';
+        }
+        console.log(this.pages);
+        
+            if(addPageToList){
+                this.pagesIndex.push(this.pageIndex + 1);
+                const page = new Page(this.formComposition, 
+                    this.pageTitleTemp === undefined ? 'step ' + this.pageCounter : this.pageTitleTemp ,
+                    this.elementCounter
+                    );
+                this.pages.push(page) ;
+            }
+            this.loadPage(this.pages[this.pages.length -1] , this.pages.length -1) ;  
+            
+
+    }
+    /*
     addPage() {
         console.log('page index '+this.pageCounter);
         console.log(this.pages[this.pageCounter]);
@@ -1110,7 +1157,7 @@ export class DeveloperEditFormComponent implements OnInit {
         this.pageSaved = false;
         console.log(this.pages);
        
-    }
+    } */
 
     editFormNameChanged(code){
         if(code === 13){
@@ -1564,13 +1611,14 @@ export class DeveloperEditFormComponent implements OnInit {
     }
 
     previewForm(){
-        if (this.pages.length === 0) {
-            this.addPage();
-        }
+        
+        this.addPage(false);
+
         const form = new Form(this.authService.getUserSession().userID,
             this.pages,
             (new Date()).toString(),
             this.formName);
+            form.isSingleColumnForm = this.form.isSingleColumnForm;
             this.formService.setSelectedForm(form);
             this.router.navigate(['preview']);
     }
@@ -1582,7 +1630,7 @@ export class DeveloperEditFormComponent implements OnInit {
         console.log('pages') ; 
         console.log(this.pages)
         if (this.pages.length === 0) {
-            this.addPage();
+            this.addPage(false);
         } else{
             console.log('saving last page');
             const lastPage = this.pages[this.pageIndex] ; 

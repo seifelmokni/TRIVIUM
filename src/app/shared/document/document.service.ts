@@ -32,4 +32,7 @@ export class DocumentService {
   updateDocument(d:Document){
     return this.db.doc('documents/'+d.documentId).update(d);
   }
+  deleteDocument(id:string){
+    this.db.doc('documents/'+id).delete();
+  }
 }

@@ -30,6 +30,9 @@ export class CandidateInformationComponent implements OnInit {
   fixPhone;
   phone;
   email;
+  emailUnav;
+  province;
+  city;
   birthDate;
 
   firstName;
@@ -43,6 +46,9 @@ export class CandidateInformationComponent implements OnInit {
   eso4Province;
   eso4Population;
   eso4Center;
+  college;
+  step;
+  carrer;
 
   eso3AverageGrade;
   eso3Province;
@@ -59,6 +65,7 @@ export class CandidateInformationComponent implements OnInit {
   logs: Array<{day: string , logs: CandidateLog[]}> = [] ; 
   sectionSelected = 'resume';
   tasks:Task[];
+  allTasks:Task[];
   forms: Form[] = [];
   responses : Map<number , Response>  = new Map();
   elementCounter = 0 ; 
@@ -85,8 +92,49 @@ export class CandidateInformationComponent implements OnInit {
     this.taskService.listTask(this.candidate.candidateId).subscribe(
       (t:Task[]) => {
         this.tasks = t.reverse();
+        if(this.tasks.length != 0){
+            this.tasks = [this.tasks[0]];
+            this.allTasks  = t.reverse() ; 
+        }
+        
       }
     );
+    this.logService.listCandidateLogs(this.candidate.candidateId).subscribe(
+        (logs: CandidateLog[]) => {
+            
+          console.log('db logs');
+          console.log(logs);
+          this.logs = [] ; 
+          for(let i = 0 ; i < logs.length ; i++){
+            let found = false ; 
+            /*for(let j = 0 ; j < this.logs.length ; j++){
+                let d = logs[i].logDate;
+                const ds= d.split('-') ; 
+                d=  ds[2]+'-'+(parseInt(ds[1]) < 10 ? '0'+ds[1] : ds[1])+'-'+ds[0] ; 
+              
+                let d1 = this.logs[j].day;
+                const ds1= d.split('-') ; 
+                d1=  ds1[2]+'-'+(parseInt(ds1[1]) < 10 ? '0'+ds1[1] : ds1[1])+'-'+ds1[0] ; 
+              if(d == d1){
+                found = true ;
+                if(this.logs[j].logs.length == 0){
+                  this.logs[j].logs = [] ; 
+                }
+                this.logs[j].logs.push(logs[i]);
+              }
+            }*/
+            if(!found){
+                let d = logs[i].logDate;
+                const ds= d.split('-') ; 
+                d=  ds[2]+'-'+(parseInt(ds[1]) < 10 ? '0'+ds[1] : ds[1])+'-'+ds[0] ; 
+              this.logs.push({day: d , logs : [logs[i]]});
+            }
+          }
+         // this.logs = this.logs.reverse();
+          console.log('logs ') ; 
+          console.log(this.logs);
+        }
+      );
 
     this.responseService.listCandidateResponse(this.candidate.candidateId).subscribe(
       (r: Response[]) => {
@@ -96,6 +144,10 @@ export class CandidateInformationComponent implements OnInit {
            (forms: Form[]) => {
              console.log('form');
              console.log(forms);
+             let f = forms[0] ; 
+             if(f.isRegisterForm){
+                 
+             }
              this.forms.push(forms[0]);
              this.responses.set(i , r[i]);
            }
@@ -118,6 +170,8 @@ export class CandidateInformationComponent implements OnInit {
           this.editModeEnabled = false;
            
         const log = new CandidateLog(); 
+        log.author = this.authService.getUserSession() ;  
+
         log.logCandidateId = this.candidate.candidateId ; 
         log.logType = 'edit-resume-info'; 
         this.logService.saveCandidateLog(log) ; 
@@ -147,6 +201,8 @@ export class CandidateInformationComponent implements OnInit {
           this.editPersonalInfoModeEnabled = false;
            
         const log = new CandidateLog(); 
+        log.author = this.authService.getUserSession() ;  
+
         log.logCandidateId = this.candidate.candidateId ; 
         log.logType = 'edit-personal-info'; 
         this.logService.saveCandidateLog(log) ; 
@@ -218,6 +274,8 @@ export class CandidateInformationComponent implements OnInit {
       () => {
         this.editEducationInfoModeEnabled  = false ; 
         const log = new CandidateLog(); 
+        log.author = this.authService.getUserSession() ;  
+
         log.logCandidateId = this.candidate.candidateId ; 
         log.logType = 'edit-education-info'; 
         this.logService.saveCandidateLog(log) ; 
@@ -258,30 +316,7 @@ export class CandidateInformationComponent implements OnInit {
     console.log('section selected '+section) ; 
     console.log(this.candidate) ; 
     if(section == 'chronology'){
-      this.logService.listCandidateLogs(this.candidate.candidateId).subscribe(
-        (logs: CandidateLog[]) => {
-          console.log('db logs');
-          console.log(logs);
-          this.logs = [] ; 
-          for(let i = 0 ; i < logs.length ; i++){
-            let found = false ; 
-            for(let j = 0 ; j < this.logs.length ; j++){
-              if(this.logs[j].day == logs[i].logDate){
-                found = true ;
-                if(this.logs[j].logs.length == 0){
-                  this.logs[j].logs = [] ; 
-                }
-                this.logs[j].logs.push(logs[i]);
-              }
-            }
-            if(!found){
-              this.logs.push({day: logs[i].logDate , logs : [logs[i]]});
-            }
-          }
-          console.log('logs ') ; 
-          console.log(this.logs);
-        }
-      );
+      
     }
     this.sectionSelected = section ;
     this.showResponseSection= false; 
@@ -659,7 +694,7 @@ export class CandidateInformationComponent implements OnInit {
   createNewTask(){
     const dialogRef = this.dialog.open(CreateTaskComponent, {
       width: '300px',
-      data: {task: null  }
+      data: {task: new Task()  }
   });
 
   dialogRef.afterClosed().subscribe(result => {
@@ -674,6 +709,8 @@ export class CandidateInformationComponent implements OnInit {
           this.taskService.saveTask(task).then(
             ()=>{
               let log = new CandidateLog();
+              log.author = this.authService.getUserSession() ;  
+
               log.logCandidateId = this.candidate.candidateId ; 
               log.logType = 'create-new-task';
               log.logContent = task.taskContent ;  
@@ -712,7 +749,8 @@ export class CandidateInformationComponent implements OnInit {
                   let log = new CandidateLog();
                   log.logCandidateId = this.candidate.candidateId ; 
                   log.logType = 'create-new-task';
-                  log.logContent = task.taskContent ;  
+                  log.logContent = task.taskContent ; 
+                  log.author = this.authService.getUserSession() ;  
                   this.logService.saveCandidateLog(log) ; 
                 }
               );

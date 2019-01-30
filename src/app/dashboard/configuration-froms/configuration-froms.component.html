@@ -18,12 +18,17 @@
               <li>
                 <a class="active" routerLink="/formConfiguration">configuración de formulario</a>
               </li>
+              <li>
+                  <a class="" routerLink="/sede">configuración de Sede</a>
+                </li>
             </ul>
           </section>
           <section class="users-view">
             <div class="users-header">
               <span class="users-title">configuración de formulario</span>
-             
+              <div class="btn-group">
+                <a class="btn btn-confirm" (click)="addLink()">nueva link</a>
+              </div>
             </div>
             <div class="form-center" style="width: 100% !important; margin: 5px 0px !important">
 
@@ -87,14 +92,36 @@
                              -->
                         </td>
                     </tr>
+                    <tr *ngFor="let l of links ;let i = index">
+                      <td></td>
+                      <td>
+                          <select id="formSelector-{{i}}" (change)="selectNormalForm(i)">
+                              <option value="-1">seleccionar formulario</option>
+                              <option value="{{item.formId}}"  *ngFor="let item of availbleForms">{{item.title}}</option>
+                           </select>
+                           
+                      </td>
+                      <td>
+                        <p >
+                       {{l.links}}
+                        </p> 
+                      </td>
+                      <td>
+                          <div class="btn-group" style="width: 100px ; float: right;">
+                              <a class="btn btn-confirm" (click)="deleteRow(i)" style="margin-right: 5px; color:white ; width: 40px; height: 40px;"><i class="far fa-trash-alt"></i></a>
+                              
+                              <a class="btn btn-confirm" (click)="copyLink(i)" style="color:white;width: 40px; height: 40px;"><i class="far fa-copy"></i> <i id="checked-{{i}}" class="fas fa-check-circle" [style.display]="'none'" ></i></a>
+                          </div>
+                      </td>
+                    </tr>
                     
                   </table>
-
+                 
                 </div>
 
 
               </form>
-
+             
             </div>
           </section>
         </div>

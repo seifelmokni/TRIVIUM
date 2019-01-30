@@ -158,6 +158,13 @@ export class DeveloperCreateFormComponent implements OnInit {
             }
         );
 
+        const page = new Page(this.formComposition, 
+            this.pageTitleTemp === undefined ? 'step ' + this.pageCounter : this.pageTitleTemp ,
+            this.elementCounter
+            );
+            this.pages.push(page) ; 
+
+            console.log('adding initial page');
 
     }
 
@@ -899,16 +906,15 @@ export class DeveloperCreateFormComponent implements OnInit {
         //this.createElement(type, toContainer);
         //this.deleteElement(id, (toContainer === 1 ? 2 : 1));
     }
-    addPage() {
+    addPage(addPageToList = true) {
         console.log('add page');
-        this.pageCounter++;
-        const page = new Page(this.formComposition, 
+        this.pages[this.pageIndex] = new Page(this.formComposition, 
             this.pageTitleTemp === undefined ? 'step ' + this.pageCounter : this.pageTitleTemp ,
             this.elementCounter
             );
             this.pageTitleTemp = undefined  ; 
-        page.conditions = this.conditions;
-        this.pages.push(page);
+            this.pages[this.pageIndex].conditions = this.conditions;
+            this.pageCounter++;
 
         this.elementCounter = 0;
         this.formComposition = [];
@@ -919,6 +925,14 @@ export class DeveloperCreateFormComponent implements OnInit {
         }
         console.log(this.pages);
         this.pagesIndex.push(this.pageIndex + 1);
+        const page = new Page(this.formComposition, 
+            this.pageTitleTemp === undefined ? 'step ' + this.pageCounter : this.pageTitleTemp ,
+            this.elementCounter
+            );
+            if(addPageToList){
+                this.pages.push(page) ; 
+            }
+            
     }
 
     editFormNameChanged(code){
@@ -969,8 +983,6 @@ export class DeveloperCreateFormComponent implements OnInit {
         this.pageIndex = index;
 
         for (let i = 0; i < this.formComposition.length; i++) {
-            console.log('element');
-            console.log(this.formComposition[i].container);
             this.createElement(
                 this.formComposition[i].type,
                 (this.formComposition[i].container === 'LEFT' ? 1 : 2),
@@ -1356,13 +1368,13 @@ export class DeveloperCreateFormComponent implements OnInit {
     }
 
     previewForm(){
-        if (this.pages.length === 0) {
-            this.addPage();
-        }
+        this.addPage(false);
+
         const form = new Form(this.authService.getUserSession().userID,
             this.pages,
             (new Date()).toString(),
             this.formName);
+            form.isSingleColumnForm = this.isSingleColumnForm;
             this.formService.setSelectedForm(form);
             this.router.navigate(['preview']);
     }
@@ -1372,7 +1384,7 @@ export class DeveloperCreateFormComponent implements OnInit {
     saveForm() {
         console.log('form composition ' + this.pageIndex);
         if (this.pages.length === 0) {
-            this.addPage();
+            this.addPage(false);
         }
         const form = new Form(this.authService.getUserSession().userID,
             this.pages,

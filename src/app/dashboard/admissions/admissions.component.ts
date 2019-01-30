@@ -45,7 +45,7 @@ export class AdmissionsComponent implements OnInit {
 
     showDetails(candidate: Candidate) {
         this.candidateSerivce.selectedCandidate = candidate;
-        this.router.navigate(['candidateDetails']);
+        this.router.navigate(['information']);
     }
 
     loadResponse(candidate:Candidate){

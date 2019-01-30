@@ -9,7 +9,7 @@
 }
 
 .cal-day-selected, .cal-day-selected:hover {
-background-color: blue !important;
+background-color: #00577f !important;
 }
 .cal-day-disabled, .cal-day-disabled:hover {
     background-color: #e8e8e8 !important;

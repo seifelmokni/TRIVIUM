@@ -31,6 +31,7 @@ import { PasswordupdatedComponent } from '../home/passwordupdated/passwordupdate
 import { CandidateResponsesComponent } from '../dashboard/candidate-responses/candidate-responses.component';
 import { CreateDocumentComponent } from '../dashboard/communications/create-document/create-document.component';
 import { EditDocumentComponent } from '../dashboard/communications/edit-document/edit-document.component';
+import { ConfigurationSedeComponent } from '../dashboard/configuration-sede/configuration-sede.component';
 
 
 
@@ -51,6 +52,7 @@ const appRoutes: Routes = [
     { path: 'addModel', component: AddModelComponent },
     { path: 'editModel', component: EditModelComponent },
     { path: 'submitCandidature', component: CandidatComponent },
+    { path: 'submitCandidature/:formId', component: CandidatComponent },
     { path: 'fillCandidature/:formId/:candidateId' , component: CandidatComponent},
     { path: 'candutureSubmitted', component: FormSubmittedComponent },
     { path: 'admissions', component: AdmissionsComponent },
@@ -67,7 +69,8 @@ const appRoutes: Routes = [
     { path: 'updatesuccess' , component: PasswordupdatedComponent},
     { path: 'previewResponses', component: CandidateResponsesComponent},
     { path: 'createDocument' , component: CreateDocumentComponent},
-    { path: 'editDocument' , component:EditDocumentComponent}
+    { path: 'editDocument' , component:EditDocumentComponent},
+    { path: 'sede' , component: ConfigurationSedeComponent}
 ];
 
 

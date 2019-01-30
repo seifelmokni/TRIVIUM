@@ -10,10 +10,10 @@
           <section class="panel-menu">
             <ul>
               <li>
-                <a class="active" href="javascript:void(0)">Usuarios</a>
+                <a class="" >Usuarios</a>
               </li>
               <li>
-                <a class="" routerLink="/permission" href="javascript:void(0)">Permisos</a>
+                <a class="active" routerLink="/permission" >Permisos</a>
               </li>
             </ul>
           </section>
@@ -30,9 +30,9 @@
             <div class="users-panel">
               <div class="users-list">
                 <div class="user" [ngClass]="{'active': selectedUserID == item.selectedUserID && selectedUserID !== ''}" *ngFor="let item of users" (click)="selectUser(item)">
-                  <div class="user-avatar">
+                  <!--<div class="user-avatar">
                     <img src="{{item.image}}" alt="Avatar">
-                  </div>
+                  </div> -->
                   <div class="user-information">
                     <p class="title">{{item.firstName + ' ' + item.lastName}}</p>
                     <p class="status">{{item.role}}</p>

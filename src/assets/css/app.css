@@ -831,14 +831,18 @@ strong {
 }
 
 .block.block-dash .task-wrapper .panel-view .date-wrapper-left,
-.block.block-dash .task-wrapper .panel-view .date-wrapper-right {
-  width: 50%;
+.block.block-dash .task-wrapper .panel-view .date-wrapper-right,
+.block.block-dash .task-wrapper .panel-view .date-wrapper-center {
+  width: 30%;
   display: inline-grid;
 }
 
 .block.block-dash .task-wrapper .panel-view .date-wrapper-left h4 {
   margin-left: 32px;
   margin-bottom: 10px;
+}
+.date-value{
+  margin-left: 30px;
 }
 
 .block.block-dash .task-wrapper .panel-view .date-wrapper {
@@ -891,7 +895,7 @@ strong {
 }
 
 .block.block-dash .task-wrapper .panel-view .panel-task table td span {
-  width: 50%;
+  width: 70%;
   text-transform: uppercase
 }
 
@@ -3947,7 +3951,8 @@ select {
 
 .user-info-page form input {
   cursor: inherit;
-  width: 250px;
+  width: 220px;
+  margin-left: 28px;
 }
 
 .form-center form .two-col input[type="radio"],
@@ -4175,4 +4180,16 @@ margin-left: 18px;
   height: 22px;
   background-image: url(../img/icon-star.png);
   left: -33px;
+  top: -19px;
+}
+
+.table-cell-name i{
+  display: none ; 
+}
+.table-cell-name:hover i{
+  display: inline;
+}
+.date-title-1{
+  color: #666;
+  font-size: 16px;
 }

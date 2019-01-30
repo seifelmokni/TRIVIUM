@@ -1,3 +1,5 @@
+import { User } from "../user/user.model";
+
 export class CandidateLog extends Object {
     logId:string;
     logDate:string = (new Date().getFullYear())+'-'+(new Date().getMonth()+1)+'-'+(new Date().getDate());
@@ -5,6 +7,7 @@ export class CandidateLog extends Object {
     logCandidateId:string;
     logType:string;
     logContent:string;
+    author:User;
     constructor(){
         super();
     }

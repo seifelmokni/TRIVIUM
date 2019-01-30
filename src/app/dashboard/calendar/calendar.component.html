@@ -18,6 +18,9 @@
               <li>
                   <a class="" routerLink="/formConfiguration">configuración de formulario</a>
                 </li>
+                <li>
+                    <a class="" routerLink="/sede">configuración de Sede</a>
+                  </li>
             </ul>
           </section>
           <section class="users-view">
@@ -108,7 +111,7 @@
                       </div>
                       <input type="checkbox" value="false" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
                     </div>
-                    <label class="cal-day-disabled" style="margin-left: 5px" *ngIf="!interviewConfig.hollyDaysEnabled">color</label>
+                    <label class="cal-day-disabled-1" style="margin-left: 5px" *ngIf="!interviewConfig.hollyDaysEnabled"></label>
 
                   </td>
                   <td>
@@ -139,13 +142,14 @@
                         </div>
                         <input type="checkbox" value="false" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;">
                       </div>
-                      <label class="cal-day-selected" style="margin-left: 5px" *ngIf="interviewConfig.previosEnabled">color</label>
+                      <label class="cal-day-selected-1" style="margin-left: 5px" *ngIf="interviewConfig.previosEnabled"></label>
                     </td>
                     <td>
                     </td>
                 </tr>
+                <!--
                 <tr>
-                  <td>configuración del día</td>
+                  <td>seleccione horas de movilidad reducida</td>
                   <td>
                     comienzo: 
                     <select #startOfDay (change)="startOfTheDayChanged()">
@@ -157,14 +161,15 @@
                   </select>
                 </td>
                   
-                </tr>
+                </tr> -->
               </table>
               <br>
             </div>
             </div>
             <br>
             <br>
-            <div class="form-center" style="width: 100% !important; margin: 5px 0px !important">
+            <div class="wrapper" style="display: flex">
+            <div class="left-col" style="width: 65% !important; margin: 5px 0px !important">
               <div class="radio-group" *ngIf="interviewConfig.previosEnabled || !interviewConfig.hollyDaysEnabled " >
                 <div class="radio" *ngIf="!interviewConfig.hollyDaysEnabled">
                   <input type="radio" name="setDaysType" [(ngModel)]="setDaysType" [value]="1" (change)="view =CalendarView.Month "  />
@@ -176,34 +181,33 @@
                   </div>
                   <div class="radio" >
                       <input type="radio" name="setDaysType" [(ngModel)]="setAuthHours" [value]="3" (change)=" setAuthHours == '3' ? view = CalendarView.Day : view =CalendarView.Month " />
-                      <label>seleccione horas de movilidad reducida</label>
+                      <label>Escoger horario entrevista por día</label>
                     </div>
               </div>
               <br>
               <br>
               <br>
-
+              
               <div>
-                <div style="display: inline; float: left;">
+               <div *ngIf="view == CalendarView.Month" style="display: inline; float: left;">
                   <a class="btn" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false" style="margin-right: 5px">
                     <i class="fa fa-backward"></i>
-                    Previous
+                    El mes pasado
                   </a>
                   <a class="btn" mwlCalendarToday [(viewDate)]="viewDate" style="margin-right: 5px">
                     <i class="fa fa-stop"></i>
-                    Today
+                    mes actual
                   </a>
                   <a class="btn" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false" style="margin-right: 5px">
                     <i class="fa fa-forward"></i>
-                    Next
+                    próximo mes
                   </a>
+                  <div *ngIf="view == CalendarView.Month" style="display: inline-block; float: left; margin-left: 22%">
+                    <label>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</label>
+                  </div>                </div>
+                 <div *ngIf="view == CalendarView.Day" style="display: inline-block;">
+                  <label>Seleccionas para habilitar o deshabilitar las horas en las que los candidatos podrán optar a sus entrevistas.</label>
                 </div>
-                <div style="display: inline-block; float: left; margin-left: 22%">
-                  <label>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</label>
-                </div>
- 
-                
-              
               </div>
               <br>
               <br>
@@ -264,6 +268,25 @@
 
               </table> -->
 
+            </div>
+            <div class="list-dates right-col" style="width: 40% !important; margin-top:183px; margin-left: 10px">
+              
+              <div *ngFor="let d of hollyDaysAllTypes;let i = index" style="margin-top: 5px ; margin-bottom: 10px">
+                <i class="fas fa-calendar-times"></i>
+                <small>{{d | date: 'dd/MM/yyyy'}} 
+                  <span *ngIf="interviewConfig.hollyDays.indexOf(d) != -1"> Fiesta (no es posible hacer entrevista)</span>
+                  <span *ngIf="interviewConfig.previosDays.indexOf(d) != -1"> Previos (se aceptan automaticamente las entrevistas)</span>
+                </small>
+                <i class="fas fa-trash-alt" (click)="deleteHollyDay(i)"></i>
+              </div>
+              <!--
+              <div *ngFor="let d of interviewConfig.previosDays;let i = index" style="margin-top: 5px">
+                <i class="fas fa-calendar-times"></i>
+                <small>{{d | date: 'dd/MM/yyyy'}} Previos (se aceptan automaticamente las entrevistas)</small>
+                <i class="fas fa-trash-alt" (click)="deleteHollyDay(i)"></i>
+              </div> -->
+            
+            </div>
             </div>
           </section>
         </div>

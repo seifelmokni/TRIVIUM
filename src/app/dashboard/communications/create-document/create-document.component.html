@@ -40,8 +40,19 @@
                       <option value="name">Nombre</option>
                       <option value="passwordLink">Enlace de contraseña</option>
                       <option value="securityToken">Token de seguridad</option>
+                      <option value="f={{f.formId}}" *ngFor="let f of forms">Form : {{f.title}}</option>
+                      <option value="c={{c}}" *ngFor="let c of sede.columns">Columna : {{c}}</option>
                     </select>
-                  </div>
+                    <select #rowSelector (change)="rowSelect()" *ngIf="showRowDropdown" >
+                      <option value="0">- Elija fila--</option>
+                      <option value="{{c}}" *ngFor="let c of sede.rows">Row : {{c}}</option>
+                  </select>
+
+                  <select #fieldSelector (change)="fieldSelect()" *ngIf="showFieldsDropdown" >
+                    <option value="0">- Elija metadato--</option>
+                    <option value="{{i}}" *ngFor="let e of elements; let i = index">Field : {{e.title}}</option>
+                </select>
+                    </div>
                 </div>
                 <div class="bottom-content">
                   <ckeditor  [editor]="editor" (ready)="editorReady($event)" (change)="editorChange($event)"></ckeditor>

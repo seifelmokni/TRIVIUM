@@ -10,10 +10,10 @@
           <section class="panel-menu">
             <ul>
               <li>
-                <a class="" href="javascript:void(0)" routerLink="/user">Usuarios</a>
+                <a class="active"  routerLink="/user">Usuarios</a>
               </li>
               <li>
-                <a  href="active">Permisos</a>
+                <a >Permisos</a>
               </li>
             </ul>
           </section>
@@ -30,7 +30,7 @@
                   <tr>
                     <td>Nombre del perfil</td>
                     <td>Descrioción</td>
-                    <td>Usuarios</td>
+                    <!--<td>Usuarios</td> -->
                   </tr>
                   <tr *ngFor="let item of permissions">
                     <td>
@@ -38,9 +38,9 @@
                     </td>
                     <td>
                     {{item.description}}    
-                    <td>
+                    <!--<td>
                       <a href="">Ver</a>
-                    </td>
+                    </td> -->
                   </tr>
                   
                 </tbody>

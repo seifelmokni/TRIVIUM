@@ -91,6 +91,7 @@
                         </div>
                           <div class="btn-group" style="width: 30% ; float: right ; padding-top: 1px">
                             <a (click)="fixThisDate()" class="btn btn-sc">acepta esta fecha</a>
+                            <a (click)="proposeNewInterviewDate()" class="btn btn-sc">Asignar nueva fecha</a>
                           </div>
                         </div>
                         <br>
@@ -100,17 +101,34 @@
                           <br>
                           <br>
                         
-                    <div class="btn-group">
-                      <a (click)="proposeNewInterviewDate()" class="btn btn-sc">Asignar nueva fecha</a>
+                    <div>
+                      <br>
+                      <br>
+                      <h3>Observación</h3>
+                      <br>
+                        <ul style="display: inline-grid;width: 100%">
+                            <li *ngFor="let o of candidate.observations" style="width: 100%"><h4>{{o.author}}:<small>{{o.date}} {{o.hour}}</small></h4>
+                              <br>
+                              {{o.ob}}</li>
+                            <li *ngIf="textAreaShown" style="width: 100%">
+                              <textarea #observationTextArea ></textarea>
+                            </li>
+                        </ul>
+                        <div class="btn-group">
+                            <a *ngIf="!textAreaShown" (click)="showObservationTextArea()"><i class="fas fa-plus-square"></i>Añadir observación</a>
+                            <a *ngIf="textAreaShown" (click)="saveObservation()"><i class="fas fa-cloud-upload-alt"></i>Guardar observación</a>
+                            
+                        </div>
                     </div>
                   </form>
                 </section>
                 <section class="teacher-contacts">
                     <div class="teacher-title">
-                      <div class="user-avatar">
+                      <!--<div class="user-avatar">
                         <img src="/static/media/avatar.9e789c47.png" alt="avatar">
-                      </div>
+                      </div>-->
                       <span>{{candidate.firstName}} {{candidate.lastName}}</span>
+                    
                     </div>
                     <div class="contacts-phone">
                       <p class="phone-number1">
@@ -119,7 +137,6 @@
                         <span class="icon icon-smartphone"></span>{{candidate.phone}}</p>
                       <p class="email">
                         <span class="icon icon-mail"></span>{{candidate.email}}</p>
-                      <p>Sede: Villa Belagua</p>
                       <a href="mailto:{{candidate.email}}" class="btn btn-sc">Enviar correo electrónico</a>
                       <a class="btn btn-sc" (click)="showInformationLog()">Información de usuario</a>
                     </div>

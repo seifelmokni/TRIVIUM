@@ -43,6 +43,8 @@ import { ShowTasksPopupComponent } from './popup/show-tasks-popup/show-tasks-pop
 import { CandidateResponsesComponent } from './candidate-responses/candidate-responses.component';
 import { CreateDocumentComponent } from './communications/create-document/create-document.component';
 import { EditDocumentComponent } from './communications/edit-document/edit-document.component';
+import { ConfigurationSedeComponent } from './configuration-sede/configuration-sede.component';
+import { AddCellPopupComponent } from './popup/add-cell-popup/add-cell-popup.component';
 
 
 @NgModule({
@@ -94,9 +96,11 @@ import { EditDocumentComponent } from './communications/edit-document/edit-docum
         CandidateResponsesComponent,
         CreateDocumentComponent,
         EditDocumentComponent,
+        ConfigurationSedeComponent,
+        AddCellPopupComponent,
         
     ],
-    exports: [AddUserPopupComponent, DeleteAlertPopupComponent , DiscardChangesPopupComponent , CreateTaskComponent , ShowTasksPopupComponent ],
-    entryComponents: [AddUserPopupComponent, DeleteAlertPopupComponent , DiscardChangesPopupComponent , CreateTaskComponent , ShowTasksPopupComponent ]
+    exports: [AddUserPopupComponent, DeleteAlertPopupComponent , DiscardChangesPopupComponent , CreateTaskComponent , ShowTasksPopupComponent, AddCellPopupComponent ],
+    entryComponents: [AddUserPopupComponent, DeleteAlertPopupComponent , DiscardChangesPopupComponent , CreateTaskComponent , ShowTasksPopupComponent , AddCellPopupComponent ]
 })
 export class DashboardModule { }

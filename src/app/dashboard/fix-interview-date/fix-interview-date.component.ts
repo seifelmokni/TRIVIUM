@@ -24,7 +24,9 @@ export class FixInterviewDateComponent implements OnInit {
   interviewDates: Interview[] ; 
   interviewHour = '' ; 
   interviewDate = '' ;
-  @ViewChild('interviewDateSelector') interviewDateSelector: ElementRef ; 
+  textAreaShown = false ; 
+  @ViewChild('interviewDateSelector') interviewDateSelector: ElementRef ;
+  @ViewChild('observationTextArea') observationTextArea: ElementRef ;  
   
 
   constructor(private candidateService: CandidateService , 
@@ -55,6 +57,30 @@ export class FixInterviewDateComponent implements OnInit {
         }
       }
     );
+
+  }
+
+  showObservationTextArea(){
+    this.textAreaShown = true ;
+  }
+  saveObservation(){
+    console.log('ob') ; 
+    console.log(this.observationTextArea.nativeElement.value); 
+    const v = this.observationTextArea.nativeElement.value;
+    const ob = {ob : v , 
+      author: this.authService.getUserSession().firstName+' '+this.authService.getUserSession().firstName,
+      date: (new Date().getDate())+"-"+(new Date().getMonth() +1)+"-"+(new Date().getFullYear()) , 
+      hour: (new Date()).getHours()+":"+(new Date().getMinutes() < 10  ?  '0'+(new Date().getMinutes()) : new Date().getMinutes())
+    }
+        if(this.candidate.observations == undefined){
+          this.candidate.observations = [] ; 
+        }
+        this.candidate.observations.push(ob) ; 
+        this.candidateService.updateCandidate(this.candidate) ; 
+        
+
+    this.textAreaShown = false ; 
+
 
   }
 

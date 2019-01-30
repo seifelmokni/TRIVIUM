@@ -22,7 +22,7 @@ export class CreateTaskComponent implements  OnInit {
       @Inject(MAT_DIALOG_DATA) public data: {task: Task}, private authService: AuthService) {
         if(data.task == null){
           this.task = new Task();
-          this.task.taskContent = '';  
+          this.task.taskContent;  
         }else{
           this.task = new Task();
           this.task.assignedTo = data.task.assignedTo;
@@ -44,7 +44,7 @@ export class CreateTaskComponent implements  OnInit {
 
 
   ngOnInit() {
-    
+    this.task.taskContent = '' ; 
   }
 
   selectType(){
