@@ -26,12 +26,12 @@ import { DocumentService } from 'src/app/shared/document/document.service';
 export class EditModelComponent implements OnInit {
 
     public editor = ClassicEditor;
-    modelName;
-    modelDescription;
-    modelSubject;
-    modelMetaData;
+    modelName= '';
+    modelDescription= '';
+    modelSubject= '';
+    modelMetaData= '';
     modelFiles;
-    modelContent;
+    modelContent= '';
     ckEditor;
     showRowDropdown = false ; 
     showFieldsDropdown = false; 
@@ -262,13 +262,16 @@ export class EditModelComponent implements OnInit {
         console.log(this.modelDescription);
         console.log(this.modelMetaData);
         console.log(this.modelContent);
+        console.log(this.model);
+        /*
         this.model.name = this.modelName;
         this.model.subject = this.modelSubject;
         this.model.description = this.modelDescription;
         this.model.metaData = this.modelMetaData;
         this.model.content = this.modelContent;
         this.model.metaFields = this.selectedElements; 
-        this.model.creatorID = this.authService.getUserSession().userID;
+        this.model.creatorID = this.authService.getUserSession().userID; */
+        this.model.content = this.ckEditor.getData() ; 
         let uploadIndex = 0;
         this.urls = [];
         if (this.selectedFiles !== undefined) {

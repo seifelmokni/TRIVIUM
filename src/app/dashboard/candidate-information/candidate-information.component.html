@@ -30,8 +30,8 @@
                   <i class="fas fa-2x fa-user-circle" style="margin-top: 5px" *ngIf=" false ||candidate.image != undefined || candidate.image != ''"></i>
                 </div>
                 <span>{{candidate.firstName+' '+candidate.lastName}}</span>
-                <div class="btn-group" *ngIf="!editModeEnabled"><a (click)="editButtonClicked()" title="Editar" class="btn btn-sc">Editar</a></div>
-                <div class="btn-group" *ngIf="editModeEnabled">
+                <div class="btn-group" *ngIf="!editModeEnabled" style="margin-left: 140px"><a (click)="editButtonClicked()" title="Editar" class="btn btn-sc">Editar</a></div>
+                <div class="btn-group" *ngIf="editModeEnabled" style="margin-left: 70px">
                   <span style="display: inherit;">
                     <a title="Cancelar" (click)="cancelEdition()" class="btn btn-confirm">Cancelar</a>
                     <a title="Guardar" (click)="editButtonClicked()" class="btn btn-sc">Guardar</a>
@@ -171,9 +171,9 @@
             <section class="panel-task">
               <p class="header-task">
                 <span>Cronología</span>
+                <a (click)="createNewTask()" style="float: right !important; margin-top: 0px"><span class="add-task">+ Añadir acción</span></a>
               </p>
-              <a (click)="createNewTask()" style="float: right !important; margin-top: 5px"><span class="add-task">+ Añadir acción</span></a>
-
+             
                 <div class="chronology-wrapper">
                   <section class="history-view">
                     <!--
@@ -200,13 +200,13 @@
                         <img src="/assets/img/icon-handshake.png" width="50px" height="50px" *ngSwitchCase="'visita'" style="position: relative; top: -3px" />
                         <span style="position: relative; top: -23px">
                         <strong style="margin-left: 10px; margin-right: 10px">{{t.taskType}}</strong>
-                        <small>{{t.createdAt}}</small>
+                        <small>{{t.createdAt | date: 'HH:mm dd/MM/yyyy'}}</small>
                         <strong style="margin-left: 10px; margin-right: 10px">{{t.assignedTo != undefined ? t.assignedTo.firstName +' '+ t.assignedTo.lastName : ''}}</strong>
                         </span>
                       </div>
-                       <div class="task-subject" style="margin-bottom: 10px ;position: relative; top: -20px"><strong>Asunto:</strong>{{t.taskContent}}</div>
-                      <div class="task-description" style="margin-bottom: 10px;position: relative; top: -20px">{{t.description}}</div>
-                    </div>
+                       <div class="task-subject" style="margin-bottom: 10px ;position: relative; top: -20px; margin-left: 60px"><strong>Asunto:</strong>{{t.taskContent}}</div>
+                      <div class="task-description" style="margin-bottom: 10px;position: relative; top: -20px; margin-left: 60px">{{t.description}}</div>
+                    </div> 
                   </section>
                 </div>
               </section>
@@ -225,7 +225,7 @@
                 <section class="history-view">
                   <div class="history-header"><span class="history-title">Historial de{{' '+candidate.firstName+'
                       '+candidate.lastName}}</span></div>
-                  <div class="history-day" *ngFor="let log of logs" >
+                 <!-- <div class="history-day" *ngFor="let log of logs" >
                     <p style="margin-left: 10px" class="history-date">{{log.day}} {{log.logs[0].logHour}}</p>
                     <ul *ngFor="let l of log.logs">
                       <li class="time"></li>
@@ -239,14 +239,22 @@
                       <li class="other">--</li>
                       <li class="author">{{ l.author != undefined ? l.author.firstName+' '+l.author.lastName : '' }}</li>
                     </ul>
-                    <!--
-                    <ul>
-                      <li class="time">05:56 am</li>
-                      <li class="task">Estado cambiado: Residente</li>
-                      <li class="other">--</li>
-                      <li class="author">Guillermo Lorenzo</li>
-                    </ul>-->
-                  </div>
+                  </div> -->
+                  <div class="" *ngFor="let t of allTasks" style="margin-left: 0px ; margin-bottom:20px ;border: 1px solid grey" >
+                    <div class="task-icon" [ngSwitch]="t.taskType" style="margin-bottom: 10px">
+                      <img src="/assets/img/icon-phone.png" width="50px" height="50px" *ngSwitchCase="'llamada'" style="position: relative; top: -3px" />
+                      <img src="/assets/img/icon-reunion.png" width="50px" height="50px" *ngSwitchCase="'reunión'" style="position: relative; top: -3px" />
+                      <img src="/assets/img/icon-message.png" width="50px" height="50px" *ngSwitchCase="'email'" style="position: relative; top: -3px" />
+                      <img src="/assets/img/icon-handshake.png" width="50px" height="50px" *ngSwitchCase="'visita'" style="position: relative; top: -3px" />
+                      <span style="position: relative; top: -23px">
+                      <strong style="margin-left: 10px; margin-right: 10px">{{t.taskType}}</strong>
+                      <small>{{t.createdAt | date: 'HH:mm dd/MM/yyyy'}}</small>
+                      <strong style="margin-left: 10px; margin-right: 10px">{{t.assignedTo != undefined ? t.assignedTo.firstName +' '+ t.assignedTo.lastName : ''}}</strong>
+                      </span>
+                    </div>
+                     <div class="task-subject" style="margin-bottom: 10px ;position: relative; top: -20px; margin-left: 60px"><strong>Asunto:</strong>{{t.taskContent}}</div>
+                    <div class="task-description" style="margin-bottom: 10px;position: relative; top: -20px; margin-left: 60px">{{t.description}}</div>
+                  </div> 
                 </section>
               </div>
             </section>

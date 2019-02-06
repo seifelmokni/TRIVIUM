@@ -271,11 +271,11 @@
             </div>
             <div class="list-dates right-col" style="width: 40% !important; margin-top:183px; margin-left: 10px">
               
-              <div *ngFor="let d of hollyDaysAllTypes;let i = index" style="margin-top: 5px ; margin-bottom: 10px">
+              <div *ngFor="let d of hollyDaysAllTypes;let i = index" style="margin-top: 5px ; margin-bottom: 10px ; border: 1px solid grey">
                 <i class="fas fa-calendar-times"></i>
                 <small>{{d | date: 'dd/MM/yyyy'}} 
-                  <span *ngIf="interviewConfig.hollyDays.indexOf(d) != -1"> Fiesta (no es posible hacer entrevista)</span>
-                  <span *ngIf="interviewConfig.previosDays.indexOf(d) != -1"> Previos (se aceptan automaticamente las entrevistas)</span>
+                  <span *ngIf="interviewConfig.hollyDays.indexOf(d) != -1"> FIESTA (no es posible hacer entrevista)</span>
+                  <span *ngIf="interviewConfig.previosDays.indexOf(d) != -1"> PREVIOS (se aceptan automaticamente las entrevistas)</span>
                 </small>
                 <i class="fas fa-trash-alt" (click)="deleteHollyDay(i)"></i>
               </div>

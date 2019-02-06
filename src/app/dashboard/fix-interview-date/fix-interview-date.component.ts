@@ -10,6 +10,15 @@ import { Confirmerinterview } from 'src/app/models/confirmedInterview/confirmeri
 import { CandidateLog } from 'src/app/models/candidateLog/candidate-log.model';
 import { LogService } from 'src/app/shared/log/log.service';
 import { ConfirmedInterviewService } from 'src/app/shared/confirmedInterview/confirmed-interview.service';
+import { Model } from 'src/app/models/model/model.model';
+import { ModelsService } from 'src/app/shared/models/models.service';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { CKEditor5 } from '@ckeditor/ckeditor5-angular/ckeditor';
+import { Sede } from 'src/app/models/sede/sede.model';
+import { SedeService } from 'src/app/shared/Sede/sede.service';
+import { Email } from 'src/app/models/Email/email.model';
+import { EmailService } from 'src/app/shared/Email/email.service';
+
 
 @Component({
   selector: 'app-fix-interview-date',
@@ -25,8 +34,17 @@ export class FixInterviewDateComponent implements OnInit {
   interviewHour = '' ; 
   interviewDate = '' ;
   textAreaShown = false ; 
+  sendEmail = 0 ; 
+  models: Model[] = [];
+  subject= '';
+  selectedModel: Model ;
+  public editor = ClassicEditor;
+  ckEditor; 
+  sede: Sede ; 
+  observations:Array<{ob:string , author:string , date:string , hour:string}> = [];
   @ViewChild('interviewDateSelector') interviewDateSelector: ElementRef ;
   @ViewChild('observationTextArea') observationTextArea: ElementRef ;  
+  @ViewChild('modelSelector') modelSelector: ElementRef ;  
   
 
   constructor(private candidateService: CandidateService , 
@@ -34,11 +52,31 @@ export class FixInterviewDateComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private logSerivce: LogService,
+    private modelService: ModelsService ,
+    private sedeService: SedeService,
+    private emailSerivce: EmailService,
     private confirmedInterviewSerivce: ConfirmedInterviewService
     ) { }
 
   ngOnInit() {
-    this.candidate = this.candidateService.selectedCandidate ; 
+    this.candidate = this.candidateService.selectedCandidate ;
+    if(this.candidate.observations.length != 0){
+      this.observations = [this.candidate.observations[this.candidate.observations.length-1]]; 
+    }
+    console.log('observation') ; 
+    console.log(this.observations);
+    this.sedeService.list().subscribe(
+      (s:Sede[]) => {
+        if(s.length != 0){
+          this.sede = s[0] ; 
+        }
+      }
+    );
+    this.modelService.listModels().subscribe(
+      (m:Model[]) => {
+        this.models = m ;
+      }
+    );
     this.candidateService.listAdmissionCandidate().subscribe(
       (c:Candidate[]) => {
         this.admissionCandidate = c ; 
@@ -60,6 +98,48 @@ export class FixInterviewDateComponent implements OnInit {
 
   }
 
+  modelChanged(){
+    const i = this.modelSelector.nativeElement.options[this.modelSelector.nativeElement.selectedIndex].value ; 
+    if(i != '-1'){
+      this.selectedModel = this.models[i] ; 
+      let html = this.selectedModel.content ; 
+      console.log(this.selectedModel) ; 
+      html = html.replace(/\[BTNAME\]/g , this.candidate.firstName+' '+this.candidate.lastName) ; 
+      html = html.replace(/\[BTEMAIL\]/g , this.candidate.email) ; 
+      const sedeFields = html.match(/\[BTS\-[0-9]\-[0-9]\]/gm) ; 
+      console.log('sede fields') ; 
+      console.log(sedeFields) ; 
+      if(this.sede != undefined){
+
+        for(let j = 0 ; j < sedeFields.length ; j++){
+          let s = sedeFields[j]
+          s = s.replace(/\[/g , '') ; 
+          s = s.replace(/\]/g , '') ; 
+          const column = s.split('-')[1] ; 
+          const row = s.split('-')[2] ; 
+          const key = column+'----'+row ;
+          console.log('key '+key) ; 
+          for(let k = 0 ; k < this.sede.table.length ; k++){
+            console.log('key sede '+this.sede.table[k].key) ; 
+            if(this.sede.table[k].key == key){
+              console.log('found') ; 
+              html = html.replace(sedeFields[j] , this.sede.table[k].value );
+            }
+          }
+        }
+      }
+      html = html.replace(/\[BTF\-[0-9]\]/g , '') ;
+      this.ckEditor.setData(html);
+      this.subject =this.selectedModel.subject ; 
+    }
+  }
+  editorReady(editor: CKEditor5.Editor){
+    console.log('editor ready setting data');
+    console.log(editor);
+    this.ckEditor = editor;
+    
+}
+
   showObservationTextArea(){
     this.textAreaShown = true ;
   }
@@ -69,14 +149,20 @@ export class FixInterviewDateComponent implements OnInit {
     const v = this.observationTextArea.nativeElement.value;
     const ob = {ob : v , 
       author: this.authService.getUserSession().firstName+' '+this.authService.getUserSession().firstName,
-      date: (new Date().getDate())+"-"+(new Date().getMonth() +1)+"-"+(new Date().getFullYear()) , 
+      date: (new Date().getDate())+"-"+(new Date().getMonth() < 10 ? '0'+(new Date().getMonth() +1) : new Date().getMonth() +1)+"-"+(new Date().getFullYear()) , 
       hour: (new Date()).getHours()+":"+(new Date().getMinutes() < 10  ?  '0'+(new Date().getMinutes()) : new Date().getMinutes())
     }
         if(this.candidate.observations == undefined){
           this.candidate.observations = [] ; 
         }
         this.candidate.observations.push(ob) ; 
-        this.candidateService.updateCandidate(this.candidate) ; 
+        this.candidateService.updateCandidate(this.candidate).then(
+          () => {
+            if(this.candidate.observations.length != 0){
+              this.observations = [this.candidate.observations[this.candidate.observations.length-1]]; 
+            }
+          }
+        ) ; 
         
 
     this.textAreaShown = false ; 
@@ -132,7 +218,23 @@ export class FixInterviewDateComponent implements OnInit {
             candidateLog.logType = 'interview-accepted' ; 
             this.logSerivce.saveCandidateLog(candidateLog).then(
               () => {
-                this.router.navigate(['dashboard']);
+                if(this.sendEmail == 1){
+                  console.log('sending an email') ; 
+                  const email = new Email() ; 
+                  email.email = this.candidate.email ; 
+                  email.subject = this.subject ; 
+                  email.html = this.ckEditor.getData();
+                  email.name = this.candidate.firstName +' '+ this.candidate.lastName ; 
+                  this.emailSerivce.sendEmail(email).then(
+                    () => {
+                      this.router.navigate(['dashboard']);
+                    }
+                  ) ; 
+                }else{
+                  this.router.navigate(['dashboard']);
+              
+                }
+              
               }
             );
             

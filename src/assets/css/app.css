@@ -857,8 +857,13 @@ strong {
   color: #666;
   padding-left: 30px;
   padding-right: 20px;
-  width: 200px;
+  width: 220px;
   display: inline-block;
+}
+
+.block.block-dash .task-wrapper .panel-view .date-wrapper textarea{
+  margin-left: 32px;
+  width: 85%;
 }
 
 .block.block-dash .task-wrapper .panel-view .panel-task {

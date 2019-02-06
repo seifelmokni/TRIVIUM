@@ -92,6 +92,7 @@
                           <div class="btn-group" style="width: 30% ; float: right ; padding-top: 1px">
                             <a (click)="fixThisDate()" class="btn btn-sc">acepta esta fecha</a>
                             <a (click)="proposeNewInterviewDate()" class="btn btn-sc">Asignar nueva fecha</a>
+                            <input type="checkbox" name="sendEmail" [(ngModel)]="sendEmail" [value]="1" /> Enviar mail al aceptar fecha
                           </div>
                         </div>
                         <br>
@@ -104,10 +105,12 @@
                     <div>
                       <br>
                       <br>
-                      <h3>Observación</h3>
+                      <div style="display: flex;">
+                      <h3 style="width: 50%">Observación</h3><a *ngIf="!textAreaShown" (click)="showObservationTextArea()"><i class="fas fa-pencil-alt"></i>Añadir observación</a>
+                      </div>
                       <br>
                         <ul style="display: inline-grid;width: 100%">
-                            <li *ngFor="let o of candidate.observations" style="width: 100%"><h4>{{o.author}}:<small>{{o.date}} {{o.hour}}</small></h4>
+                            <li *ngFor="let o of observations" style="width: 100%"><h4>{{o.author}}:<small>{{o.date}} {{o.hour}}</small></h4>
                               <br>
                               {{o.ob}}</li>
                             <li *ngIf="textAreaShown" style="width: 100%">
@@ -115,12 +118,26 @@
                             </li>
                         </ul>
                         <div class="btn-group">
-                            <a *ngIf="!textAreaShown" (click)="showObservationTextArea()"><i class="fas fa-plus-square"></i>Añadir observación</a>
-                            <a *ngIf="textAreaShown" (click)="saveObservation()"><i class="fas fa-cloud-upload-alt"></i>Guardar observación</a>
-                            
+                            <a *ngIf="textAreaShown" (click)="saveObservation()"><i class="fas fa-cloud-upload-alt"></i>Guardar observación</a> 
                         </div>
                     </div>
+                    <div *ngIf="sendEmail == 1">
+                      <select #modelSelector (change)="modelChanged()">
+                        <option value="-1">--seleccione la plantilla para enviar--</option>
+                        <option value="{{i}}" *ngFor="let m of models; let i = index">{{m.name}}</option>
+                      </select>
+                      <br>
+                      <br>
+                      <input type="text" name="subject" [(ngModel)]="subject" style="width: 100%" />
+                      <br>
+                      <br>
+                      <div class="bottom-content">
+                        <ckeditor  [editor]="editor" (ready)="editorReady($event)"></ckeditor>
+                      </div>
+                    </div>
+
                   </form>
+                  
                 </section>
                 <section class="teacher-contacts">
                     <div class="teacher-title">

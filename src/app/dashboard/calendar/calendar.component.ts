@@ -130,13 +130,22 @@ export class CalendarComponent implements OnInit {
                     }
 
                     for(let i = 0 ; i < this.interviewConfig.hollyDays.length ; i++){
-                        this.hollyDaysAllTypes.push(this.interviewConfig.hollyDays[i]) ; 
+                        if(this.hollyDaysAllTypes.indexOf(this.interviewConfig.hollyDays[i]) == -1){
+                            this.hollyDaysAllTypes.push(this.interviewConfig.hollyDays[i]) ; 
+                        }
                     }
 
                     for(let i = 0 ; i < this.interviewConfig.previosDays.length ; i++){
-                        this.hollyDaysAllTypes.push(this.interviewConfig.previosDays[i]) ; 
+                        if(this.hollyDaysAllTypes.indexOf(this.interviewConfig.previosDays[i]) == -1){
+                            this.hollyDaysAllTypes.push(this.interviewConfig.previosDays[i]) ; 
+                        }
                     }
-                    this.hollyDaysAllTypes.sort() ; 
+                    this.hollyDaysAllTypes.sort(
+                        (a:string , b: string) : number =>   {
+                            const da = new Date(a) ; 
+                            const db = new Date(b) ; 
+                            return db.getTime() - da.getTime() ; 
+                    }) ; 
                     console.log(this.daysChecked);
                     this.refresh.next();
                 }
@@ -240,6 +249,24 @@ export class CalendarComponent implements OnInit {
                     this.refresh.next();
                 }
             }
+            this.hollyDaysAllTypes = [] ; 
+            for(let i = 0 ; i < this.interviewConfig.hollyDays.length ; i++){
+                if(this.hollyDaysAllTypes.indexOf(this.interviewConfig.hollyDays[i]) == -1){
+                    this.hollyDaysAllTypes.push(this.interviewConfig.hollyDays[i]) ; 
+                }
+            }
+
+            for(let i = 0 ; i < this.interviewConfig.previosDays.length ; i++){
+                if(this.hollyDaysAllTypes.indexOf(this.interviewConfig.previosDays[i]) == -1){
+                    this.hollyDaysAllTypes.push(this.interviewConfig.previosDays[i]) ; 
+                }
+            }
+            this.hollyDaysAllTypes.sort(
+                (a:string , b: string) : number =>   {
+                    const da = new Date(a) ; 
+                    const db = new Date(b) ; 
+                    return db.getTime() - da.getTime() ; 
+            }) ; 
             
         }
         

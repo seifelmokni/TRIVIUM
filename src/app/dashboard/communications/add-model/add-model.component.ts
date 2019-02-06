@@ -29,13 +29,13 @@ export class AddModelComponent implements OnInit {
 
     public editor = ClassicEditor;
     ckEditor;
-    modelName;
-    modelDescription;
-    modelSubject;
-    modelMetaData;
-    modelFiles;
-    modelContent;
-    modelDocumentId;
+    modelName= '';
+    modelDescription= '';
+    modelSubject= '';
+    modelMetaData= '';
+    modelFiles= '';
+    modelContent= '';
+    modelDocumentId='';
     htmlData = '';
     showRowDropdown = false ; 
     showFieldsDropdown = false; 

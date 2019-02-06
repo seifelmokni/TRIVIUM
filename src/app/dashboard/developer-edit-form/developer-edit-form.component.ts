@@ -1622,6 +1622,18 @@ export class DeveloperEditFormComponent implements OnInit {
             this.formService.setSelectedForm(form);
             this.router.navigate(['preview']);
     }
+    deletePage(){
+        
+        if(this.pageIndex < this.pages.length){
+            this.pages.splice(this.pageIndex , 1) ; 
+            if(this.pageIndex < this.pages.length){
+                this.loadPage(this.pages[this.pageIndex] , this.pageIndex) ; 
+            }else{
+                this.loadPage(this.pages[this.pageIndex - 1] , this.pageIndex - 1) ; 
+            }
+        }
+
+    }
 
 
 
